@@ -1,7 +1,5 @@
-import 'dart:async';
+import '../../import.dart';
 
-import 'package:biotech_maali/login/login_screen.dart';
-import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const LoginScreen(),
+            builder: (context) => const MobileNumberScreen(),
           ),
         );
       },
@@ -36,8 +34,8 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
-                child: Image.asset(
-                    'assets/png/Biotech-Maali-Logo-website-use 5.png')),
+              child: Image.asset('assets/png/biotech_logo.png',height: 101,width: 194,),
+            ),
             // SvgPicture.asset('assets/svg/Biotech-Maali-Logo-website-use 5.svg',
             //     height: 300, width: 300),
           ],
