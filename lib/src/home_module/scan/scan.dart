@@ -1,0 +1,1 @@
+export '/src/home_module/scan/scan_screen.dart';

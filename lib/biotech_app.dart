@@ -8,6 +8,8 @@ class BiotechApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => MobileNumberProvider()),
+        ChangeNotifierProvider(create: (context)=> LoginProvider()),
+        ChangeNotifierProvider(create: (context)=> BottomNavProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
