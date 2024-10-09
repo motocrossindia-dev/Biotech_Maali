@@ -8,3 +8,5 @@ const imgJpeg = '';
 //SVG
 const imgSvg = '';
 
+//JPENG
+
