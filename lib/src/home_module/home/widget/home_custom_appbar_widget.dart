@@ -9,6 +9,7 @@ class CustomAppBarWithSearch extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    // final height = MediaQuery.of(context).size.height;
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 4,
@@ -18,6 +19,24 @@ class CustomAppBarWithSearch extends StatelessWidget
       scrolledUnderElevation: 0,
       flexibleSpace: Column(
         children: [
+          // Container(
+          //   height: 40,
+          //   decoration: BoxDecoration(
+          //       gradient: LinearGradient(colors: [gcHomeBox, gcHomeBox2])),
+          //   child: Padding(
+          //     padding: const EdgeInsets.only(left:  22.0, right:  22),
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         Text('data',style: TextStyle(color: cWhiteColor),),
+          //         Container(height: 23,width: 82,
+          //           decoration: BoxDecoration(color: cButtonGreen,borderRadius: BorderRadius.circular(5)),
+          //           child: Container(),
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
             child: Row(
@@ -28,15 +47,28 @@ class CustomAppBarWithSearch extends StatelessWidget
                   height: 42,
                   width: 80,
                 ),
-                TextButton.icon(
-                  onPressed: () {
-                    // Handle location change
-                  },
-                  icon: const Icon(Icons.location_on, color: Colors.black),
-                  label: const Text(
-                    'Location 590019 CHANGE',
-                    style: TextStyle(color: Colors.black),
-                  ),
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/svg/icons/location_icon.svg',
+                      height: 22,
+                      width: 22,
+                    ),
+                    const Text(
+                      'Location 590019',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    TextButton(
+                      child: const Text(
+                        'CHANGE',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black,
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -56,9 +88,13 @@ class CustomAppBarWithSearch extends StatelessWidget
                           fillColor: cSearchBox, // Your custom color
                           hintStyle: GoogleFonts.poppins(fontSize: 12),
                           hintText: 'Search for "plants"',
-                          prefixIcon: const Icon(Icons.search, size: 20),
+                          prefixIcon: const Icon(Icons.search, size: 22),
                           suffixIcon: IconButton(
-                            icon: const Icon(Icons.mic, size: 18),
+                            icon: SvgPicture.asset(
+                              'assets/svg/icons/microphone.svg',
+                              height: 20,
+                              width: 20,
+                            ),
                             onPressed: () {
                               // Handle microphone button press
                             },
@@ -84,13 +120,21 @@ class CustomAppBarWithSearch extends StatelessWidget
                 ),
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.favorite_border),
+                  icon: SvgPicture.asset(
+                    'assets/svg/icons/heart_unselected.svg',
+                    height: 24,
+                    width: 24,
+                  ),
                   onPressed: () {
                     // Handle favorite button press
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.notifications_none),
+                  icon: SvgPicture.asset(
+                    'assets/svg/icons/notification_unselected.svg',
+                    height: 24,
+                    width: 24,
+                  ),
                   onPressed: () {
                     // Handle notification button press
                   },

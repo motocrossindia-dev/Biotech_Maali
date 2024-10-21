@@ -31,12 +31,12 @@ class OtpScreen extends StatelessWidget {
                 ),
               ),
               sizedBoxHeight50,
-              const CommonTextWidget(
+               CommonTextWidget(
                 title: 'Verification',
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
               ),
-              const CommonTextWidget(
+               CommonTextWidget(
                 title: 'Enter verification code',
                 fontSize: 18,
                 fontWeight: FontWeight.w300,
