@@ -44,16 +44,19 @@ class OtpScreen extends StatelessWidget {
               sizedBoxHeight25,
               const PinputWidget(),
               sizedBoxHeight25,
-              CommonButtonWidget(
-                title: 'NEXT',
-                event: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.only(left: 30.0,right: 30),
+                child: CommonButtonWidget(
+                  title: 'NEXT',
+                  event: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  },
+                ),
               ),
               sizedBoxHeight05,
               Row(

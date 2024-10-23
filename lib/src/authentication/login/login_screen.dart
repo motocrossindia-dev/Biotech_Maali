@@ -49,17 +49,20 @@ class LoginScreen extends StatelessWidget {
                 inputType: TextInputType.number,
               ),
               sizedBoxHeight25,
-              CommonButtonWidget(
-                title: 'LOGIN',
-                event: () {
-                  log('message');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BottomNavWidget(),
-                    ),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.only(left:30.0,right: 30),
+                child: CommonButtonWidget(
+                  title: 'LOGIN',
+                  event: () {
+                    log('message');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BottomNavWidget(),
+                      ),
+                    );
+                  },
+                ),
               )
             ],
           ),

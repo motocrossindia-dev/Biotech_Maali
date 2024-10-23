@@ -6,12 +6,14 @@ class CommonTextWidget extends StatelessWidget {
   final FontWeight? fontWeight;
   final Color? color;
   final TextDecoration? lineThrough;
+  final TextAlign? textAlign;
   const CommonTextWidget(
       {required this.title,
       this.fontSize,
       this.fontWeight,
       this.color,
       this.lineThrough,
+      this.textAlign,
       super.key});
 
   @override
@@ -20,7 +22,8 @@ class CommonTextWidget extends StatelessWidget {
       
       title,
       style: GoogleFonts.poppins(
-          fontSize: fontSize, fontWeight: fontWeight, color: color, decoration: lineThrough),
+          fontSize: fontSize, fontWeight: fontWeight, color: color, decoration: lineThrough,),
+          textAlign: textAlign,
     );
   }
 }

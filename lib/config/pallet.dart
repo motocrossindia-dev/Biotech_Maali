@@ -18,6 +18,7 @@ Color cProductTitle = const Color(0xFF9B9999);
 Color cProductRate = const Color(0xFF222222);
 Color cProductRateCrossed = const Color(0xFF302C2C);
 Color cHomeProductText = const Color(0xFF3F3F3F);
+Color cReferFriendsHome = const Color(0xFFFFDDDE);
 
 // Gradient Color
 

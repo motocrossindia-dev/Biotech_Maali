@@ -3,8 +3,9 @@ import 'package:biotech_maali/src/widgets/customizable_button.dart';
 import '../../../../import.dart';
 
 class HomeProductsTileWidget extends StatelessWidget {
+  final String title;
 
-  const HomeProductsTileWidget({super.key});
+  const HomeProductsTileWidget({required this.title, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class HomeProductsTileWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distributes space evenly
             children: [
               CommonTextWidget(
-                title: 'Featured',
+                title: title,
                 color: cHomeProductText,
                 fontSize: 20,
                 fontWeight: FontWeight.w500,

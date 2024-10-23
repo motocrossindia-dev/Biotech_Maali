@@ -11,15 +11,13 @@ class AddToCartButton extends StatelessWidget {
       width: double.infinity,
       height: 38,
       child: ElevatedButton(
-        
         style: ElevatedButton.styleFrom(
           backgroundColor: cAppBackround,
 
           foregroundColor: cButtonGreen, // foreground
-          
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: cButtonGreen,width: 1),
 
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: cButtonGreen, width: 1),
             borderRadius: BorderRadius.circular(8),
           ),
         ),

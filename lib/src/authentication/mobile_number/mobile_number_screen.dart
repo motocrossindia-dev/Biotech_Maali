@@ -45,17 +45,20 @@ class MobileNumberScreen extends StatelessWidget {
               ),
           
               sizedBoxHeight25,
-              CommonButtonWidget(
-                title: 'GET OTP',
-                event: () {
-                  log('message');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const OtpScreen(),
-                    ),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.only(left:30.0,right: 30),
+                child: CommonButtonWidget(
+                  title: 'GET OTP',
+                  event: () {
+                    log('message');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OtpScreen(),
+                      ),
+                    );
+                  },
+                ),
               )
             ],
           ),

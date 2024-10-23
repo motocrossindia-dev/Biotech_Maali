@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/home_module/home/widget/youtube_videoplayer_widget.dart';
+
 import '../../../import.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -6,26 +8,40 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      backgroundColor: Color.fromARGB(255, 252, 251, 251),
       appBar: CustomAppBarWithSearch(),
       body: Column(
         children: [
-          CategoryWidget(),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-                  CarouselWidget(),
                   sizedBoxHeight10,
-                  // ProductTileWidget(
-                  //   productTitle: 'Peace Lilly Plant',
-                  //   productImage: 'assets/png/products/sample_product.png',
-                  //   discountAmount: 499.00,
-                  //   actualAmount: 599.00,
-                  //   rating: 4.5,
-                  //   home: false,
-                  // ),
-                  HomeProductsTileWidget()
+                  CategoryWidget(),
+                  CarouselWidget(),
+                  sizedBoxHeight20,
+                  HomeProductsTileWidget(
+                    title: 'Featured',
+                  ),
+                  sizedBoxHeight20,
+                  HomeProductsTileWidget(
+                    title: 'Latest',
+                  ),
+                  sizedBoxHeight20,
+                  HomeProductsTileWidget(
+                    title: 'Bestseller',
+                  ),
+                  sizedBoxHeight20,
+                  ReferFriendWidget(),
+                  sizedBoxHeight20,
+                  HomeProductsTileWidget(title: 'Seasonal Collection'),
+                  sizedBoxHeight20,
+                  CompoOfferWidget(),
+                  sizedBoxHeight20,
+                  // VideoplayerWidget(),
+                  // VideoplayerWidget()
+                  // YoutubeVideoplayerWidget()
 
                 ],
               ),

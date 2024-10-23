@@ -13,7 +13,7 @@ class CarouselWidget extends StatelessWidget {
             CarouselSlider(
               options: CarouselOptions(
                 height: MediaQuery.of(context).size.height *
-                    0.3, // Adjust height to fit screen
+                    0.38, // Adjust height to fit screen
                 autoPlay: true,
                 viewportFraction: 1.0,
                 onPageChanged: (index, reason) {
