@@ -81,7 +81,7 @@ class ProductTileWidget extends StatelessWidget {
           home?
           Padding(
             padding: const EdgeInsets.only(left: 1.0, right: 1),
-            child: AddToCartButton(title: 'Add To Cart', event: () {}),
+            child: BorderColoredButton(title: 'Add To Cart',height: 38, event: () {}),
           ):sizedBoxHeight0
         ],
       ),

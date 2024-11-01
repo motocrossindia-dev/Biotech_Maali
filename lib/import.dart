@@ -14,4 +14,7 @@ export 'package:flutter_svg/flutter_svg.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:carousel_slider/carousel_slider.dart';
 export 'package:flutter_rating_bar/flutter_rating_bar.dart';
+export 'package:youtube_player_flutter/youtube_player_flutter.dart';
+export 'package:video_player/video_player.dart';
+export 'package:mobile_scanner/mobile_scanner.dart';
 

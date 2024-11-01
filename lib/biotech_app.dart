@@ -11,6 +11,8 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context)=> LoginProvider()),
         ChangeNotifierProvider(create: (context)=> BottomNavProvider()),
         ChangeNotifierProvider(create: (context)=> HomeProvider()),
+        ChangeNotifierProvider(create: (context)=> ExploreProvider()),
+        ChangeNotifierProvider(create: (context)=> ProductDetailsProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

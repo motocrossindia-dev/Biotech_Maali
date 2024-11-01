@@ -14,12 +14,12 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(
-      const Duration(seconds: 3),
+      const Duration(seconds: 1),
       () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const MobileNumberScreen(),
+            builder: (context) =>  const BottomNavWidget(),
           ),
         );
       },

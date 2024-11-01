@@ -19,8 +19,16 @@ Color cProductRate = const Color(0xFF222222);
 Color cProductRateCrossed = const Color(0xFF302C2C);
 Color cHomeProductText = const Color(0xFF3F3F3F);
 Color cReferFriendsHome = const Color(0xFFFFDDDE);
+Color cScaffoldBackground = const Color.fromARGB(255, 252, 251, 251);
+Color cExploreCategory = const Color(0xFFD9D9D9);
+Color cCategoryUnselected = const Color(0xFFE9F0FF);
+Color cCategoryMainBackground = const Color(0xFFFFFFFF);
+Color cOffer = const Color(0xFFEAFFB5);
+Color cQuantity = const Color(0xFFE8E8E8);
 
 // Gradient Color
+
+LinearGradient lgBanner = const LinearGradient(colors: [Color(0xFFFFFFFF),Color(0xFFD6D0D0)]);
 
 Color gcHomeBox = const Color(0xFF0D2164);
 Color gcHomeBox2 = const Color(0xFF4670FD);
