@@ -49,7 +49,7 @@ class SubCategories extends StatelessWidget {
                       // String apiUrl = gridItem['api'];
                       // print('API URL for ${gridItem['name']}: $apiUrl');
                       // You can navigate to another screen or fetch the API dynamically here.
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductListScreen(title: 'Plants',),));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  const ProductListScreen(title: 'Plants',),));
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,

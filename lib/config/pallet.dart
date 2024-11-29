@@ -25,6 +25,17 @@ Color cCategoryUnselected = const Color(0xFFE9F0FF);
 Color cCategoryMainBackground = const Color(0xFFFFFFFF);
 Color cOffer = const Color(0xFFEAFFB5);
 Color cQuantity = const Color(0xFFE8E8E8);
+Color cAccountText = const Color(0xFF878787);
+Color cButtonRed = const Color(0xFFEB001B);
+Color cAccountContainerGrey = const Color(0xFFE9E9E9);
+Color cTextFormFieldGrey = const Color(0xFFE5E5E5);
+Color cLightPink = const Color(0xFFFFE9E6);
+Color cDarkerRed = const Color(0xFFAD6359);
+Color textGreyColor =  const Color(0xFF999999);
+Color cLightGreyHomeWork = const Color(0xFFEEEEEE);
+Color timeLineColor = const Color(0xFF0043CE);
+Color orderSummaryBackground = const Color(0xFFF4F4F4);
+
 
 // Gradient Color
 

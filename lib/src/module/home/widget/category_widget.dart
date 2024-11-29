@@ -267,7 +267,7 @@ class CategoryWidget extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProductListScreen(title: 'Plants',),
+                        builder: (context) =>  const ProductListScreen(title: 'Plants',),
                       ),
                     );
                     break;
@@ -276,7 +276,7 @@ class CategoryWidget extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProductListScreen(title: 'Plant Care',),
+                        builder: (context) =>  const ProductListScreen(title: 'Plant Care',),
                       ),
                     );
 
@@ -285,7 +285,7 @@ class CategoryWidget extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProductListScreen(title: 'Pots',),
+                        builder: (context) =>  const ProductListScreen(title: 'Pots',),
                       ),
                     );
                     log('Pots');
@@ -294,7 +294,7 @@ class CategoryWidget extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProductListScreen(title: 'Plant Seeds',),
+                        builder: (context) =>  const ProductListScreen(title: 'Plant Seeds',),
                       ),
                     );
                     log('Plant Seeds');
@@ -304,7 +304,7 @@ class CategoryWidget extends StatelessWidget {
                      Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProductListScreen(title: 'Gifts',),
+                        builder: (context) =>  const ProductListScreen(title: 'Gifts',),
                       ),
                     );
                     break;
@@ -313,7 +313,7 @@ class CategoryWidget extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProductListScreen(title: 'Offers',),
+                        builder: (context) =>  const ProductListScreen(title: 'Offers',),
                       ),
                     );
                     break;

@@ -3,7 +3,6 @@ export '/biotech_app.dart';
 export 'config/config.dart';
 export '/src/src.dart';
 
-
 //Packages
 
 export 'package:flutter/material.dart';
@@ -17,4 +16,4 @@ export 'package:flutter_rating_bar/flutter_rating_bar.dart';
 export 'package:youtube_player_flutter/youtube_player_flutter.dart';
 export 'package:video_player/video_player.dart';
 export 'package:mobile_scanner/mobile_scanner.dart';
-
+export 'package:timeline_tile/timeline_tile.dart';

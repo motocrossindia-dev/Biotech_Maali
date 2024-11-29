@@ -172,13 +172,13 @@ class CartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: 183,
+                    width: 170,
                     height: 48,
                     child: CustomizableBorderColoredButton(
                         title: 'CANCEL', event: () {}),
                   ),
                   SizedBox(
-                    width: 183,
+                    width: 170,
                     height: 48,
                     child: CustomizableButton(
                       title: 'PLACE ORDER',

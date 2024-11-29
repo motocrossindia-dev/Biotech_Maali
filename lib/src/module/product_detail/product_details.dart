@@ -7,3 +7,5 @@ export '/src/module/product_detail/widgets/size_icon_widget.dart';
 export '/src/module/product_detail/widgets/color_container_widget.dart';
 export '/src/module/product_detail/widgets/product_description.dart';
 export '/src/module/product_detail/widgets/product_list_widget.dart';
+export '/src/module/product_detail/rating_and_review/rating_and_review.dart';
+export '/src/module/product_detail/product_rating/product_rating.dart';

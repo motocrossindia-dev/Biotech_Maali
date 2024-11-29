@@ -45,6 +45,9 @@ dependencies:
   video_player: ^2.9.2
   youtube_player_flutter: ^9.0.4
   mobile_scanner: ^6.0.2
+  shimmer: ^3.0.0
+  easy_stepper: ^0.8.5+1
+  timeline_tile: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +78,7 @@ flutter:
     - assets/svg/bottom_nav_bar/
     - assets/svg/icons/
     - assets/svg/category/
+    - assets/svg/images/
     - assets/png/products/
     - assets/png/images/
 

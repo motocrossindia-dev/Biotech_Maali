@@ -116,7 +116,7 @@ class CustomAppBarWithSearch extends StatelessWidget
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                      )),
+                      ),),
                 ),
                 const SizedBox(width: 8),
                 IconButton(

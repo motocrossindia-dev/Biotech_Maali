@@ -1,9 +1,27 @@
 import 'dart:developer';
 import '../../../import.dart';
 
-class ProductListScreen extends StatelessWidget {
+class ProductListScreen extends StatefulWidget {
   final String title;
-  const ProductListScreen({required this.title,super.key});
+  const ProductListScreen({required this.title, super.key});
+
+  @override
+  State<ProductListScreen> createState() => _ProductListScreenState();
+}
+
+class _ProductListScreenState extends State<ProductListScreen> {
+  String _selectedOption = 'Default';
+
+  final List<String> _sortOptions = [
+    'Default',
+    'Relevance',
+    'Just Launched',
+    'Best Selling',
+    'Price High To Low',
+    'Price Low To High',
+    'Alphabetically A-Z',
+    'Alphabetically Z-A',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +31,8 @@ class ProductListScreen extends StatelessWidget {
         shadowColor: Colors.black,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
-        title:  CommonTextWidget(
-          title: title,
+        title: CommonTextWidget(
+          title: widget.title,
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
@@ -42,16 +60,22 @@ class ProductListScreen extends StatelessWidget {
                       crossAxisCount: 2,
                       crossAxisSpacing: 15.0,
                       mainAxisSpacing: 15.0,
-                      childAspectRatio: 0.54,
+                      childAspectRatio: 0.48,
                     ),
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductDetailsScreen(),));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ProductDetailsScreen(),
+                              ));
                         },
                         child: const ProductTileWidget(
                           productTitle: 'Peace Lilly Plant',
-                          productImage: 'assets/png/products/sample_product.png',
+                          productImage:
+                              'assets/png/products/sample_product.png',
                           discountAmount: 499.00,
                           actualAmount: 599.00,
                           rating: 4.5,
@@ -61,6 +85,7 @@ class ProductListScreen extends StatelessWidget {
                     },
                   ),
                 ),
+                sizedBoxHeight70,
               ],
             ),
           ),
@@ -87,6 +112,8 @@ class ProductListScreen extends StatelessWidget {
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
                           log('message');
+                          // _showFilterDropdown(context);
+                          _showSortByOverlay(context);
                         },
 
                         child: Padding(
@@ -119,6 +146,12 @@ class ProductListScreen extends StatelessWidget {
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
                           log('message');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const FilterScreen(),
+                            ),
+                          );
                         },
 
                         child: Padding(
@@ -145,6 +178,78 @@ class ProductListScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showSortByOverlay(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox.shrink(), // Empty space for left side
+                          const CommonTextWidget(
+                            title: 'Sort By',
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _sortOptions.length,
+                      itemBuilder: (context, index) {
+                        return RadioListTile(
+                          title: Text(
+                            _sortOptions[index],
+                            style: TextStyle(
+                              color: _selectedOption == _sortOptions[index]
+                                  ? Colors.blue
+                                  : Colors.black,
+                            ),
+                          ),
+                          value: _sortOptions[index],
+                          groupValue: _selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedOption = value!;
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

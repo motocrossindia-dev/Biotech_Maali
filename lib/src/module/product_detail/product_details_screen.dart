@@ -16,12 +16,12 @@ class ProductDetailsScreen extends StatelessWidget {
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 40.0),
-            child: Icon(Icons.search, size: 30),
-          ),
-        ],
+        // actions: const [
+        //   Padding(
+        //     padding: EdgeInsets.only(right: 40.0),
+        //     child: Icon(Icons.search, size: 30),
+        //   ),
+        // ],
       ),
       body: Stack(
         children: [
@@ -43,44 +43,58 @@ class ProductDetailsScreen extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                       sizedBoxHeight10,
-                      Row(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CommonTextWidget(
-                            title: '₹499.00',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: cProductRate,
-                          ),
-                          sizedBoxWidth5,
-                          CommonTextWidget(
-                            title: '₹599.00',
-                            fontSize: 10,
-                            fontWeight: FontWeight.w300,
-                            color: cProductRateCrossed,
-                            lineThrough: TextDecoration.lineThrough,
-                          ),
-                          sizedBoxWidth10,
-                          Container(
-                            width: 69,
-                            height: 22,
-                            decoration: BoxDecoration(
-                              color: cOffer,
-                              borderRadius: BorderRadius.circular(5),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RatingsAndReviews(),
+                              ));
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CommonTextWidget(
+                                  title: '₹499.00',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: cProductRate,
+                                ),
+                                sizedBoxWidth5,
+                                CommonTextWidget(
+                                  title: '₹599.00',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w300,
+                                  color: cProductRateCrossed,
+                                  lineThrough: TextDecoration.lineThrough,
+                                ),
+                                sizedBoxWidth10,
+                                Container(
+                                  width: 69,
+                                  height: 22,
+                                  decoration: BoxDecoration(
+                                    color: cOffer,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: const Center(
+                                    child: CommonTextWidget(
+                                      title: '25% OFF',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            child: const Center(
-                              child: CommonTextWidget(
-                                title: '25% OFF',
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
+                            sizedBoxHeight10,
+                            const ProductDetailsRatingWidget(
+                              rating: 3,
                             ),
-                          ),
-                        ],
-                      ),
-                      sizedBoxHeight10,
-                      const ProductDetailsRatingWidget(
-                        rating: 3,
+                          ],
+                        ),
                       ),
                       sizedBoxHeight10,
                       Column(
@@ -209,7 +223,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ProductListWidget(title: 'Customers Also Bought'),
                         sizedBoxHeight20,
                         ProductListWidget(title: 'Recently Viewed'),
-                        sizedBoxHeight20
+                        sizedBoxHeight70,
                       ],
                     ),
                   ),
@@ -229,13 +243,21 @@ class ProductDetailsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: 183,
+                    width: 160,
                     height: 48,
                     child: CustomizableBorderColoredButton(
-                        title: 'BUY NOW', event: () {}),
+                        title: 'BUY NOW',
+                        event: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const OrderSummaryScreen(),
+                              ));
+                        }),
                   ),
                   SizedBox(
-                    width: 183,
+                    width: 160,
                     height: 48,
                     child: CustomizableButton(
                       title: 'ADD TO CART',

@@ -5,7 +5,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: cScaffoldBackground,
       appBar: const CustomAppBarWithSearch(),
       body: const Column(
@@ -19,17 +19,11 @@ class HomeScreen extends StatelessWidget {
                   CategoryWidget(),
                   CarouselWidget(),
                   sizedBoxHeight20,
-                  HomeProductsTileWidget(
-                    title: 'Featured',
-                  ),
+                  HomeProductsTileWidget(title: 'Featured'),
                   sizedBoxHeight20,
-                  HomeProductsTileWidget(
-                    title: 'Latest',
-                  ),
+                  HomeProductsTileWidget(title: 'Latest'),
                   sizedBoxHeight20,
-                  HomeProductsTileWidget(
-                    title: 'Bestseller',
-                  ),
+                  HomeProductsTileWidget(title: 'Bestseller'),
                   sizedBoxHeight20,
                   ReferFriendWidget(),
                   sizedBoxHeight20,
