@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/home/model/product_model.dart';
+
 import '../../../../import.dart';
 
 class HomeProductsTileWidget extends StatelessWidget {
@@ -8,11 +10,13 @@ class HomeProductsTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 12,right: 12), // Add padding for better layout
+      padding: const EdgeInsets.only(
+          left: 12, right: 12), // Add padding for better layout
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distributes space evenly
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween, // Distributes space evenly
             children: [
               CommonTextWidget(
                 title: title,
@@ -20,38 +24,83 @@ class HomeProductsTileWidget extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
               ),
-              CustomizableButton(
-                title: 'View All',
-                event: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListScreen(title: title),));
+              Consumer<HomeProvider>(
+                builder: (context, provider, child) {
+                  // final products = provider.featuredProducts;
+                  List<ProductModel> products = [];
+                  if (title == "Featured") {
+                    products = provider.featuredProducts;
+                  } else if (title == "Latest") {
+                    products = provider.trendingProducts;
+                  } else if (title == "Bestseller") {
+                    products = provider.bestSellerProducts;
+                  } else if (title == "Seasonal Collection") {
+                    products = provider.seasonalProducts;
+                  }
+                  return CustomizableButton(
+                    title: 'View All',
+                    event: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductListScreen(
+                            title: title,
+                            products: products,
+                          ),
+                        ),
+                      );
+                    },
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  );
                 },
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
               )
             ],
           ),
           sizedBoxHeight40,
           SizedBox(
             height: 280,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 4,
-              itemBuilder: (context, index) {
-              // ignore: prefer_const_constructors
-              return Row(
-                children: const [
-                  ProductTileWidget(
-                          productTitle: 'Peace Lilly Plant',
-                          productImage: 'assets/png/products/sample_product.png',
-                          discountAmount: 499.00,
-                          actualAmount: 599.00,
-                          rating: 4.5,
-                          home: false,
+            child: Consumer<HomeProvider>(
+              builder: (context, provider, child) {
+                List<ProductModel> products = [];
+                if (title == "Featured") {
+                  products = provider.featuredProducts;
+                } else if (title == "Latest") {
+                  products = provider.trendingProducts;
+                } else if (title == "Bestseller") {
+                  products = provider.bestSellerProducts;
+                } else if (title == "Seasonal Collection") {
+                  products = provider.seasonalProducts;
+                }
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    // ignore: prefer_const_constructors
+                    ProductModel productDetails = products[index];
+                    return Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            
+                          },
+                          child: ProductTileWidget(
+                            productTitle: productDetails.name,
+                            productImage: productDetails.image,
+                            tempImage: 'assets/png/products/sample_product.png',
+                            discountAmount: productDetails.price,
+                            actualAmount: productDetails.price,
+                            rating: 4.5,
+                            home: false,
+                          ),
                         ),
                         sizedBoxWidth15
-                ],
-              );
-            },),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           )
         ],
       ),

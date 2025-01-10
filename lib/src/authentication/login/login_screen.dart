@@ -17,15 +17,13 @@ class LoginScreen extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
-                    sizedBoxHeight70,
+                    sizedBoxHeight50,
                     Image.asset(
                       'assets/png/biotech_logo.png',
                       height: 62,
                       width: 120,
                     ),
-                    const SizedBox(
-                      height: 50,
-                    ),
+                    sizedBoxHeight40,
                     SvgPicture.asset(
                       'assets/svg/login_image.svg',
                       height: 240,
@@ -34,23 +32,30 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              sizedBoxHeight50,
+              sizedBoxHeight15,
               CommonTextFormWidget(
                 controller: loginProvider.name,
                 title: 'Enter Your Name',
-                hint: ' Mallikjan',
+                hint: ' Name is required',
+                inputType: TextInputType.number,
+              ),
+              sizedBoxHeight25,
+              CommonTextFormWidget(
+                controller: loginProvider.emailId,
+                title: 'Enter Email Address',
+                hint: ' Email Address',
                 inputType: TextInputType.number,
               ),
               sizedBoxHeight25,
               CommonTextFormWidget(
                 controller: loginProvider.referralCode,
                 title: 'Enter The Referral Code(optional)',
-                hint: ' RF3423875',
+                hint: ' Referral code',
                 inputType: TextInputType.number,
               ),
               sizedBoxHeight25,
               Padding(
-                padding: const EdgeInsets.only(left:30.0,right: 30),
+                padding: const EdgeInsets.only(left: 30.0, right: 30),
                 child: CommonButtonWidget(
                   title: 'LOGIN',
                   event: () {

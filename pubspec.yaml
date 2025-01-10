@@ -48,6 +48,10 @@ dependencies:
   shimmer: ^3.0.0
   easy_stepper: ^0.8.5+1
   timeline_tile: ^2.0.0
+  dio: ^5.7.0
+  fluttertoast: ^8.2.8
+  connectivity_plus: ^6.1.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

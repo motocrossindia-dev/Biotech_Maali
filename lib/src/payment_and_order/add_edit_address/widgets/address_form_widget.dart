@@ -30,8 +30,7 @@ class _AddressFormWidgetState extends State<AddressFormWidget> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: 
-      Card(
+      child: Card(
         color: Colors.white,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
@@ -171,16 +170,16 @@ class _AddressFormWidgetState extends State<AddressFormWidget> {
     );
   }
 
-  // void _resetForm() {
-  //   if (_formKey.currentState != null) {
-  //     _formKey.currentState!.reset();
-  //     _nameController.clear();
-  //     _lastNameController.clear();
-  //     _mobileNumberController.clear();
-  //     _apartmentController.clear();
-  //     setState(() {
-  //       _isHomeAddress = true;
-  //     });
-  //   }
-  // }
+  void _resetForm() {
+    if (_formKey.currentState != null) {
+      _formKey.currentState!.reset();
+      _nameController.clear();
+      _lastNameController.clear();
+      _mobileNumberController.clear();
+      _apartmentController.clear();
+      setState(() {
+        _isHomeAddress = true;
+      });
+    }
+  }
 }

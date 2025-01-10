@@ -1,4 +1,4 @@
-import '../../../../import.dart';
+import '../../../../../import.dart';
 
 class ProductDescription extends StatelessWidget {
   const ProductDescription({super.key});

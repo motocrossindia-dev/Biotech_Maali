@@ -27,7 +27,9 @@ class _ScanScreenState extends State<ScanScreen> {
         actions: [
           // Toggle flash
           IconButton(
-            icon: Icon(isFlashOn ? Icons.flash_on : Icons.flash_off), // Track flash state manually
+            icon: Icon(isFlashOn
+                ? Icons.flash_on
+                : Icons.flash_off), // Track flash state manually
             onPressed: () {
               cameraController.toggleTorch();
               setState(() {
@@ -37,7 +39,9 @@ class _ScanScreenState extends State<ScanScreen> {
           ),
           // Switch camera
           IconButton(
-            icon: Icon(isBackCamera ? Icons.camera_rear : Icons.camera_front), // Track camera state manually
+            icon: Icon(isBackCamera
+                ? Icons.camera_rear
+                : Icons.camera_front), // Track camera state manually
             onPressed: () {
               cameraController.switchCamera();
               setState(() {
@@ -107,31 +111,33 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   void _handleBarcode(String value) async {
-  String productId = value; // Extract product ID from QR code
+    String productId = value; // Extract product ID from QR code
 
-  // Simulate fetching product details from an API or Firebase
-  final productDetails = await fetchProductDetails(productId);
+    // Simulate fetching product details from an API or Firebase
+    final productDetails = await fetchProductDetails(productId);
 
-  if (productDetails != null) {
-    // Navigate to the ProductScreen and pass the fetched details
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ProductScreen(productDetails: productDetails),
-    //   ),
-    // );
+    if (productDetails != null) {
+      // Navigate to the ProductScreen and pass the fetched details
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => ProductScreen(productDetails: productDetails),
+      //   ),
+      // );
+    }
+
+    setState(() {
+      isScanning = true;
+    });
   }
 
-  setState(() {
-    isScanning = true;
-  });
-}
+  Future<ProductSampleDetails> fetchProductDetails(String productId) async {
+    // Implement your API call or Firebase query to get product details
+    // This is just a placeholder function
+    return ProductSampleDetails(
+        id: productId, name: 'Example Product', price: 100);
+  }
 
-Future<ProductSampleDetails> fetchProductDetails(String productId) async {
-  // Implement your API call or Firebase query to get product details
-  // This is just a placeholder function
-  return ProductSampleDetails(id: productId, name: 'Example Product', price: 100);
-}
   @override
   void dispose() {
     cameraController.dispose();
@@ -225,12 +231,14 @@ class ScannerOverlayPainter extends CustomPainter {
     // Bottom right corner
     canvas.drawLine(
       Offset(scanAreaLeft + scanAreaSize, scanAreaTop + scanAreaSize),
-      Offset(scanAreaLeft + scanAreaSize - cornerLength, scanAreaTop + scanAreaSize),
+      Offset(scanAreaLeft + scanAreaSize - cornerLength,
+          scanAreaTop + scanAreaSize),
       cornerPaint,
     );
     canvas.drawLine(
       Offset(scanAreaLeft + scanAreaSize, scanAreaTop + scanAreaSize),
-      Offset(scanAreaLeft + scanAreaSize, scanAreaTop + scanAreaSize - cornerLength),
+      Offset(scanAreaLeft + scanAreaSize,
+          scanAreaTop + scanAreaSize - cornerLength),
       cornerPaint,
     );
   }

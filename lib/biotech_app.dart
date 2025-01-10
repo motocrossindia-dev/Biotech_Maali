@@ -1,3 +1,6 @@
+import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
+import 'package:biotech_maali/src/splash/splash_provider.dart';
+
 import 'import.dart';
 
 class BiotechApp extends StatelessWidget {
@@ -7,6 +10,8 @@ class BiotechApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+            create: (context) => SplashProvider(context: context)),
         ChangeNotifierProvider(create: (context) => MobileNumberProvider()),
         ChangeNotifierProvider(create: (context) => LoginProvider()),
         ChangeNotifierProvider(create: (context) => BottomNavProvider()),
@@ -18,7 +23,8 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => FiltersProvider()),
         ChangeNotifierProvider(create: (context) => ProductRatingProvider()),
         ChangeNotifierProvider(create: (context) => RatingAndReviewProvider()),
-        ChangeNotifierProvider(create: (context)=> AddEditAddressProvider()),
+        ChangeNotifierProvider(create: (context) => AddEditAddressProvider()),
+        ChangeNotifierProvider(create: (context) => WalletProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

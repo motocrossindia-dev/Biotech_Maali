@@ -2,6 +2,7 @@ export '/main.dart';
 export '/biotech_app.dart';
 export 'config/config.dart';
 export '/src/src.dart';
+export '/core/core.dart';
 
 //Packages
 
@@ -17,3 +18,4 @@ export 'package:youtube_player_flutter/youtube_player_flutter.dart';
 export 'package:video_player/video_player.dart';
 export 'package:mobile_scanner/mobile_scanner.dart';
 export 'package:timeline_tile/timeline_tile.dart';
+export 'package:dio/dio.dart';

@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
+import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
 
 import '../../../import.dart';
 
@@ -41,50 +42,39 @@ class AccountScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       sizedBoxHeight20,
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const EditProfileScreen(),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          // borderOnForeground: true,
-                          shape: const Border(
-                            bottom: BorderSide(style: BorderStyle.none),
-                          ),
-                          color: cWhiteColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            // ignore: avoid_unnecessary_containers
-                            child: Container(
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/svg/icons/account_person.svg',
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                  sizedBoxWidth15,
-                                  const Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CommonTextWidget(
-                                        title: 'Hello',
-                                        fontSize: 12,
-                                      ),
-                                      CommonTextWidget(
-                                        title: 'mallikjan baroodwale',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                      Card(
+                        // borderOnForeground: true,
+                        shape: const Border(
+                          bottom: BorderSide(style: BorderStyle.none),
+                        ),
+                        color: cWhiteColor,
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          // ignore: avoid_unnecessary_containers
+                          child: Container(
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/svg/icons/account_person.svg',
+                                  height: 50,
+                                  width: 50,
+                                ),
+                                sizedBoxWidth15,
+                                const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CommonTextWidget(
+                                      title: 'Hello',
+                                      fontSize: 12,
+                                    ),
+                                    CommonTextWidget(
+                                      title: 'mallikjan baroodwale',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -144,27 +134,38 @@ class AccountScreen extends StatelessWidget {
                                 ],
                               ),
                               sizedBoxHeight20,
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Row(
-                                    children: [
-                                      sizedBoxWidth25,
-                                      sizedBoxWidth20,
-                                      CommonTextWidget(
-                                        title: 'My Profile',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                  Icon(
-                                    Icons.chevron_right,
-                                    size: 30,
-                                    color: cAccountText,
-                                  )
-                                ],
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EditProfileScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Row(
+                                      children: [
+                                        sizedBoxWidth25,
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'My Profile',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 30,
+                                      color: cAccountText,
+                                    )
+                                  ],
+                                ),
                               ),
                               sizedBoxHeight10,
                               InkWell(
@@ -218,27 +219,37 @@ class AccountScreen extends StatelessWidget {
                                 ],
                               ),
                               sizedBoxHeight20,
-                              const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      sizedBoxWidth25,
-                                      sizedBoxWidth20,
-                                      CommonTextWidget(
-                                        title: 'Wallet',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                  CommonTextWidget(
-                                    title: '₹0',
-                                    color: Colors.green,
-                                    fontSize: 16,
-                                  ),
-                                ],
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => WalletScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        sizedBoxWidth25,
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'Wallet',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    CommonTextWidget(
+                                      title: '₹0',
+                                      color: Colors.green,
+                                      fontSize: 16,
+                                    ),
+                                  ],
+                                ),
                               ),
                               sizedBoxHeight35,
                               Row(

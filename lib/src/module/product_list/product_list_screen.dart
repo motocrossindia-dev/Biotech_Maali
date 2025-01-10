@@ -1,9 +1,13 @@
 import 'dart:developer';
+import 'package:biotech_maali/src/module/home/model/product_model.dart';
+
 import '../../../import.dart';
 
 class ProductListScreen extends StatefulWidget {
   final String title;
-  const ProductListScreen({required this.title, super.key});
+  final List<ProductModel> products;
+  const ProductListScreen(
+      {required this.title, required this.products, super.key});
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -46,47 +50,57 @@ class _ProductListScreenState extends State<ProductListScreen> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            child: Column(
-              children: [
-                const CustomBannerWidget(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 11,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 15.0,
-                      mainAxisSpacing: 15.0,
-                      childAspectRatio: 0.48,
-                    ),
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const ProductDetailsScreen(),
-                              ));
-                        },
-                        child: const ProductTileWidget(
-                          productTitle: 'Peace Lilly Plant',
-                          productImage:
-                              'assets/png/products/sample_product.png',
-                          discountAmount: 499.00,
-                          actualAmount: 599.00,
-                          rating: 4.5,
-                          home: true,
+            child: Consumer<HomeProvider>(
+              builder: (context, provider, child) {
+                return Column(
+                  children: [
+                    const CustomBannerWidget(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: widget.products.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 15.0,
+                          mainAxisSpacing: 15.0,
+                          childAspectRatio: 0.48,
                         ),
-                      );
-                    },
-                  ),
-                ),
-                sizedBoxHeight70,
-              ],
+                        itemBuilder: (context, index) {
+                          ProductModel productDetails = widget.products[index];
+                          return InkWell(
+                            onTap: () {
+                              context
+                                  .read<ProductDetailsProvider>()
+                                  .fetchProductDetails(productDetails.id);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetailsScreen(
+                                      productId: productDetails.id,
+                                    ),
+                                  ));
+                            },
+                            child: ProductTileWidget(
+                              productTitle: productDetails.name,
+                              productImage: productDetails.image,
+                              tempImage:
+                                  'assets/png/products/sample_product.png',
+                              discountAmount: productDetails.price,
+                              actualAmount: productDetails.price,
+                              rating: 4.5,
+                              home: true,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    sizedBoxHeight70,
+                  ],
+                );
+              },
             ),
           ),
           Positioned(

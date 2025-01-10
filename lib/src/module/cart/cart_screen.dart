@@ -182,7 +182,14 @@ class CartScreen extends StatelessWidget {
                     height: 48,
                     child: CustomizableButton(
                       title: 'PLACE ORDER',
-                      event: () {},
+                      event: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrderSummaryScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

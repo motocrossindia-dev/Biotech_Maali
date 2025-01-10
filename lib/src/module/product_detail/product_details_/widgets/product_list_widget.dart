@@ -1,4 +1,4 @@
-import '../../../../import.dart';
+import '../../../../../import.dart';
 
 class ProductListWidget extends StatelessWidget {
   final String title;
@@ -41,8 +41,9 @@ class ProductListWidget extends StatelessWidget {
                   ProductTileWidget(
                           productTitle: 'Peace Lilly Plant',
                           productImage: 'assets/png/products/sample_product.png',
-                          discountAmount: 499.00,
-                          actualAmount: 599.00,
+                          tempImage: 'assets/png/products/sample_product.png',
+                          discountAmount: "499.00",
+                          actualAmount: "599.00",
                           rating: 4.5,
                           home: true,
                         ),

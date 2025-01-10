@@ -19,24 +19,7 @@ class CustomAppBarWithSearch extends StatelessWidget
       scrolledUnderElevation: 0,
       flexibleSpace: Column(
         children: [
-          // Container(
-          //   height: 40,
-          //   decoration: BoxDecoration(
-          //       gradient: LinearGradient(colors: [gcHomeBox, gcHomeBox2])),
-          //   child: Padding(
-          //     padding: const EdgeInsets.only(left:  22.0, right:  22),
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         Text('data',style: TextStyle(color: cWhiteColor),),
-          //         Container(height: 23,width: 82,
-          //           decoration: BoxDecoration(color: cButtonGreen,borderRadius: BorderRadius.circular(5)),
-          //           child: Container(),
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // ),
+   
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
             child: Row(

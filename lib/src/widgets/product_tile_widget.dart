@@ -1,51 +1,68 @@
 import '../../import.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductTileWidget extends StatelessWidget {
   final String productTitle;
-  final String productImage;
+  final String? productImage;
+  final String tempImage;
   final double rating;
-  final double actualAmount;
-  final double discountAmount;
+  final String actualAmount;
+  final String discountAmount;
   final bool home;
   final VoidCallback? addToFavouriteEvent;
   final VoidCallback? addToCartEvent;
 
-  const ProductTileWidget(
-      {required this.productTitle,
-      required this.productImage,
-      required this.actualAmount,
-      required this.discountAmount,
-      required this.rating,
-      this.addToFavouriteEvent,
-      this.addToCartEvent,
-      required this.home,
-      super.key});
+  const ProductTileWidget({
+    required this.productTitle,
+    this.productImage,
+    required this.tempImage,
+    required this.actualAmount,
+    required this.discountAmount,
+    required this.rating,
+    this.addToFavouriteEvent,
+    this.addToCartEvent,
+    required this.home,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    const baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
+
     return Container(
       width: 175,
-      // height: 300,
       decoration: BoxDecoration(color: cAppBackround),
       child: Column(
         children: [
-          home?
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0, top: 8),
-                child: InkWell(
-                  onTap: () {
-      
-                  },
-                  child: SvgPicture.asset(
-                      'assets/svg/icons/add_to_favourite_icon.svg'),
-                ),
-              )
-            ],
-          ):sizedBoxHeight08,
-          Image.asset(productImage),
+          home
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0, top: 8),
+                      child: InkWell(
+                        onTap: addToFavouriteEvent,
+                        child: SvgPicture.asset(
+                            'assets/svg/icons/add_to_favourite_icon.svg'),
+                      ),
+                    )
+                  ],
+                )
+              : sizedBoxHeight08,
+          productImage != null
+              ? SizedBox(
+                  height: 150,
+                  child: CachedNetworkImage(
+                    imageUrl: '$baseUrl$productImage',
+                    fit: BoxFit.fill,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        _buildNoImagePlaceholder(),
+                  ),
+                )
+              : _buildNoImagePlaceholder(),
           sizedBoxHeight10,
           RatingBarWidget(
             rating: rating,
@@ -62,14 +79,14 @@ class ProductTileWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CommonTextWidget(
-                title: '₹${discountAmount.toStringAsFixed(2)}',
+                title: '₹$discountAmount',
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: cProductRate,
               ),
               sizedBoxWidth5,
               CommonTextWidget(
-                title: '₹${actualAmount.toStringAsFixed(2)}',
+                title: '₹$actualAmount',
                 fontSize: 10,
                 fontWeight: FontWeight.w300,
                 color: cProductRateCrossed,
@@ -78,11 +95,46 @@ class ProductTileWidget extends StatelessWidget {
             ],
           ),
           sizedBoxHeight10,
-          home?
-          Padding(
-            padding: const EdgeInsets.only(left: 1.0, right: 1),
-            child: BorderColoredButton(title: 'Add To Cart',height: 38, event: () {}),
-          ):sizedBoxHeight0
+          home
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 1.0, right: 1),
+                  child: BorderColoredButton(
+                    title: 'Add To Cart',
+                    height: 38,
+                    event: addToCartEvent ?? () {},
+                  ),
+                )
+              : sizedBoxHeight0
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoImagePlaceholder() {
+    return Container(
+      height: 150,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.image_not_supported,
+            color: Colors.red,
+            size: 32,
+          ),
+          SizedBox(height: 8),
+          Text(
+            'No Image',
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
