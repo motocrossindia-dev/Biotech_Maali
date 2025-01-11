@@ -129,11 +129,18 @@ class ProductDetailsProvider extends ChangeNotifier {
     }
   }
 
-  void updateQuantity(int newQuantity) {
-    if (newQuantity > 0) {
-      _quantity = newQuantity;
-      notifyListeners();
+  void increaseQuantity(int newQuantity) {
+    
+    _quantity += newQuantity;
+    notifyListeners();
+  }
+
+  void decreaseQuantity(int newQuantity) {
+    if (quantity < 2) {
+      return;
     }
+    _quantity -= newQuantity;
+    notifyListeners();
   }
 
   void onCarouselIndexChange(int current) {

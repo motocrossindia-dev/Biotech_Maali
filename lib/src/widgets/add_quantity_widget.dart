@@ -1,7 +1,14 @@
 import '../../../../import.dart';
 
 class AddQuantityWidget extends StatelessWidget {
-  const AddQuantityWidget({super.key});
+  final Function() addition;
+  final Function() substaction;
+  final int quantity;
+  const AddQuantityWidget(
+      {required this.quantity,
+      required this.addition,
+      required this.substaction,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,16 +17,19 @@ class AddQuantityWidget extends StatelessWidget {
       height: 28,
       child: Row(
         children: [
-          Container(
-            height: 28,
-            width: 26,
-            color: cButtonGreen,
-            child:const Center(
-              child: CommonTextWidget(
-                title: '-',
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+          InkWell(
+            onTap: substaction,
+            child: Container(
+              height: 28,
+              width: 26,
+              color: cButtonGreen,
+              child: const Center(
+                child: CommonTextWidget(
+                  title: '-',
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -27,25 +37,28 @@ class AddQuantityWidget extends StatelessWidget {
             height: 28,
             width: 26,
             color: cQuantity,
-            child:const Center(
+            child: Center(
               child: CommonTextWidget(
-                title: '1',
+                title: quantity.toString(),
                 fontSize: 16,
                 // color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Container(
-            height: 28,
-            width: 26,
-            color: cButtonGreen,
-            child:const Center(
-              child: CommonTextWidget(
-                title: '+',
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+          InkWell(
+            onTap: addition,
+            child: Container(
+              height: 28,
+              width: 26,
+              color: cButtonGreen,
+              child: const Center(
+                child: CommonTextWidget(
+                  title: '+',
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

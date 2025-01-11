@@ -4,7 +4,7 @@ import '../../import.dart';
 enum _Key {
   isAllreadyRegistered,
   isLoggedIn,
-  token,
+  access_token,
  
 }
 
@@ -39,18 +39,18 @@ class LocalStorageService extends ChangeNotifier {
 /* Check the token status and store, get and remove the token   */
 
   String get token {
-    var res = _sharedPreferences?.getString(_Key.token.toString());
+    var res = _sharedPreferences?.getString(_Key.access_token.toString());
     return res ?? "invalid";
   }
 
   setToken(String token) {
-    _sharedPreferences?.setString(_Key.token.toString(), token);
+    _sharedPreferences?.setString(_Key.access_token.toString(), token);
   }
 
   removeToken() {
-    _sharedPreferences?.remove(_Key.token.toString());
+    _sharedPreferences?.remove(_Key.access_token.toString());
 
-    log('Removed Token: ${_sharedPreferences?.getString(_Key.token.toString())}');
+    log('Removed Token: ${_sharedPreferences?.getString(_Key.access_token.toString())}');
   }
 
 // ***************************************************************************

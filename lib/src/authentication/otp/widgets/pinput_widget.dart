@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:pinput/pinput.dart';
-
 import '../../../../import.dart';
 
 class PinputWidget extends StatefulWidget {
@@ -42,50 +40,59 @@ class _PinputWidgetState extends State<PinputWidget> {
       ),
     );
 
-    return Pinput(
-      length: 4,
-      controller: pinController,
-      focusNode: focusNode,
-      // androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
-      // listenForMultipleSmsOnAndroid: true,
-      defaultPinTheme: defaultPinTheme,
-      separatorBuilder: (index) => const SizedBox(width: 15),
-      validator: (value) {
-        return value?.length == 4 ? null : 'Pin must be 4 digits';
-      },
-      onCompleted: (pin) {
-        log("Completed: $pin");
-      },
-      onChanged: (value) {
-        log("Changed: $value");
-      },
-      cursor: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 9),
-            width: 22,
-            height: 1,
-            color: focusedBorderColor,
+    return Consumer<OtpProvider>(
+      builder: (context, provider, child) {
+        return Pinput(
+          length: 4,
+          controller: pinController,
+          focusNode: focusNode,
+          // androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
+          // listenForMultipleSmsOnAndroid: true,
+          defaultPinTheme: defaultPinTheme,
+          separatorBuilder: (index) => const SizedBox(width: 15),
+          validator: (value) {
+            return value?.length == 4 ? null : 'Pin must be 4 digits';
+          },
+          onCompleted: (pin) {
+            log("Completed: $pin");
+            provider.setOtp(pin);
+          },
+          onChanged: (value) {
+            log("Changed: $value");
+            if (value.length == 4) {
+              provider.setOtp(value);
+            }
+          },
+          cursor: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 9),
+                width: 22,
+                height: 1,
+                color: focusedBorderColor,
+              ),
+            ],
           ),
-        ],
-      ),
-      focusedPinTheme: defaultPinTheme.copyWith(
-        decoration: defaultPinTheme.decoration!.copyWith(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: focusedBorderColor),
-        ),
-      ),
-      submittedPinTheme: defaultPinTheme.copyWith(
-        decoration: defaultPinTheme.decoration!.copyWith(
-          color: fillColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: focusedBorderColor),
-        ),
-      ),
-      errorPinTheme: defaultPinTheme.copyBorderWith(
-        border: Border.all(color: Colors.redAccent),
-      ),
+          focusedPinTheme: defaultPinTheme.copyWith(
+            decoration: defaultPinTheme.decoration!.copyWith(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: focusedBorderColor),
+            ),
+          ),
+          submittedPinTheme: defaultPinTheme.copyWith(
+            decoration: defaultPinTheme.decoration!.copyWith(
+              color: fillColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: focusedBorderColor),
+            ),
+          ),
+          errorPinTheme: defaultPinTheme.copyBorderWith(
+            border: Border.all(color: Colors.redAccent),
+          ),
+          enabled: !provider.isLoading, // Disable input while loading
+        );
+      },
     );
   }
 }

@@ -42,14 +42,18 @@ class CartItemsWidget extends StatelessWidget {
                       color: cButtonGreen,
                     ),
                     sizedBoxHeight05,
-                    const AddQuantityWidget()
+                    AddQuantityWidget(
+                      quantity: 1,
+                      addition: () {},
+                      substaction: () {},
+                    )
                   ],
                 ),
               ),
             ],
           ),
         ),
-       const Divider()
+        const Divider()
       ],
     );
   }

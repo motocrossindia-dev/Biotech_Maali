@@ -1,3 +1,5 @@
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+
 import '../../import.dart';
 
 class BottomNavWidget extends StatelessWidget {
@@ -5,8 +7,9 @@ class BottomNavWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settingsProvider = context.read<SettingsProvider>();
+    bool isTokenValid = settingsProvider.checkIsTokenValid();
     return Scaffold(
-      
       body: Consumer<BottomNavProvider>(
         builder: (context, bottomNavProvider, child) {
           switch (bottomNavProvider.currentIndex) {
@@ -17,7 +20,12 @@ class BottomNavWidget extends StatelessWidget {
             case 2:
               return const ScanScreen();
             case 3:
-              return const CartScreen();
+              if (isTokenValid) {
+                return const CartScreen();
+              } else {
+                return const MobileNumberScreen();
+              }
+
             case 4:
               return const AccountScreen();
             default:

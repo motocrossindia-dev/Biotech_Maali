@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:biotech_maali/core/core.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 import 'package:dio/dio.dart';
 
@@ -10,13 +11,16 @@ class ProductDetailsRepository {
   Future<ProductDetailModel> fetchProductDetails(int productId) async {
     try {
       final response =
-          await _dio.get('$_baseUrl/product/defaultProduct/$productId');
+          await _dio.get('${EndUrl.getProductDetailsUrl}$productId');
       if (response.statusCode == 200) {
+        log("product details : ${response.data.toString()}");
         return ProductDetailModel.fromJson(response.data);
       } else {
+        log('Failed to get product details: ${response.statusMessage.toString()}');
         throw Exception('Failed to load product details');
       }
     } catch (e) {
+      log("Error: ${e.toString()}");
       throw Exception('Error fetching product details: $e');
     }
   }

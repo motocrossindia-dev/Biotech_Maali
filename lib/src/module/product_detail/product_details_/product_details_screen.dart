@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/widgets/planter_size_widget.dart';
 
@@ -36,18 +39,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           fontWeight: FontWeight.w400,
         ),
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Consumer<ProductDetailsProvider>(
-              builder: (context, provider, child) {
-                ProductDetailModel? product = provider.productDetails;
-                if (product == null) {
-                  return const Text('Data is not available');
-                }
-                ProductData productDetail = product.data;
+      body: Consumer<ProductDetailsProvider>(
+        builder: (context, provider, child) {
+          ProductDetailModel? product = provider.productDetails;
 
-                return Column(
+          if (product == null) {
+            return const Text('Data is not available');
+          }
+          log("Product Id in UI: ${widget.productId}");
+          ProductData productDetail = product.data;
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -265,12 +269,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ),
                             ),
                             sizedBoxHeight20,
-                            const Row(
+                            Row(
                               children: [
-                                CommonTextWidget(title: 'Qty: '),
+                                const CommonTextWidget(title: 'Qty: '),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 15.0),
-                                  child: AddQuantityWidget(),
+                                  padding: const EdgeInsets.only(left: 15.0),
+                                  child: AddQuantityWidget(
+                                    quantity: provider.quantity,
+                                    addition: () {
+                                      provider.increaseQuantity(1);
+                                    },
+                                    substaction: () {
+                                      provider.decreaseQuantity(1);
+                                    },
+                                  ),
                                 )
                               ],
                             ),
@@ -289,48 +301,72 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                     ),
                   ],
-                );
-              },
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              width: double.infinity,
-              height: 60,
-              color: cWhiteColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    width: 160,
-                    height: 48,
-                    child: CustomizableBorderColoredButton(
-                        title: 'BUY NOW',
-                        event: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const OrderSummaryScreen(),
-                              ));
-                        }),
-                  ),
-                  SizedBox(
-                    width: 160,
-                    height: 48,
-                    child: CustomizableButton(
-                      title: 'ADD TO CART',
-                      event: () {},
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  width: double.infinity,
+                  height: 60,
+                  color: cWhiteColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width: 160,
+                        height: 48,
+                        child: CustomizableBorderColoredButton(
+                            title: 'BUY NOW',
+                            event: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const OrderSummaryScreen(),
+                                  ));
+                            }),
+                      ),
+                      SizedBox(
+                        width: 160,
+                        height: 48,
+                        child: CustomizableButton(
+                          title: 'ADD TO CART',
+                          event: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            bool? isAuthenticated =
+                                prefs.getBool("isAuthenticated");
+                            log("isAuthenticated: $isAuthenticated");
+                            if (isAuthenticated != null) {
+                              if (isAuthenticated) {
+                                final productDetailProvider =
+                                    context.read<ProductDetailsProvider>();
+                                context.read<CartProvider>().addToCart(
+                                    product.data.product.id,
+                                    productDetailProvider.quantity);
+                              } else {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MobileNumberScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

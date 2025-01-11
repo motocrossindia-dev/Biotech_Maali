@@ -1,7 +1,28 @@
+import 'package:shimmer/shimmer.dart';
+
 import '../../../import.dart';
 
 class OtpScreen extends StatelessWidget {
-  const OtpScreen({super.key});
+  final String mobile;
+
+  const OtpScreen({
+    super.key,
+    required this.mobile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => OtpProvider(),
+      child: _OtpScreenContent(mobile: mobile),
+    );
+  }
+}
+
+class _OtpScreenContent extends StatelessWidget {
+  final String mobile;
+
+  const _OtpScreenContent({required this.mobile});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +52,12 @@ class OtpScreen extends StatelessWidget {
                 ),
               ),
               sizedBoxHeight50,
-               const CommonTextWidget(
+              const CommonTextWidget(
                 title: 'Verification',
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
               ),
-               const CommonTextWidget(
+              const CommonTextWidget(
                 title: 'Enter verification code',
                 fontSize: 18,
                 fontWeight: FontWeight.w300,
@@ -44,19 +65,52 @@ class OtpScreen extends StatelessWidget {
               sizedBoxHeight25,
               const PinputWidget(),
               sizedBoxHeight25,
-              Padding(
-                padding: const EdgeInsets.only(left: 30.0,right: 30),
-                child: CommonButtonWidget(
-                  title: 'NEXT',
-                  event: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+              Consumer<OtpProvider>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: const CommonButtonWidget(
+                          title: 'NEXT',
+                          event: null,
+                        ),
                       ),
                     );
-                  },
-                ),
+                  }
+
+                  if (provider.errorMessage.isNotEmpty) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(provider.errorMessage),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: CommonButtonWidget(
+                      title: 'NEXT',
+                      event: () async {
+                        final result = await provider.validateOtp(mobile);
+                        if (result) {
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BottomNavWidget(),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  );
+                },
               ),
               sizedBoxHeight05,
               Row(

@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/home/widget/promotional_banner.dart';
+
 import '../../../import.dart';
 import 'dart:math' as math;
 
@@ -88,11 +90,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const SizedBox(height: 10),
                   const CategoryWidget(),
-                  // Wrap CarouselWidget in CachedNetworkImage
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.45,
+                    height: MediaQuery.of(context).size.height * 0.41,
                     child: const CarouselWidget(),
                   ),
+                  const PromotionalBanner(),
                 ],
               ),
             ),

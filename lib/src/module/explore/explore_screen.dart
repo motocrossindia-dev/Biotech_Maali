@@ -8,6 +8,7 @@ class ExploreScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: cScaffoldBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 4,
         shadowColor: Colors.black,
         backgroundColor: Colors.white,

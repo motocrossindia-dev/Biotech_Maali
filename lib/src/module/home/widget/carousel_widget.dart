@@ -92,17 +92,26 @@ class CarouselWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: banners.asMap().entries.map((entry) {
-                  return Container(
-                    width: 8,
-                    height: 8,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: provider.caroucelIndex == entry.key
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey[400],
-                    ),
-                  );
+                  // log("entry.key: ${entry.key.toString()}");
+                  return provider.caroucelIndex == entry.key
+                      ? Container(
+                          width: 30,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: cButtonGreen,
+                          ),
+                        )
+                      : Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[400],
+                          ),
+                        );
                 }).toList(),
               ),
             ],

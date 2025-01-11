@@ -26,11 +26,15 @@ class MobileNumberProvider extends ChangeNotifier {
       final response =
           await _mobileNumberRepository.registerWithMobile(_mobileNumber.text);
       _isLoading = false;
-      
+
       notifyListeners();
+
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const OtpScreen()),
+        MaterialPageRoute(
+            builder: (context) => OtpScreen(
+                  mobile: _mobileNumber.text,
+                )),
       );
     } catch (e) {
       _isLoading = false;

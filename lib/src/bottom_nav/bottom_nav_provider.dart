@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BottomNavProvider extends ChangeNotifier{
+ 
+  bool? isTokenValid;
+
   int _currentIndex = 0;
   
   int get currentIndex => _currentIndex;
@@ -9,4 +12,7 @@ class BottomNavProvider extends ChangeNotifier{
     _currentIndex = index;
     notifyListeners();
   }
+
+
+
 }

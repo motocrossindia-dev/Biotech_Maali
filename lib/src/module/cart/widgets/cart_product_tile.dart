@@ -1,117 +1,137 @@
-import '../../../../import.dart';
+// import '../../../../import.dart';
 
-class CartProductTile extends StatelessWidget {
-  final String productTitle;
-  final String productImage;
-  final double rating;
-  final double actualAmount;
-  final double discountAmount;
-  final bool home;
-  final List<String>? plantVariants;
+// class CartProductTile extends StatelessWidget {
+//   final String productTitle;
+//   final String productImage;
+//   final double price;
+//   final int quantity;
+//   final String stockStatus;
+//   final Function(int)? onQuantityChanged;
+//   final VoidCallback? onDelete;
 
-  const CartProductTile(
-      {required this.productTitle,
-      required this.productImage,
-      required this.actualAmount,
-      required this.discountAmount,
-      required this.rating,
-      required this.home,
-      this.plantVariants,
-      super.key});
+//   const CartProductTile({
+//     super.key,
+//     required this.productTitle,
+//     required this.productImage,
+//     required this.price,
+//     required this.quantity,
+//     required this.stockStatus,
+//     this.onQuantityChanged,
+//     this.onDelete,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 175,
-      decoration: BoxDecoration(color: cAppBackround),
-      child: Stack(
-        children: [
-          // Main content of the container
-          Column(
-            children: [
-              Row(
-                children: [
-                  Image.asset(productImage),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CommonTextWidget(
-                          title: productTitle,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        plantVariants != null
-                            ? Wrap(
-                                spacing: 1.0,
-                                children: plantVariants?.map(
-                                      (variant) {
-                                        return Row(
-                                          children: [
-                                            CommonTextWidget(
-                                              title: variant,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                            const Text('/'),
-                                          ],
-                                        );
-                                      },
-                                    ).toList() ??
-                                    [],
-                              )
-                            : sizedBoxHeight10,
+//   @override
+//   Widget build(BuildContext context) {
+//     final isInStock = stockStatus.toLowerCase() == 'in stock';
 
-                            
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CommonTextWidget(
-                              title: '₹${discountAmount.toStringAsFixed(2)}',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: cProductRate,
-                            ),
-                            sizedBoxWidth5,
-                            CommonTextWidget(
-                              title: '₹${actualAmount.toStringAsFixed(2)}',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w300,
-                              color: cProductRateCrossed,
-                              lineThrough: TextDecoration.lineThrough,
-                            ),
-                          ],
-                        ),
-                        sizedBoxHeight10,
-                        const AddQuantityWidget(),
-                        sizedBoxHeight10,
-                        const CommonTextWidget(
-                          title: 'Out of stock',
-                          color: Colors.red,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          // Delete icon positioned in the upper-right corner
-          Positioned(
-            top: 8,
-            right: 8,
-            child: InkWell(
-              onTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SvgPicture.asset('assets/svg/icons/delete_icon.svg'),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//     return Container(
+//       width: double.infinity,
+//       color: Colors.white,
+//       padding: const EdgeInsets.all(12),
+//       child: Stack(
+//         children: [
+//           Row(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               ClipRRect(
+//                 borderRadius: BorderRadius.circular(8),
+//                 child: Image.network(
+//                   "${BaseUrl.baseUrlForImages}$productImage",
+//                   width: 100,
+//                   height: 100,
+//                   fit: BoxFit.cover,
+//                   errorBuilder: (context, error, stackTrace) => Container(
+//                     width: 100,
+//                     height: 100,
+//                     color: Colors.grey[200],
+//                     child: const Icon(Icons.image_not_supported),
+//                   ),
+//                 ),
+//               ),
+//               const SizedBox(width: 12),
+//               Expanded(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     CommonTextWidget(
+//                       title: productTitle,
+//                       fontSize: 16,
+//                       fontWeight: FontWeight.w500,
+//                     ),
+//                     const SizedBox(height: 8),
+//                     Row(
+//                       children: [
+//                         CommonTextWidget(
+//                           title: '₹${price.toStringAsFixed(2)}',
+//                           fontSize: 16,
+//                           fontWeight: FontWeight.w500,
+//                           color: cProductRate,
+//                         ),
+//                         const SizedBox(width: 8),
+//                         if (price < 599.00) ...[
+//                           CommonTextWidget(
+//                             title: '₹599.00',
+//                             fontSize: 14,
+//                             fontWeight: FontWeight.w400,
+//                             color: cProductRateCrossed,
+//                             lineThrough: TextDecoration.lineThrough,
+//                           ),
+//                         ],
+//                       ],
+//                     ),
+//                     const SizedBox(height: 12),
+//                     if (isInStock) ...[
+//                       AddQuantityWidget(
+//                         quantity: quantity,
+//                         addition: () {
+//                           if (onQuantityChanged != null) {
+//                             onQuantityChanged!(quantity + 1);
+//                           }
+//                         },
+//                         substaction: () {
+//                           if (quantity > 1 && onQuantityChanged != null) {
+//                             onQuantityChanged!(quantity - 1);
+//                           }
+//                         },
+//                       ),
+//                     ] else ...[
+//                       Container(
+//                         padding: const EdgeInsets.symmetric(
+//                           horizontal: 8,
+//                           vertical: 4,
+//                         ),
+//                         decoration: BoxDecoration(
+//                           color: Colors.red[50],
+//                           borderRadius: BorderRadius.circular(4),
+//                         ),
+//                         child: const CommonTextWidget(
+//                           title: 'Out of stock',
+//                           color: Colors.red,
+//                           fontSize: 12,
+//                           fontWeight: FontWeight.w500,
+//                         ),
+//                       ),
+//                     ],
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//           Positioned(
+//             top: 0,
+//             right: 0,
+//             child: IconButton(
+//               onPressed: onDelete,
+//               icon: SvgPicture.asset(
+//                 'assets/svg/icons/delete_icon.svg',
+//                 width: 24,
+//                 height: 24,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
