@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'package:biotech_maali/src/module/account/wallet/wallet_history/wallet_history_screen.dart';
 import 'package:biotech_maali/src/module/home/model/product_model.dart';
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 
 import '../../../import.dart';
 
@@ -70,18 +72,23 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         ),
                         itemBuilder: (context, index) {
                           ProductModel productDetails = widget.products[index];
+
+                          bool isWishlistId = provider.mainWishlistProductId
+                              .contains(productDetails.id);
+
                           return InkWell(
                             onTap: () {
                               context
                                   .read<ProductDetailsProvider>()
                                   .fetchProductDetails(productDetails.id);
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetailsScreen(
-                                      productId: productDetails.id,
-                                    ),
-                                  ));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetailsScreen(
+                                    productId: productDetails.id,
+                                  ),
+                                ),
+                              );
                             },
                             child: ProductTileWidget(
                               productTitle: productDetails.name,
@@ -92,6 +99,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
                               actualAmount: productDetails.price,
                               rating: 4.5,
                               home: true,
+                              isWishlist: isWishlistId,
+                              addToFavouriteEvent: () {
+                                final wishlistProvider =
+                                    context.read<WishlistProvider>();
+                                    wishlistProvider.addOrRemoveWhishlistMainProduct(
+                                        productDetails.id, context);
+
+                                        
+                              },
                             ),
                           );
                         },

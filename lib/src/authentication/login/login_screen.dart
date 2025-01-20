@@ -2,7 +2,8 @@ import 'dart:developer';
 import '../../../import.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final String mobileNumber;
+  const LoginScreen({required this.mobileNumber, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +38,21 @@ class LoginScreen extends StatelessWidget {
                 controller: loginProvider.name,
                 title: 'Enter Your Name',
                 hint: ' Name is required',
-                inputType: TextInputType.number,
+                inputType: TextInputType.text,
               ),
               sizedBoxHeight25,
               CommonTextFormWidget(
                 controller: loginProvider.emailId,
                 title: 'Enter Email Address',
                 hint: ' Email Address',
-                inputType: TextInputType.number,
+                inputType: TextInputType.text,
               ),
               sizedBoxHeight25,
               CommonTextFormWidget(
                 controller: loginProvider.referralCode,
                 title: 'Enter The Referral Code(optional)',
                 hint: ' Referral code',
-                inputType: TextInputType.number,
+                inputType: TextInputType.text,
               ),
               sizedBoxHeight25,
               Padding(
@@ -59,13 +60,8 @@ class LoginScreen extends StatelessWidget {
                 child: CommonButtonWidget(
                   title: 'LOGIN',
                   event: () {
+                    loginProvider.accountRegister(context, mobileNumber);
                     log('message');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BottomNavWidget(),
-                      ),
-                    );
                   },
                 ),
               )

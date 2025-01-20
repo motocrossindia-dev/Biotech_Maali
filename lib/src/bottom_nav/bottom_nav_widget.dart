@@ -1,14 +1,16 @@
+import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
-
 import '../../import.dart';
 
 class BottomNavWidget extends StatelessWidget {
   const BottomNavWidget({super.key});
 
+  Future<void> checkToken() async {}
+
   @override
   Widget build(BuildContext context) {
     final settingsProvider = context.read<SettingsProvider>();
-    bool isTokenValid = settingsProvider.checkIsTokenValid();
+
     return Scaffold(
       body: Consumer<BottomNavProvider>(
         builder: (context, bottomNavProvider, child) {
@@ -20,12 +22,23 @@ class BottomNavWidget extends StatelessWidget {
             case 2:
               return const ScanScreen();
             case 3:
-              if (isTokenValid) {
-                return const CartScreen();
-              } else {
-                return const MobileNumberScreen();
-              }
-
+              // Fixed version - immediately check token and return appropriate widget
+              return FutureBuilder<bool>(
+                future: settingsProvider.checkAccessTokenValidity(context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  
+                  final isTokenValid = snapshot.data ?? false;
+                  if (isTokenValid) {
+                    return const CartScreen();
+                  } else {
+                    log("message is not token valid: $isTokenValid");
+                    return const MobileNumberScreen();
+                  }
+                },
+              );
             case 4:
               return const AccountScreen();
             default:
@@ -33,6 +46,7 @@ class BottomNavWidget extends StatelessWidget {
           }
         },
       ),
+
       bottomNavigationBar: Consumer<BottomNavProvider>(
         builder: (context, bottomNavProvider, child) {
           return BottomNavigationBar(

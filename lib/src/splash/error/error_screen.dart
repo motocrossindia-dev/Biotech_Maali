@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/authentication/login/login_screen.dart';
+import 'package:biotech_maali/src/authentication/mobile_number/mobile_number_screen.dart';
 import 'package:flutter/material.dart';
 
 class ErrorScreen extends StatelessWidget {
@@ -42,8 +43,9 @@ class ErrorScreen extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const LoginScreen(), // Replace with your LoginScreen
-                    ),
+                        builder: (context) =>
+                            const MobileNumberScreen() // Replace with your LoginScreen
+                        ),
                   );
                 },
                 child: const Text("Go to Login"),

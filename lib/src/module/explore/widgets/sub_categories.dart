@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/subcategory_list/model/subcategory_model.dart';
+
 import '../../../../import.dart';
 
 class SubCategories extends StatelessWidget {
@@ -7,29 +9,45 @@ class SubCategories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ExploreProvider>(
       builder: (context, provider, child) {
-         // Get the categories map from provider
-        Map<String, Map<String, dynamic>> categories = provider.categories;
-        // Get the keys (category names) in a list
-        List<String> categoryKeys = categories.keys.toList();
-        // Get the selected category based on the selected index
-        String selectedCategoryKey = categoryKeys[provider.selectedCategoryIndex];
-        Map<String, dynamic>? selectedCategory = categories[selectedCategoryKey];
-        List<dynamic> items = selectedCategory?["items"];
+        if (provider.isLoading) {
+          return const Expanded(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
 
-        return
-        Expanded(
+        if (provider.error != null) {
+          return Expanded(
+            child: Center(
+              child: Text('Error: ${provider.error}'),
+            ),
+          );
+        }
+
+        List<Subcategory> subcategories = provider.subcategories;
+
+        if (subcategories.isEmpty) {
+          return const Expanded(
+            child: Center(
+              child: Text('No subcategories available'),
+            ),
+          );
+        }
+
+        return Expanded(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of items per row
-                childAspectRatio: 0.75, // Adjust this for item height
-                crossAxisSpacing: 10, // Horizontal spacing between items
-                mainAxisSpacing: 10, // Vertical spacing between items
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-              itemCount: items.length,
+              itemCount: subcategories.length,
               itemBuilder: (context, index) {
-                final gridItem = items[index];
+                final subcategory = subcategories[index];
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -45,11 +63,15 @@ class SubCategories extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: () {
-                      // When tapped, handle dynamic API request or navigation
-                      // String apiUrl = gridItem['api'];
-                      // print('API URL for ${gridItem['name']}: $apiUrl');
-                      // You can navigate to another screen or fetch the API dynamically here.
-                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  const ProductListScreen(title: 'Plants',products: [],),));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductListScreen(
+                            title: subcategory.name,
+                            products: [],
+                          ),
+                        ),
+                      );
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,18 +79,20 @@ class SubCategories extends StatelessWidget {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                top: 6, left: 6, right: 6),
+                              top: 6,
+                              left: 6,
+                              right: 6,
+                            ),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: cExploreCategory, // Placeholder color
+                                color: cExploreCategory,
                                 borderRadius: const BorderRadius.vertical(
                                   top: Radius.circular(8),
                                   bottom: Radius.circular(8),
                                 ),
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                   image: NetworkImage(
-                                    gridItem['image'],
-                                  ),
+                                      'https://i.pinimg.com/564x/62/db/7b/62db7b0f2ac03bbf8a9b66722754d71e.jpg'),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -77,21 +101,15 @@ class SubCategories extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                gridItem['name'],
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                          child: Text(
+                            subcategory.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],

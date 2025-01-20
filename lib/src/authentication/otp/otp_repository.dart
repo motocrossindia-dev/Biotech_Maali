@@ -4,7 +4,9 @@ import '../../../import.dart';
 class OtpRepository {
   final Dio _dio = Dio();
 
-  Future<bool> validateOtp(String mobile, String otp) async {
+  Future<void> validateOtp(
+      String mobile, String otp, BuildContext context) async {
+   
     try {
       final response = await _dio.post(
         '${BaseUrl.baseUrl}account/validateOtp/',
@@ -18,22 +20,45 @@ class OtpRepository {
         // Save tokens to SharedPreferences
         log("user data and token: ${response.data.toString()}");
         final prefs = await SharedPreferences.getInstance();
-        final tokens = response.data['data']['token'];
-        await prefs.setString('access_token', tokens['access']);
-        await prefs.setString('refresh_token', tokens['refresh']);
+        bool? isRegistered = prefs.getBool("isRegistered");
 
-        // Save user data
-        final userData = response.data['data']['user'];
-        await prefs.setString('user_id', userData['id'].toString());
-        await prefs.setString('user_name', userData['first_name']);
-        await prefs.setString('user_mobile', userData['mobile']);
+        if (isRegistered == false) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginScreen(
+                mobileNumber: mobile,
+              ),
+            ),
+          );
+        } else if (isRegistered == true) {
+          final responseData = response.data['data'];
+          final token = responseData['token'];
+          if (token != null) {
+            await prefs.setString("access_token", token["access"] ?? "");
+            await prefs.setString("refresh_token", token["refresh"] ?? "");
+          }
 
-        return true;
+          // Save user data - user data is inside data.user
+          final user = responseData['user'];
+          if (user != null) {
+            await prefs.setString("user_id", user["id"].toString());
+            await prefs.setString("user_name", user["first_name"] ?? "");
+            await prefs.setString("user_mobile", user["mobile"] ?? "");
+          }
+
+          log("Data saved successfully to SharedPreferences");
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BottomNavWidget(),
+            ),
+            (route) => false,
+          );
+        }
       }
-      return false;
     } on DioException catch (e) {
       log('OTP Validation Error: ${e.message}');
-      return false;
     }
   }
 }

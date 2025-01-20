@@ -39,6 +39,7 @@ class MobileNumberScreen extends StatelessWidget {
                     title: 'Enter Your Mobile Number',
                     hint: '   +91 8884981840',
                     inputType: TextInputType.number,
+                    maxLenght: 10,
                   ),
                   sizedBoxHeight25,
                   Padding(
@@ -46,14 +47,16 @@ class MobileNumberScreen extends StatelessWidget {
                     child: loginProvider.isLoading
                         ? Center(
                             child: CircularProgressIndicator(
-                            backgroundColor: cButtonGreen,
-                            color: cWhiteColor,
-                          ))
+                              backgroundColor: cButtonGreen,
+                              color: cWhiteColor,
+                            ),
+                          )
                         : CommonButtonWidget(
                             title: 'GET OTP',
                             event: () {
                               loginProvider.registerMobile(context);
-                            }),
+                            },
+                          ),
                   )
                 ],
               );

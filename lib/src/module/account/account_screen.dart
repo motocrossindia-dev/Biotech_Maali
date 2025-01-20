@@ -1,5 +1,11 @@
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
+import 'package:biotech_maali/src/other_modules/carrers/carrers_screen.dart';
+import 'package:biotech_maali/src/other_modules/contact_us/contact_us_screen.dart';
+import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enquiry_screen.dart';
+import 'package:biotech_maali/src/other_modules/our_store/our_store_screen.dart';
+import 'package:biotech_maali/src/other_modules/out_works/our_work_screen.dart';
+import 'package:biotech_maali/src/other_modules/services/services_screen.dart';
 
 import '../../../import.dart';
 
@@ -300,23 +306,70 @@ class AccountScreen extends StatelessWidget {
                   ),
                 ),
                 CustomButtonWidget(
-                  onPressedCallBack: () {},
+                  onPressedCallBack: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FranchiseScreen(),
+                      ),
+                    );
+                  },
                   title: 'Franchise Enquiry',
                 ),
                 CustomButtonWidget(
-                  onPressedCallBack: () {},
+                  onPressedCallBack: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OurWorkScreen(),
+                      ),
+                    );
+                  },
+                  title: 'Our Work',
+                ),
+                CustomButtonWidget(
+                  onPressedCallBack: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ServicesScreen(),
+                      ),
+                    );
+                  },
                   title: 'Services',
                 ),
                 CustomButtonWidget(
-                  onPressedCallBack: () {},
+                  onPressedCallBack: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CarrersScreen(),
+                      ),
+                    );
+                  },
                   title: 'Carriers',
                 ),
                 CustomButtonWidget(
-                  onPressedCallBack: () {},
+                  onPressedCallBack: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OurStoresScreen(),
+                      ),
+                    );
+                  },
                   title: 'Our Stores',
                 ),
                 CustomButtonWidget(
-                  onPressedCallBack: () {},
+                  onPressedCallBack: () {
+                    
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ContactScreen(),
+                      ),
+                    );
+                  },
                   title: 'Contact Us',
                 ),
                 CustomButtonWidget(
@@ -354,9 +407,14 @@ class AccountScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8.0, right: 8),
                 child: MaterialButton(
                   color: cScaffoldBackground,
-                  onPressed: () {
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.remove('access_token');
+                    await prefs.remove('refresh_token');
                     final navProvider = context.read<BottomNavProvider>();
                     navProvider.updateIndex(0);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(

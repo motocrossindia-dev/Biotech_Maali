@@ -1,8 +1,7 @@
 import 'dart:developer';
-
-import 'package:biotech_maali/core/core.dart';
-import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 import 'package:dio/dio.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
+import 'package:biotech_maali/core/core.dart';
 
 class ProductDetailsRepository {
   final Dio _dio = Dio();
@@ -12,20 +11,22 @@ class ProductDetailsRepository {
     try {
       final response =
           await _dio.get('${EndUrl.getProductDetailsUrl}$productId');
+
       if (response.statusCode == 200) {
-        log("product details : ${response.data.toString()}");
+        log("Product details response: ${response.data}");
         return ProductDetailModel.fromJson(response.data);
       } else {
-        log('Failed to get product details: ${response.statusMessage.toString()}');
+        log('Failed to get product details: ${response.statusMessage}');
         throw Exception('Failed to load product details');
       }
     } catch (e) {
-      log("Error: ${e.toString()}");
+      log("Error fetching product details: $e");
       throw Exception('Error fetching product details: $e');
     }
   }
 
   Future<ProductDetailModel> filterProduct({
+    required int productId,
     int? sizeId,
     int? planterSizeId,
     int? planterId,
@@ -38,20 +39,23 @@ class ProductDetailsRepository {
         if (planterId != null) 'planter_id': planterId.toString(),
         if (colorId != null) 'color_id': colorId.toString(),
       };
-      log("${queryParams.toString()}");
+
+      log("Filter params: $queryParams");
+      log("Product id: $productId");
 
       final response = await _dio.get(
-        '$_baseUrl/product/filterProduct/',
+        '$_baseUrl/product/filterProduct/$productId',
         queryParameters: queryParams,
       );
 
       if (response.statusCode == 200) {
+        log("Filter response: ${response.data}");
         return ProductDetailModel.fromJson(response.data);
       } else {
         throw Exception('Failed to filter product');
       }
     } catch (e) {
-      log("Error : ${e.toString()}");
+      log("Error filtering product: $e");
       throw Exception('Error filtering product: $e');
     }
   }

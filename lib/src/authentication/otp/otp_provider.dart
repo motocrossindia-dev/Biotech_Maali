@@ -19,13 +19,13 @@ class OtpProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> validateOtp(String mobile) async {
+  Future<void> validateOtp(String mobile, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_otp == null || _otp!.length != 4) {
       log("Otp : $_otp");
       _errorMessage = 'Please enter a valid OTP';
       notifyListeners();
-      return false;
+      return ;
     }
 
     _isLoading = true;
@@ -33,20 +33,16 @@ class OtpProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _repository.validateOtp(mobile, _otp!);
+      await _repository.validateOtp(mobile, _otp!, context);
       _isLoading = false;
-      if (!result) {
-        _errorMessage = 'Invalid OTP. Please try again.';
-      } else if (result) {
-        prefs.setBool("isAuthenticated", true);
-      }
+     
       notifyListeners();
-      return result;
+      
     } catch (e) {
       _isLoading = false;
       _errorMessage = 'Failed to validate OTP. Please try again.';
       notifyListeners();
-      return false;
+      
     }
   }
 }

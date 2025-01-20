@@ -97,16 +97,7 @@ class _OtpScreenContent extends StatelessWidget {
                     child: CommonButtonWidget(
                       title: 'NEXT',
                       event: () async {
-                        final result = await provider.validateOtp(mobile);
-                        if (result) {
-                          // ignore: use_build_context_synchronously
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BottomNavWidget(),
-                            ),
-                          );
-                        }
+                        await provider.validateOtp(mobile, context);
                       },
                     ),
                   );

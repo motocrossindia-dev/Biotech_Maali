@@ -5,8 +5,14 @@ class CommonTextFormWidget extends StatelessWidget {
   final TextEditingController controller;
   final String? hint;
   final TextInputType? inputType;
+  final int? maxLenght;
   const CommonTextFormWidget(
-      {required this.controller, required this.title, this.hint,this.inputType, super.key});
+      {required this.controller,
+      required this.title,
+      this.hint,
+      this.inputType,
+      this.maxLenght,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +28,17 @@ class CommonTextFormWidget extends StatelessWidget {
           sizedBoxHeight05,
           SizedBox(
             height: 50,
-            child: TextFormField(
+            child: 
+            TextFormField(
+              maxLength: maxLenght,
               controller: controller,
               keyboardType: inputType,
               decoration: InputDecoration(
-                
                 hintText: hint,
-                hintStyle: GoogleFonts.poppins(color: cBorderGrey,fontWeight: FontWeight.w300),
+                hintStyle: GoogleFonts.poppins(
+                    color: cBorderGrey, fontWeight: FontWeight.w300),
                 // alignLabelWithHint: true,
                 enabledBorder: OutlineInputBorder(
-                
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
                     color: cBorderGrey,

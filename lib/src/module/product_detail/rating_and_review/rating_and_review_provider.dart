@@ -1,84 +1,37 @@
-import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
+import 'package:flutter/material.dart';
 
 class RatingAndReviewProvider extends ChangeNotifier {
-  RatingAndReviewProvider(){
-    calculateAverageRating();
+  ProductData? productData;
+  bool showReviews = false;
+  double averageRating = 0.0;
+  Map<int, int> ratingDistribution = {};
+
+  RatingAndReviewProvider({this.productData}) {
+    if (productData?.productRating != null) {
+      averageRating = productData!.productRating!.avgRating;
+      _initializeRatingDistribution();
+    }
   }
-   bool showReviews = false;
 
-  final List<Map<String, dynamic>> reviews = [
-    {
-      'name': 'Karan',
-      'date': '27/07/2024',
-      'rating': 3,
-      'isVerified': true,
-      'title': "It's good",
-      'content':
-          'Received it in a well packed box. The plant was healthy and lovely to watch. But what I feel negative is that, the quality of plant holding pot could have been better.',
-    },
-    // Duplicate reviews for demo
-    {
-      'name': 'Karan',
-      'date': '27/07/2024',
-      'rating': 3,
-      'isVerified': true,
-      'title': "It's good",
-      'content':
-          'Received it in a well packed box. The plant was healthy and lovely to watch. But what I feel negative is that, the quality of plant holding pot could have been better.',
-    },
-    {
-      'name': 'Karan',
-      'date': '27/07/2024',
-      'rating': 3,
-      'isVerified': true,
-      'title': "It's good",
-      'content':
-          'Received it in a well packed box. The plant was healthy and lovely to watch. But what I feel negative is that, the quality of plant holding pot could have been better.',
-    },
-    {
-      'name': 'Karan',
-      'date': '27/07/2024',
-      'rating': 3,
-      'isVerified': true,
-      'title': "It's good",
-      'content':
-          'Received it in a well packed box. The plant was healthy and lovely to watch. But what I feel negative is that, the quality of plant holding pot could have been better.',
-    },
-    {
-      'name': 'Karan',
-      'date': '27/07/2024',
-      'rating': 3,
-      'isVerified': true,
-      'title': "It's good",
-      'content':
-          'Received it in a well packed box. The plant was healthy and lovely to watch. But what I feel negative is that, the quality of plant holding pot could have been better.',
-    },
-  ];
+  void _initializeRatingDistribution() {
+    // Initialize with zeros first
+    for (int i = 1; i <= 5; i++) {
+      ratingDistribution[i] = 0;
+    }
+    
+    // Fill in actual values from stars_given
+    for (var starRating in productData!.productRating!.starsGiven) {
+      ratingDistribution[starRating.roundedRating.toInt()] = starRating.count;
+    }
+  }
 
-  final Map<int, int> ratingDistribution = {
-    5: 40,
-    4: 15,
-    3: 8,
-    2: 2,
-    1: 1,
-  };
-
-  double averageRating =0.0;
-
-  setShowRieviews() {
+  void setShowReviews() {
     showReviews = !showReviews;
     notifyListeners();
   }
 
-    calculateAverageRating() {
-    int totalRatings = 0;
-    int weightedSum = 0;
-    ratingDistribution.forEach((rating, count) {
-      totalRatings += count;
-      weightedSum += rating * count;
-    });
-
-    averageRating = weightedSum / totalRatings;
-     
-  }
+  int get totalRatings => productData?.productRating?.numRatings ?? 0;
+  
+  List<ProductReview> get reviews => productData?.productReviews ?? [];
 }

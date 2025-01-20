@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/widgets/planter_size_widget.dart';
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 
 import '../../../../import.dart';
 
@@ -62,20 +64,43 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CommonTextWidget(
-                            title: product.data.product.mainProductName,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CommonTextWidget(
+                                title: product.data.product.mainProductName,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 12.0),
+                                child: IconButton(
+                                  icon: SvgPicture.asset(
+                                    'assets/svg/icons/heart_unselected.svg',
+                                    height: 24,
+                                    width: 24,
+                                  ),
+                                  onPressed: () {
+                                    context
+                                        .read<WishlistProvider>()
+                                        .addToWishlist(
+                                            productDetail.product.id);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                           sizedBoxHeight10,
                           InkWell(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RatingsAndReviews(),
-                                  ));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RatingsAndReviews(
+                                    productData: productDetail,
+                                  ),
+                                ),
+                              );
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,8 +141,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   ],
                                 ),
                                 sizedBoxHeight10,
-                                const ProductDetailsRatingWidget(
-                                  rating: 3,
+                                ProductDetailsRatingWidget(
+                                  productRating: productDetail.productRating,
                                 ),
                               ],
                             ),
@@ -145,8 +170,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         id: productSize.id,
                                         name: productSize.size,
                                         event: () {
-                                          provider
-                                              .updatePlanter(productSize.id);
+                                          provider.updatePlanter(productSize.id,
+                                              productDetail.product.id);
                                         },
                                       ),
                                     );
@@ -181,7 +206,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         name: productPlanterSizes.size,
                                         event: () {
                                           provider.updatePlanterSize(
-                                              productPlanterSizes.id);
+                                              productPlanterSizes.id,
+                                              productDetail.product.id);
                                         },
                                       ),
                                     );
@@ -212,8 +238,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         id: productPlanter.id,
                                         name: productPlanter.name,
                                         event: () {
-                                          provider
-                                              .updatePlanter(productPlanter.id);
+                                          provider.updatePlanter(
+                                              productPlanter.id,
+                                              productDetail.product.id);
                                         },
                                       ),
                                     );
@@ -256,7 +283,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     padding: const EdgeInsets.only(right: 10),
                                     child: ColorContainerWidget(
                                       onTap: () {
-                                        provider.updateColor(productColor.id);
+                                        provider.updateColor(productColor.id,
+                                            productDetail.product.id);
                                       },
                                       color: color,
                                       isSelected: provider.selectedColorId ==

@@ -2,6 +2,6 @@ import 'import.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  LocalStorageService();
+  // LocalStorageService();
   runApp(const BiotechApp());
 }

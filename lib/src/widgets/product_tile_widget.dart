@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+
 import '../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -5,30 +9,33 @@ class ProductTileWidget extends StatelessWidget {
   final String productTitle;
   final String? productImage;
   final String tempImage;
-  final double rating;
+  final double? rating;
   final String actualAmount;
-  final String discountAmount;
+  final String? discountAmount;
   final bool home;
   final VoidCallback? addToFavouriteEvent;
   final VoidCallback? addToCartEvent;
+  final bool isWishlist;
 
   const ProductTileWidget({
     required this.productTitle,
     this.productImage,
     required this.tempImage,
     required this.actualAmount,
-    required this.discountAmount,
-    required this.rating,
+    this.discountAmount,
+    this.rating,
     this.addToFavouriteEvent,
     this.addToCartEvent,
     required this.home,
+    required this.isWishlist,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    const baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
-
+    final wishListProviderWatch = context.watch<WishlistProvider>();
+    const baseUrl = BaseUrl.baseUrlForImages;
+    
     return Container(
       width: 175,
       decoration: BoxDecoration(color: cAppBackround),
@@ -40,11 +47,24 @@ class ProductTileWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, top: 8),
-                      child: InkWell(
-                        onTap: addToFavouriteEvent,
-                        child: SvgPicture.asset(
-                            'assets/svg/icons/add_to_favourite_icon.svg'),
-                      ),
+                      child: wishListProviderWatch.isLoading
+                          ? Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: CircularProgressIndicator(
+                                backgroundColor: cButtonGreen,
+                                color: cButtonRed,
+                              ),
+                            )
+                          : InkWell(
+                              onTap: addToFavouriteEvent,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SvgPicture.asset(
+                                  'assets/svg/icons/add_to_favourite_icon.svg',
+                                  color: isWishlist ? Colors.red : Colors.black,
+                                ),
+                              ),
+                            ),
                     )
                   ],
                 )
@@ -65,7 +85,7 @@ class ProductTileWidget extends StatelessWidget {
               : _buildNoImagePlaceholder(),
           sizedBoxHeight10,
           RatingBarWidget(
-            rating: rating,
+            rating: rating ?? 0,
           ),
           sizedBoxHeight10,
           CommonTextWidget(

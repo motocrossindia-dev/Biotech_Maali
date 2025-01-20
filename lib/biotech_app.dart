@@ -1,6 +1,13 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/other_modules/carrers/carrers_provider.dart';
+import 'package:biotech_maali/src/other_modules/contact_us/contact_us_provider.dart';
+import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enquiry_provider.dart';
+import 'package:biotech_maali/src/other_modules/our_store/our_store_provider.dart';
+import 'package:biotech_maali/src/other_modules/out_works/our_work_provider.dart';
+import 'package:biotech_maali/src/other_modules/services/services_provider.dart';
 import 'package:biotech_maali/src/splash/splash_provider.dart';
 
 import 'import.dart';
@@ -30,7 +37,14 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => WalletProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => SettingsProvider()),
-        ChangeNotifierProvider(create: (context) => LocalStorageService())
+        // ChangeNotifierProvider(create: (context) => LocalStorageService()),
+        ChangeNotifierProvider(create: (context) => WishlistProvider()),
+        ChangeNotifierProvider(create: (context) => FranchiseProvider()),
+        ChangeNotifierProvider(create: (context) => OurWorkProvider()),
+        ChangeNotifierProvider(create: (context) => ServicesProvider()),
+        ChangeNotifierProvider(create: (context) => CarrersProvider()),
+        ChangeNotifierProvider(create: (context) => OurStoreProvider()),
+        ChangeNotifierProvider(create: (context)=> ContactProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

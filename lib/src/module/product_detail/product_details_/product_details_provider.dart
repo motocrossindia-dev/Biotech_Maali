@@ -1,7 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/product_details_repository.dart';
-
-import '../../../../import.dart';
 
 class ProductDetailsProvider extends ChangeNotifier {
   final ProductDetailsRepository productDetailsRepository;
@@ -38,11 +37,9 @@ class ProductDetailsProvider extends ChangeNotifier {
   int? get selectedPlanterId => _selectedPlanterId;
   int? get selectedColorId => _selectedColorId;
 
-  // Fetch initial product details
   Future<void> fetchProductDetails(int productId) async {
     _isLoading = true;
     _error = null;
-    // notifyListeners();
 
     try {
       final details =
@@ -50,7 +47,7 @@ class ProductDetailsProvider extends ChangeNotifier {
       _productDetails = details;
       _updateCarouselImages();
 
-      // Set default selections from API
+      // Set default selections
       _selectedSizeId = details.data.product.sizeId;
       _selectedPlanterSizeId = details.data.product.planterSizeId;
       _selectedPlanterId = details.data.product.planterId;
@@ -65,29 +62,28 @@ class ProductDetailsProvider extends ChangeNotifier {
     }
   }
 
-  // Update methods for selections with filtering
-  Future<void> updateSize(int sizeId) async {
+  Future<void> updateSize(int sizeId, int productId) async {
     if (_selectedSizeId == sizeId) return;
-    await _filterProduct(sizeId: sizeId);
+    await _filterProduct(sizeId: sizeId, productId: productId);
   }
 
-  Future<void> updatePlanterSize(int planterSizeId) async {
+  Future<void> updatePlanterSize(int planterSizeId, int productId) async {
     if (_selectedPlanterSizeId == planterSizeId) return;
-    await _filterProduct(planterSizeId: planterSizeId);
+    await _filterProduct(planterSizeId: planterSizeId, productId: productId);
   }
 
-  Future<void> updatePlanter(int planterId) async {
+  Future<void> updatePlanter(int planterId, int productId) async {
     if (_selectedPlanterId == planterId) return;
-    await _filterProduct(planterId: planterId);
+    await _filterProduct(planterId: planterId, productId: productId);
   }
 
-  Future<void> updateColor(int colorId) async {
+  Future<void> updateColor(int colorId, int productId) async {
     if (_selectedColorId == colorId) return;
-
-    await _filterProduct(colorId: colorId);
+    await _filterProduct(colorId: colorId, productId: productId);
   }
 
   Future<void> _filterProduct({
+    required int productId,
     int? sizeId,
     int? planterSizeId,
     int? planterId,
@@ -95,15 +91,35 @@ class ProductDetailsProvider extends ChangeNotifier {
   }) async {
     _isLoading = true;
     notifyListeners();
+
     try {
       final filteredDetails = await productDetailsRepository.filterProduct(
+        productId: productId,
         sizeId: sizeId ?? _selectedSizeId,
         planterSizeId: planterSizeId ?? _selectedPlanterSizeId,
         planterId: planterId ?? _selectedPlanterId,
         colorId: colorId ?? _selectedColorId,
       );
 
-      _productDetails = filteredDetails;
+      // Preserve ratings and reviews from original product details
+      if (_productDetails != null) {
+        final ProductDetailModel mergedDetails = ProductDetailModel(
+          message: filteredDetails.message,
+          data: ProductData(
+            product: filteredDetails.data.product,
+            productSizes: filteredDetails.data.productSizes,
+            productPlanterSizes: filteredDetails.data.productPlanterSizes,
+            productPlanters: filteredDetails.data.productPlanters,
+            productColors: filteredDetails.data.productColors,
+            productRating: _productDetails!.data.productRating,
+            productReviews: _productDetails!.data.productReviews,
+          ),
+        );
+        _productDetails = mergedDetails;
+      } else {
+        _productDetails = filteredDetails;
+      }
+
       _updateCarouselImages();
 
       // Update selected IDs
@@ -130,17 +146,15 @@ class ProductDetailsProvider extends ChangeNotifier {
   }
 
   void increaseQuantity(int newQuantity) {
-    
     _quantity += newQuantity;
     notifyListeners();
   }
 
   void decreaseQuantity(int newQuantity) {
-    if (quantity < 2) {
-      return;
+    if (_quantity > 1) {
+      _quantity -= newQuantity;
+      notifyListeners();
     }
-    _quantity -= newQuantity;
-    notifyListeners();
   }
 
   void onCarouselIndexChange(int current) {

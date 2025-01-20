@@ -1,19 +1,25 @@
-import '../../../../import.dart';
+import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 
-class RatingsAndReviews extends StatefulWidget {
-  const RatingsAndReviews({super.key});
+class RatingsAndReviews extends StatelessWidget {
+  final ProductData productData;
 
-  @override
-  State<RatingsAndReviews> createState() => _RatingsAndReviewsState();
-}
-
-class _RatingsAndReviewsState extends State<RatingsAndReviews> {
-
+  const RatingsAndReviews({required this.productData, super.key});
 
   @override
   Widget build(BuildContext context) {
-    RatingAndReviewProvider();
+    return ChangeNotifierProvider(
+      create: (_) => RatingAndReviewProvider(productData: productData),
+      child: const RatingsAndReviewsContent(),
+    );
+  }
+}
 
+class RatingsAndReviewsContent extends StatelessWidget {
+  const RatingsAndReviewsContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 4,
@@ -34,6 +40,10 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
       ),
       body: Consumer<RatingAndReviewProvider>(
         builder: (context, provider, child) {
+          if (provider.productData?.productRating == null) {
+            return const Center(child: Text('No ratings available'));
+          }
+
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -41,7 +51,7 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
               Row(
                 children: [
                   Text(
-                   provider. averageRating.toStringAsFixed(1),
+                    provider.averageRating.toStringAsFixed(1),
                     style: const TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
@@ -51,16 +61,11 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
                   Expanded(
                     child: Column(
                       children: provider.ratingDistribution.entries
-                          .map(
-                            (entry) {
-                              return _buildRatingBar(
+                          .map((entry) => _buildRatingBar(
                                 entry.key,
                                 entry.value,
-                               provider. ratingDistribution.values
-                                    .reduce((a, b) => a + b),
-                              );
-                            },
-                          )
+                                provider.totalRatings,
+                              ))
                           .toList()
                           .reversed
                           .toList(),
@@ -69,9 +74,10 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
                 ],
               ),
               const SizedBox(height: 16),
+
               Center(
                 child: Text(
-                  '${provider.ratingDistribution.values.reduce((a, b) => a + b)} Ratings & ${provider.reviews.length} Reviews',
+                  '${provider.totalRatings} Ratings & ${provider.reviews.length} Reviews',
                   style: const TextStyle(color: Colors.grey),
                 ),
               ),
@@ -81,17 +87,18 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
               OutlinedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProductRatingScreen(),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProductRatingScreen(),
+                    ),
+                  );
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: cButtonGreen,
                   side: BorderSide(color: cButtonGreen),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5), // No border radius
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
                 child: const Text('Write a review'),
@@ -99,41 +106,40 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
               const SizedBox(height: 16),
 
               // Most Recent Toggle
-              OutlinedButton(
-                onPressed: () {
-                  provider.setShowRieviews();
-      
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: cButtonGreen,
-                  side: BorderSide(color: cButtonGreen),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5), // No border radius
+              if (provider.reviews.isNotEmpty) ...[
+                OutlinedButton(
+                  onPressed: () => provider.setShowReviews(),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: cButtonGreen,
+                    side: BorderSide(color: cButtonGreen),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Most Recent'),
+                        sizedBoxWidth5,
+                        Icon(
+                          provider.showReviews
+                              ? Icons.keyboard_arrow_up
+                              : Icons.keyboard_arrow_down,
+                          size: 25,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Most Recent'),
-                      sizedBoxWidth5,
-                      Icon(
-                       provider. showReviews
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
-                        size: 25,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Reviews List
-              if (provider.showReviews)
-                ...provider.reviews.map((review) => _buildReviewCard(review)),
+                // Reviews List
+                if (provider.showReviews)
+                  ...provider.reviews.map((review) => _buildReviewCard(review)),
+              ],
             ],
           );
         },
@@ -154,7 +160,7 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
-                value: count / total,
+                value: total > 0 ? count / total : 0,
                 backgroundColor: Colors.grey[200],
                 valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
                 minHeight: 8,
@@ -166,7 +172,7 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
     );
   }
 
-  Widget _buildReviewCard(Map<String, dynamic> review) {
+  Widget _buildReviewCard(ProductReview review) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -176,7 +182,7 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
             children: [
               CircleAvatar(
                 backgroundColor: Colors.grey[200],
-                child: Text(review['name'][0]),
+                child: Text(review.userName[0]),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -187,11 +193,11 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          review['name'],
+                          review.userName,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          review['date'],
+                          review.date,
                           style: TextStyle(color: Colors.grey[600]),
                         ),
                       ],
@@ -205,32 +211,12 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
                             (index) => Icon(
                               Icons.star,
                               size: 16,
-                              color: index < review['rating']
+                              color: index < review.latestRating
                                   ? Colors.amber
                                   : Colors.grey[300],
                             ),
                           ),
                         ),
-                        if (review['isVerified']) ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Text(
-                              'Verified',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ],
@@ -239,17 +225,10 @@ class _RatingsAndReviewsState extends State<RatingsAndReviews> {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            review['title'],
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(review['content']),
+          Text(review.productReview),
           const Divider(height: 32),
         ],
       ),
     );
   }
-
- 
 }

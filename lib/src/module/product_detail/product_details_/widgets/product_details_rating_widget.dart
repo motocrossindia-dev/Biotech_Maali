@@ -1,16 +1,21 @@
+import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
+
 import '../../../../../import.dart';
 
 class ProductDetailsRatingWidget extends StatelessWidget {
-  final double rating;
-  const ProductDetailsRatingWidget({required this.rating, super.key});
+  final ProductRating? productRating;
+  // final List<ProductReview>? productReviews;
+
+  const ProductDetailsRatingWidget({required this.productRating, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
+    return Column(
       children: [
         // Display rating stars using RatingBarIndicator
         RatingBarIndicator(
-          rating: rating, // Set the current rating value here
+          rating: productRating?.avgRating ??
+              0, // Set the current rating value here
           itemBuilder: (context, index) => SvgPicture.asset(
             'assets/svg/icons/star_rating.svg',
             color: cButtonGreen,

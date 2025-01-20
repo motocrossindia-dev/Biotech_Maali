@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
+
 import '../../../../import.dart';
 
 class CustomAppBarWithSearch extends StatelessWidget
@@ -19,7 +21,6 @@ class CustomAppBarWithSearch extends StatelessWidget
       scrolledUnderElevation: 0,
       flexibleSpace: Column(
         children: [
-   
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
             child: Row(
@@ -62,44 +63,45 @@ class CustomAppBarWithSearch extends StatelessWidget
               children: [
                 Expanded(
                   child: SizedBox(
-                      height: 42,
-                      width: 251,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          filled:
-                              true, // This line is necessary to show the fill color
-                          fillColor: cSearchBox, // Your custom color
-                          hintStyle: GoogleFonts.poppins(fontSize: 12),
-                          hintText: 'Search for "plants"',
-                          prefixIcon: const Icon(Icons.search, size: 22),
-                          suffixIcon: IconButton(
-                            icon: SvgPicture.asset(
-                              'assets/svg/icons/microphone.svg',
-                              height: 20,
-                              width: 20,
-                            ),
-                            onPressed: () {
-                              // Handle microphone button press
-                            },
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
+                    height: 42,
+                    width: 251,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        filled:
+                            true, // This line is necessary to show the fill color
+                        fillColor: cSearchBox, // Your custom color
+                        hintStyle: GoogleFonts.poppins(fontSize: 12),
+                        hintText: 'Search for "plants"',
+                        prefixIcon: const Icon(Icons.search, size: 22),
+                        suffixIcon: IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/svg/icons/microphone.svg',
+                            height: 20,
+                            width: 20,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 16),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
+                          onPressed: () {
+                            // Handle microphone button press
+                          },
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                         ),
-                      ),),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 16),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 IconButton(
@@ -109,7 +111,11 @@ class CustomAppBarWithSearch extends StatelessWidget
                     width: 24,
                   ),
                   onPressed: () {
-                    // Handle favorite button press
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WishlistScreen(),
+                        ));
                   },
                 ),
                 IconButton(
