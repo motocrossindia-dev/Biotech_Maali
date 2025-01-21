@@ -16,6 +16,7 @@ class ProductTileWidget extends StatelessWidget {
   final VoidCallback? addToFavouriteEvent;
   final VoidCallback? addToCartEvent;
   final bool isWishlist;
+  final int? mainProdId;
 
   const ProductTileWidget({
     required this.productTitle,
@@ -28,6 +29,7 @@ class ProductTileWidget extends StatelessWidget {
     this.addToCartEvent,
     required this.home,
     required this.isWishlist,
+    this.mainProdId,
     super.key,
   });
 
@@ -35,7 +37,7 @@ class ProductTileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final wishListProviderWatch = context.watch<WishlistProvider>();
     const baseUrl = BaseUrl.baseUrlForImages;
-    
+
     return Container(
       width: 175,
       decoration: BoxDecoration(color: cAppBackround),
@@ -47,7 +49,8 @@ class ProductTileWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, top: 8),
-                      child: wishListProviderWatch.isLoading
+                      child: wishListProviderWatch.isProductLoading(
+                              mainProdId!) // Check loading state for this specific product
                           ? Padding(
                               padding: const EdgeInsets.all(6.0),
                               child: CircularProgressIndicator(

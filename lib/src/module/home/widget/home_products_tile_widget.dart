@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/home/model/product_model.dart';
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import '../../../../import.dart';
 
 class HomeProductsTileWidget extends StatelessWidget {
@@ -37,6 +38,7 @@ class HomeProductsTileWidget extends StatelessWidget {
                   return CustomizableButton(
                     title: 'View All',
                     event: () {
+                      context.read<HomeProvider>().fetchWishlistProductId();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -106,6 +108,7 @@ class HomeProductsTileWidget extends StatelessWidget {
                               // You might want to call a method in your provider to toggle wishlist
                               // await provider.toggleWishlist(productDetails.id);
                             },
+                            mainProdId: productDetails.id,
                           ),
                         ),
                         sizedBoxWidth15

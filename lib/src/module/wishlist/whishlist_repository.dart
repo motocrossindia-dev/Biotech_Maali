@@ -148,4 +148,6 @@ class WishlistRepository {
       throw 'Failed to remove from wishlist: ${e.message}';
     }
   }
+
+  
 }

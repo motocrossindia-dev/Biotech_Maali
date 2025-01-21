@@ -92,6 +92,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                               );
                             },
                             child: ProductTileWidget(
+                              mainProdId: productDetails.id,
                               productTitle: productDetails.name,
                               productImage: productDetails.image,
                               tempImage:
