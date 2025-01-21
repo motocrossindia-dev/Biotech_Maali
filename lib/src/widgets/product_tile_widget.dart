@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
-
 import '../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -49,14 +46,23 @@ class ProductTileWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, top: 8),
-                      child: wishListProviderWatch.isProductLoading(
-                              mainProdId!) // Check loading state for this specific product
-                          ? Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: CircularProgressIndicator(
-                                backgroundColor: cButtonGreen,
-                                color: cButtonRed,
-                              ),
+                      child: wishListProviderWatch.isProductLoading(mainProdId ??
+                              0) // Check loading state for this specific product
+                          ? Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: SizedBox(
+                                    height: 26,
+                                    width: 26,
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: cButtonGreen,
+                                      color: cButtonRed,
+                                    ),
+                                  ),
+                                ),
+                                sizedBoxHeight15
+                              ],
                             )
                           : InkWell(
                               onTap: addToFavouriteEvent,

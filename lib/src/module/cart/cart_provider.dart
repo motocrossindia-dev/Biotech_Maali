@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/cart/model/cart_item_model.dart';
+import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'cart_repository.dart';
@@ -38,11 +39,11 @@ class CartProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      final success = await _repository.updateCartItemQuantity(cartId, quantity);
+      final success =
+          await _repository.updateCartItemQuantity(cartId, quantity);
 
       if (success) {
         await fetchCartItems(); // Refresh cart items after successful update
-       
       } else {
         Fluttertoast.showToast(
           msg: "Failed to update quantity",
@@ -103,7 +104,8 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> addToCart(int productId, int quantity) async {
+  Future<bool> addToCart(
+      int productId, int quantity, BuildContext context) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -112,17 +114,9 @@ class CartProvider extends ChangeNotifier {
 
       if (success) {
         await fetchCartItems(); // Refresh cart items after successful addition
-        Fluttertoast.showToast(
-          msg: "Item added to cart successfully",
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-        );
+        showCartMessage(context, true);
       } else {
-        Fluttertoast.showToast(
-          msg: "Failed to add item to cart",
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-        );
+        showCartMessage(context, false);
       }
 
       return success;

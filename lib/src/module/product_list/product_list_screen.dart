@@ -3,6 +3,7 @@ import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_history/wallet_history_screen.dart';
 import 'package:biotech_maali/src/module/home/model/product_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
 import '../../../import.dart';
@@ -182,7 +183,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         borderRadius: BorderRadius.circular(
                             8), // Round corners for the ripple effect
                         splashColor: cButtonGreen
-                            .withOpacity(0.3), // Color of the ripple effect
+                            .withOpacity(0.3), 
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
                           log('message');
@@ -290,6 +291,44 @@ class _ProductListScreenState extends State<ProductListScreen> {
           },
         );
       },
+    );
+  }
+
+  void showWishlistMessage(BuildContext context, bool isAdded) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              isAdded ? Icons.favorite : Icons.favorite_border,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 8),
+            Text(isAdded
+                ? 'Item added to wishlist successfully'
+                : 'Item removed from wishlist'),
+          ],
+        ),
+        action: isAdded
+            ? SnackBarAction(
+                label: 'View Wishlist',
+                onPressed: () {
+                  // Navigate to wishlist
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WishlistScreen()),
+                  );
+                },
+              )
+            : null,
+        duration: const Duration(seconds: 2),
+        behavior:
+            SnackBarBehavior.floating, // Makes it float above bottom nav bar
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        backgroundColor: isAdded ? Colors.green : Colors.grey[800],
+      ),
     );
   }
 

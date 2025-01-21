@@ -1,6 +1,9 @@
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/product_details_repository.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailsProvider extends ChangeNotifier {
   final ProductDetailsRepository productDetailsRepository;
@@ -13,8 +16,9 @@ class ProductDetailsProvider extends ChangeNotifier {
   String? _error;
   int _carouselIndex = 0;
   int _quantity = 1;
+  bool _isWishlist = false;
+  bool _isLoadingWishList = false;
 
-  // Product data
   ProductDetailModel? _productDetails;
   List<String> _carouselProductImageList = [];
 
@@ -29,6 +33,8 @@ class ProductDetailsProvider extends ChangeNotifier {
   String? get error => _error;
   int get carouselIndex => _carouselIndex;
   int get quantity => _quantity;
+  bool get isWishlist => _isWishlist;
+  bool get isLoadingWishList => _isLoadingWishList;
   ProductDetailModel? get productDetails => _productDetails;
   List<String> get carouselProductImageList => _carouselProductImageList;
 
@@ -133,6 +139,36 @@ class ProductDetailsProvider extends ChangeNotifier {
     } catch (e) {
       _error = e.toString();
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> addOrRemoveWhishlistCompinationProduct(
+      int productId, BuildContext context) async {
+    _isLoadingWishList = true;
+    notifyListeners();
+
+    try {
+      bool result = await productDetailsRepository
+          .addOrRemoveWhishlistCompinationProduct(productId);
+      if (result) {
+        _isWishlist = true;
+
+        showWishlistMessage(context, true);
+        notifyListeners();
+      } else {
+        _isWishlist = false;
+        showWishlistMessage(context, false);
+        notifyListeners();
+      }
+      await context.read<WishlistProvider>().fetchWishlist();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    } finally {
+      // Remove productId from loading set
+      _isLoadingWishList = false;
+
       notifyListeners();
     }
   }

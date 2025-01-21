@@ -24,4 +24,5 @@ class EndUrl {
   static String getWhishListIdUrl =
       "${baseUrl}order/wishlist/?main_product_id_list=true";
   static String addOrRemoveWishListUrl = "${baseUrl}order/wishlist/";
+  static String filterProductUrl = "${baseUrl}product/filterProduct/";
 }

@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
 import 'package:flutter/foundation.dart';
 import 'package:biotech_maali/src/module/wishlist/model/wishlist_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_repository.dart';
@@ -19,9 +20,10 @@ class WishlistProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
-   final Set<int> _loadingProductIds = {};
+  final Set<int> _loadingProductIds = {};
   Set<int> get loadingProductIds => _loadingProductIds;
- bool isProductLoading(int productId) => _loadingProductIds.contains(productId);
+  bool isProductLoading(int productId) =>
+      _loadingProductIds.contains(productId);
   Future<void> fetchWishlist() async {
     try {
       _isLoading = true;
@@ -78,10 +80,11 @@ class WishlistProvider extends ChangeNotifier {
           await _wishlistRepository.addOrRemoveWishListMainProduct(productId);
       if (result) {
         context.read<HomeProvider>().fetchWishlistProductId();
-        Fluttertoast.showToast(msg: "Item added to the wishlist");
+        showWishlistMessage(context, true);
+        // Fluttertoast.showToast(msg: "Item added to the wishlist");
       } else {
         context.read<HomeProvider>().fetchWishlistProductId();
-        Fluttertoast.showToast(msg: "Item deleted from the wishlist");
+        showWishlistMessage(context, false);
       }
       await fetchWishlist();
     } catch (e) {

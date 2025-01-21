@@ -1,11 +1,10 @@
 import 'dart:developer';
 
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/widgets/planter_size_widget.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
-import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
-
 import '../../../../import.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -74,19 +73,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(right: 12.0),
-                                child: IconButton(
-                                  icon: SvgPicture.asset(
-                                    'assets/svg/icons/heart_unselected.svg',
-                                    height: 24,
-                                    width: 24,
-                                  ),
-                                  onPressed: () {
-                                    context
-                                        .read<WishlistProvider>()
-                                        .addToWishlist(
-                                            productDetail.product.id);
-                                  },
-                                ),
+                                child: provider.isLoadingWishList
+                                    ? Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: SizedBox(
+                                              height: 26,
+                                              width: 26,
+                                              child: CircularProgressIndicator(
+                                                backgroundColor: cButtonGreen,
+                                                color: cButtonRed,
+                                              ),
+                                            ),
+                                          ),
+                                          sizedBoxHeight15
+                                        ],
+                                      )
+                                    : IconButton(
+                                        icon: SvgPicture.asset(
+                                          'assets/svg/icons/heart_unselected.svg',
+                                          color: provider.isWishlist
+                                              ? Colors.red
+                                              : Colors.black,
+                                          height: 24,
+                                          width: 24,
+                                        ),
+                                        onPressed: () {
+                                          provider
+                                              .addOrRemoveWhishlistCompinationProduct(
+                                                  productDetail.product.id,
+                                                  context);
+                                        },
+                                      ),
                               ),
                             ],
                           ),
@@ -360,20 +379,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         width: 160,
                         height: 48,
                         child: CustomizableButton(
-                          title: 'ADD TO CART',
-                          event: () async {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            bool? isAuthenticated =
-                                prefs.getBool("isAuthenticated");
-                            log("isAuthenticated: $isAuthenticated");
-                            if (isAuthenticated != null) {
+                            title: 'ADD TO CART',
+                            event: () async {
+                              bool? isAuthenticated = await context
+                                  .read<SettingsProvider>()
+                                  .checkAccessTokenValidity(context);
                               if (isAuthenticated) {
                                 final productDetailProvider =
                                     context.read<ProductDetailsProvider>();
                                 context.read<CartProvider>().addToCart(
                                     product.data.product.id,
-                                    productDetailProvider.quantity);
+                                    productDetailProvider.quantity,context);
                               } else {
                                 Navigator.pushAndRemoveUntil(
                                   context,
@@ -384,9 +400,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   (route) => false,
                                 );
                               }
-                            }
-                          },
-                        ),
+                            }),
                       ),
                     ],
                   ),

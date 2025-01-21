@@ -141,16 +141,20 @@ class CartRepository {
         ),
       );
 
-      if (response.statusCode == 400) {
-        log("Bad request error: ${response.data}");
-        throw Exception(
-            'Invalid request: ${response.data['message'] ?? 'Unknown error'}');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        log("response data added to cart : ${response.data.toString()}");
+        return true;
+      } else {
+        log("Response allredy in cart : ${response.data.toString()}");
+        return false;
       }
 
-      return response.statusCode == 200 || response.statusCode == 201;
+
+     
     } catch (e) {
       log("Add to cart error: ${e.toString()}");
-      throw Exception('Failed to add to cart: $e');
+      return false;
+      // throw Exception('Failed to add to cart: $e');
     }
   }
 }
