@@ -1,3 +1,4 @@
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import '../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -130,7 +131,12 @@ class ProductTileWidget extends StatelessWidget {
                   child: BorderColoredButton(
                     title: 'Add To Cart',
                     height: 38,
-                    event: addToCartEvent ?? () {},
+                    event: addToCartEvent ??
+                        () {
+                          context
+                              .read<CartProvider>()
+                              .addToCartMainProduct(mainProdId!, context);
+                        },
                   ),
                 )
               : sizedBoxHeight0

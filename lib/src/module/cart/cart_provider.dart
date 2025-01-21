@@ -133,4 +133,33 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> addToCartMainProduct(int productId, BuildContext context) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final success = await _repository.addToCartForMainProduct(productId);
+
+      if (success) {
+        await fetchCartItems(); // Refresh cart items after successful addition
+        showCartMessage(context, true);
+      } else {
+        showCartMessage(context, false);
+      }
+
+      return success;
+    } catch (e) {
+      _error = e.toString();
+      Fluttertoast.showToast(
+        msg: "Error adding item to cart",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

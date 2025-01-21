@@ -29,19 +29,19 @@ void showWishlistMessage(BuildContext context, bool isAdded) {
           );
         },
       ),
-      action: isAdded
-          ? SnackBarAction(
-              label: 'View', // Shortened the label
-              textColor: Colors.yellow, // Makes action more visible
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const WishlistScreen()),
-                );
-              },
-            )
-          : null,
+      action: SnackBarAction(
+        label: 'View', // Shortened the label
+        textColor: Colors.yellow, // Makes action more visible
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const WishlistScreen(),
+            ),
+          );
+        },
+      ),
+
       duration: const Duration(seconds: 2),
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(

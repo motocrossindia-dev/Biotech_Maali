@@ -148,9 +148,45 @@ class CartRepository {
         log("Response allredy in cart : ${response.data.toString()}");
         return false;
       }
+    } catch (e) {
+      log("Add to cart error: ${e.toString()}");
+      return false;
+      // throw Exception('Failed to add to cart: $e');
+    }
+  }
 
+  Future<bool> addToCartForMainProduct(int productId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
 
-     
+    if (token == null || token.isEmpty) {
+      throw Exception('Authentication token is missing');
+    }
+    
+    try {
+      final response = await dio.post(
+        EndUrl.addToCartUrl,
+        data: {
+          'main_prod_id': productId,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        log("response data added to cart : ${response.data.toString()}");
+        return true;
+      } else {
+        log("Response allredy in cart : ${response.data.toString()}");
+        return false;
+      }
     } catch (e) {
       log("Add to cart error: ${e.toString()}");
       return false;
