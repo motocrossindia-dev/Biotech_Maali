@@ -44,25 +44,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _setupScrollController() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 500) {
-        _loadMoreWidgets();
-      }
-    });
+    _scrollController.addListener(
+      () {
+        if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 500) {
+          _loadMoreWidgets();
+        }
+      },
+    );
   }
 
   void _loadMoreWidgets() {
     if (!_isLoadingMore && _lazyWidgets.length < _allWidgets.length) {
-      setState(() {
-        _isLoadingMore = true;
-        final int nextIndex = _lazyWidgets.length;
-        final int itemsToLoad = math.min(2, _allWidgets.length - nextIndex);
+      setState(
+        () {
+          _isLoadingMore = true;
+          final int nextIndex = _lazyWidgets.length;
+          final int itemsToLoad = math.min(2, _allWidgets.length - nextIndex);
 
-        _lazyWidgets
-            .addAll(_allWidgets.getRange(nextIndex, nextIndex + itemsToLoad));
-        _isLoadingMore = false;
-      });
+          _lazyWidgets
+              .addAll(_allWidgets.getRange(nextIndex, nextIndex + itemsToLoad));
+          _isLoadingMore = false;
+        },
+      );
     }
   }
 

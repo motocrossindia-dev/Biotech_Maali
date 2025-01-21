@@ -14,7 +14,7 @@ class SettingsProvider extends ChangeNotifier {
     try {
       String tokenValidityUrl = EndUrl.checkTokenValidityUrl;
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? access = "${prefs.getString("access_token")}";
+      String? access = prefs.getString("access_token");
       log("Access Token: ${access.toString()}");
 
       if (access == null) {

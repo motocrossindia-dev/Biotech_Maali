@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_history/wallet_history_screen.dart';
 import 'package:biotech_maali/src/module/home/model/product_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
 import '../../../import.dart';
 
@@ -72,7 +74,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         ),
                         itemBuilder: (context, index) {
                           ProductModel productDetails = widget.products[index];
-
                           bool isWishlistId = provider.mainWishlistProductId
                               .contains(productDetails.id);
 
@@ -100,13 +101,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
                               rating: 4.5,
                               home: true,
                               isWishlist: isWishlistId,
-                              addToFavouriteEvent: () {
+                              addToFavouriteEvent: () async {
+                                final settingsProvider =
+                                    context.read<SettingsProvider>();
+                                bool isAuth = await settingsProvider
+                                    .checkAccessTokenValidity(context);
+
+                                if (!isAuth) {
+                                  _showLoginDialog(context);
+                                  return;
+                                }
                                 final wishlistProvider =
                                     context.read<WishlistProvider>();
-                                    wishlistProvider.addOrRemoveWhishlistMainProduct(
+                                wishlistProvider
+                                    .addOrRemoveWhishlistMainProduct(
                                         productDetails.id, context);
-
-                                        
                               },
                             ),
                           );
@@ -279,6 +288,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
             );
           },
         );
+      },
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
       },
     );
   }

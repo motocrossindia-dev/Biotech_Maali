@@ -1,4 +1,6 @@
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
 import '../../../../import.dart';
 
@@ -11,7 +13,6 @@ class CustomAppBarWithSearch extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    // final height = MediaQuery.of(context).size.height;
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 4,
@@ -110,12 +111,20 @@ class CustomAppBarWithSearch extends StatelessWidget
                     height: 24,
                     width: 24,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
+                    final settingsProvider = context.read<SettingsProvider>();
+                    bool status = await settingsProvider
+                        .checkAccessTokenValidity(context);
+                    if (!status) {
+                      _showLoginDialog(context);
+                      return;
+                    }
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const WishlistScreen(),
-                        ));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WishlistScreen(),
+                      ),
+                    );
                   },
                 ),
                 IconButton(
@@ -133,6 +142,15 @@ class CustomAppBarWithSearch extends StatelessWidget
           )
         ],
       ),
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
+      },
     );
   }
 }
