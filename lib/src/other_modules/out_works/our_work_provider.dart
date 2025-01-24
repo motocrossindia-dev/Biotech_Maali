@@ -42,8 +42,7 @@ class OurWorkProvider with ChangeNotifier {
       title: 'Growing For Every Generation',
       imageUrl: 'assets/garden.jpg',
       type: 'video',
-      youtubeUrl:
-          'https://www.youtube.com/watch?v=Kaujug-JkDQ&list=RDKaujug-JkDQ&start_radio=1',
+      youtubeUrl: 'https://www.youtube.com/watch?v=9nQ6d3A2cTs',
     ),
     WorkItem(
       title: 'Design Your Dreamscape: Personalized Landscaping',

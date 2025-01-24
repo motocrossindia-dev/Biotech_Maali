@@ -83,6 +83,7 @@ class WishlistProvider extends ChangeNotifier {
         showWishlistMessage(context, true);
         // Fluttertoast.showToast(msg: "Item added to the wishlist");
       } else {
+        
         context.read<HomeProvider>().fetchWishlistProductId();
         showWishlistMessage(context, false);
       }

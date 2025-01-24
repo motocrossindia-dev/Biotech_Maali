@@ -1,4 +1,4 @@
-package com.example.biotech_maali
+package com.biotechmaali.app
 
 import io.flutter.embedding.android.FlutterActivity
 
