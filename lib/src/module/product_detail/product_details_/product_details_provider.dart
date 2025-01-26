@@ -70,22 +70,53 @@ class ProductDetailsProvider extends ChangeNotifier {
 
   Future<void> updateSize(int sizeId, int productId) async {
     if (_selectedSizeId == sizeId) return;
-    await _filterProduct(sizeId: sizeId, productId: productId);
+
+    await _filterProduct(
+      productId: productId,
+      sizeId: sizeId,
+      // Keep default values for other parameters
+      // planterSizeId: _selectedPlanterSizeId,
+      // planterId: _selectedPlanterId,
+      // colorId: _selectedColorId,
+    );
   }
 
   Future<void> updatePlanterSize(int planterSizeId, int productId) async {
     if (_selectedPlanterSizeId == planterSizeId) return;
-    await _filterProduct(planterSizeId: planterSizeId, productId: productId);
+
+    await _filterProduct(
+      productId: productId,
+      sizeId: _selectedSizeId,
+      planterSizeId: planterSizeId,
+      // // Keep default values for other parameters
+      // planterId: _selectedPlanterId,
+      // colorId: _selectedColorId,
+    );
   }
 
   Future<void> updatePlanter(int planterId, int productId) async {
     if (_selectedPlanterId == planterId) return;
-    await _filterProduct(planterId: planterId, productId: productId);
+
+    await _filterProduct(
+      productId: productId,
+      sizeId: _selectedSizeId,
+      planterSizeId: _selectedPlanterSizeId,
+      planterId: planterId,
+      // // Keep default values for other parameters
+      // colorId: _selectedColorId,
+    );
   }
 
   Future<void> updateColor(int colorId, int productId) async {
     if (_selectedColorId == colorId) return;
-    await _filterProduct(colorId: colorId, productId: productId);
+
+    await _filterProduct(
+      productId: productId,
+      sizeId: _selectedSizeId,
+      planterSizeId: _selectedPlanterSizeId,
+      planterId: _selectedPlanterId,
+      colorId: colorId,
+    );
   }
 
   Future<void> _filterProduct({
@@ -101,11 +132,17 @@ class ProductDetailsProvider extends ChangeNotifier {
     try {
       final filteredDetails = await productDetailsRepository.filterProduct(
         productId: productId,
-        sizeId: sizeId ?? _selectedSizeId,
-        planterSizeId: planterSizeId ?? _selectedPlanterSizeId,
-        planterId: planterId ?? _selectedPlanterId,
-        colorId: colorId ?? _selectedColorId,
+        sizeId: sizeId,
+        planterSizeId: planterSizeId,
+        planterId: planterId,
+        colorId: colorId,
       );
+
+      // Update selected IDs
+      if (sizeId != null) _selectedSizeId = sizeId;
+      if (planterSizeId != null) _selectedPlanterSizeId = planterSizeId;
+      if (planterId != null) _selectedPlanterId = planterId;
+      if (colorId != null) _selectedColorId = colorId;
 
       // Preserve ratings and reviews from original product details
       if (_productDetails != null) {
@@ -121,19 +158,17 @@ class ProductDetailsProvider extends ChangeNotifier {
             productReviews: _productDetails!.data.productReviews,
           ),
         );
+
         _productDetails = mergedDetails;
+        _selectedSizeId = mergedDetails.data.product.sizeId;
+        _selectedPlanterSizeId = mergedDetails.data.product.planterSizeId;
+        _selectedPlanterId = mergedDetails.data.product.planterId;
+        _selectedColorId = mergedDetails.data.product.colorId;
       } else {
         _productDetails = filteredDetails;
       }
 
       _updateCarouselImages();
-
-      // Update selected IDs
-      if (sizeId != null) _selectedSizeId = sizeId;
-      if (planterSizeId != null) _selectedPlanterSizeId = planterSizeId;
-      if (planterId != null) _selectedPlanterId = planterId;
-      if (colorId != null) _selectedColorId = colorId;
-
       _isLoading = false;
       notifyListeners();
     } catch (e) {

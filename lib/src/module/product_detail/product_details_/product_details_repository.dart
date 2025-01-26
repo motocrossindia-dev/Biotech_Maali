@@ -1,7 +1,5 @@
 import 'dart:developer';
-import 'package:dio/dio.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
-import 'package:biotech_maali/core/core.dart';
 
 import '../../../../import.dart';
 
@@ -52,6 +50,10 @@ class ProductDetailsRepository {
 
       if (response.statusCode == 200) {
         log("Filter response: ${response.data}");
+        sizeId = null;
+        planterSizeId = null;
+        planterId = null;
+        colorId = null;
         return ProductDetailModel.fromJson(response.data);
       } else {
         throw Exception('Failed to filter product');
