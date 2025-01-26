@@ -1,13 +1,26 @@
-import '../../../../import.dart';
+import '../../../../../import.dart';
+import 'package:intl/intl.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
+  _EditProfileScreenState createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EditProfileProvider>().fetchProfileData();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final editProfileProvider = context.read<EditProfileProvider>();
-    // final editProfileProviderWatch = context.watch<EditProfileProvider>();
-    // final selectedGender = editProfileProvider.selectedGender;
+    final editProfileProvider = context.watch<EditProfileProvider>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 4,
@@ -15,139 +28,223 @@ class EditProfileScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const CommonTextWidget(
-          title: 'Edit Profile',
+          title: 'User Profile',
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 40.0),
-            child: Icon(Icons.search, size: 30),
+        actions: [
+          IconButton(
+            icon: Icon(
+              editProfileProvider.isEditing ? Icons.close : Icons.edit,
+              size: 30,
+            ),
+            onPressed: () {
+              editProfileProvider.toggleEditMode();
+            },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                shape: const Border(
-                  bottom: BorderSide(style: BorderStyle.none),
-                ),
-                color: cWhiteColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    children: [
-                      EditProfileTextForm(
-                          controller: editProfileProvider.firstName,
-                          hintText: 'Sandeep',
-                          labelText: 'First Name'),
-                      sizedBoxHeight20,
-                      EditProfileTextForm(
-                          controller: editProfileProvider.lastName,
-                          hintText: 'Abraham',
-                          labelText: 'Last Name'),
-                      sizedBoxHeight20,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CommonTextWidget(
-                            title: "Your Gender*",
-                            fontSize: 12,
-                            color: cBorderGrey,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              RadioOptionWidget(
-                                label: 'Male',
-                                value: 'Male',
-                                groupValue: editProfileProvider.selectedGender,
-                                onChanged: (value) {
-                                  editProfileProvider.selectGender(value!);
+      body: editProfileProvider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      shape: const Border(
+                        bottom: BorderSide(style: BorderStyle.none),
+                      ),
+                      color: cWhiteColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(
+                          children: [
+                            EditProfileTextForm(
+                              controller: editProfileProvider.firstName,
+                              hintText:
+                                  editProfileProvider.firstName.text.isEmpty
+                                      ? 'First Name'
+                                      : editProfileProvider.firstName.text,
+                              labelText: 'First Name',
+                              readOnly: !editProfileProvider.isEditing,
+                            ),
+                            sizedBoxHeight20,
+                            EditProfileTextForm(
+                              controller: editProfileProvider.lastName,
+                              hintText:
+                                  editProfileProvider.lastName.text.isEmpty
+                                      ? 'Last Name'
+                                      : editProfileProvider.lastName.text,
+                              labelText: 'Last Name',
+                              readOnly: !editProfileProvider.isEditing,
+                            ),
+                            sizedBoxHeight20,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CommonTextWidget(
+                                  title: "Your Gender*",
+                                  fontSize: 12,
+                                  color: cBorderGrey,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    RadioOptionWidget(
+                                      label: 'Male',
+                                      value: 'Male',
+                                      groupValue:
+                                          editProfileProvider.selectedGender,
+                                      onChanged: editProfileProvider.isEditing
+                                          ? (value) {
+                                              editProfileProvider
+                                                  .selectGender(value!);
+                                            }
+                                          : null,
+                                    ),
+                                    RadioOptionWidget(
+                                      label: 'Female',
+                                      value: 'Female',
+                                      groupValue:
+                                          editProfileProvider.selectedGender,
+                                      onChanged: editProfileProvider.isEditing
+                                          ? (value) {
+                                              editProfileProvider
+                                                  .selectGender(value!);
+                                            }
+                                          : null,
+                                    ),
+                                    RadioOptionWidget(
+                                      label: 'Others',
+                                      value: 'Others',
+                                      groupValue:
+                                          editProfileProvider.selectedGender,
+                                      onChanged: editProfileProvider.isEditing
+                                          ? (value) {
+                                              editProfileProvider
+                                                  .selectGender(value!);
+                                            }
+                                          : null,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            sizedBoxHeight20,
+                            EditProfileTextForm(
+                              controller: editProfileProvider.emailAddress,
+                              hintText:
+                                  editProfileProvider.emailAddress.text.isEmpty
+                                      ? 'Email Address'
+                                      : editProfileProvider.emailAddress.text,
+                              labelText: 'Email Address',
+                              keyboardType: TextInputType.emailAddress,
+                              readOnly: !editProfileProvider.isEditing,
+                            ),
+                            sizedBoxHeight20,
+                            EditProfileTextForm(
+                              controller: editProfileProvider.mobileNumber,
+                              hintText:
+                                  editProfileProvider.mobileNumber.text.isEmpty
+                                      ? 'Mobile Number'
+                                      : editProfileProvider.mobileNumber.text,
+                              labelText: 'Mobile Number',
+                              keyboardType: TextInputType.phone,
+                              readOnly: !editProfileProvider.isEditing,
+                            ),
+                            sizedBoxHeight20,
+                            EditProfileTextForm(
+                              controller: editProfileProvider.dateOfBirth,
+                              hintText:
+                                  editProfileProvider.dateOfBirth.text.isEmpty
+                                      ? 'Date of Birth'
+                                      : editProfileProvider.dateOfBirth.text,
+                              labelText: 'Date of Birth',
+                              onTap: editProfileProvider.isEditing
+                                  ? () async {
+                                      final DateTime? picked =
+                                          await showDatePicker(
+                                        context: context,
+                                        initialDate: editProfileProvider
+                                                .dateOfBirth.text.isNotEmpty
+                                            ? DateTime.parse(editProfileProvider
+                                                .dateOfBirth.text)
+                                            : DateTime.now(),
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime.now(),
+                                      );
+                                      if (picked != null) {
+                                        editProfileProvider.dateOfBirth.text =
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(picked);
+                                      }
+                                    }
+                                  : null,
+                              readOnly: !editProfileProvider.isEditing,
+                            ),
+                            if (editProfileProvider.isEditing) ...[
+                              sizedBoxHeight20,
+                              CommonButtonWidget(
+                                title: 'SAVE',
+                                event: () async {
+                                  final success =
+                                      await editProfileProvider.updateProfile();
+                                  if (success) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Profile Updated Successfully')),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text('Profile Update Failed')),
+                                    );
+                                  }
                                 },
-                              ),
-                              RadioOptionWidget(
-                                label: 'Female',
-                                value: 'Female',
-                                groupValue: editProfileProvider.selectedGender,
-                                onChanged: (value) {
-                                  editProfileProvider.selectGender(value!);
-                                },
-                              ),
-                              RadioOptionWidget(
-                                label: 'Others',
-                                value: 'Others',
-                                groupValue: editProfileProvider.selectedGender,
-                                onChanged: (value) {
-                                  editProfileProvider.selectGender(value!);
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                              )
+                            ]
+                          ],
+                        ),
                       ),
-                      sizedBoxHeight20,
-                      EditProfileTextForm(
-                        controller: editProfileProvider.emailAddress,
-                        hintText: 'sandeepabraham@gmail.com',
-                        labelText: 'Email Address',
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      sizedBoxHeight20,
-                      EditProfileTextForm(
-                        controller: editProfileProvider.mobileNumber,
-                        hintText: '8790223443',
-                        labelText: 'Mobile Number',
-                        keyboardType: TextInputType.phone,
-                      ),
-                      sizedBoxHeight20,
-                      CommonButtonWidget(
-                        title: 'SAVE',
-                        event: () {},
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                child: MaterialButton(
-                  color: cScaffoldBackground,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DeleteAccountScreen(),
-                      ),
-                    );
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(5), // Set the border radius here
-                    side: const BorderSide(
-                      color: Colors.red, // Set the border color here
-                      width: 2, // Set the border width
                     ),
                   ),
-                  child: CommonTextWidget(
-                    title: 'DELETE ACCOUNT',
-                    fontWeight: FontWeight.w500,
-                    color: cButtonRed,
-                    fontSize: 18,
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8),
+                      child: MaterialButton(
+                        color: cScaffoldBackground,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DeleteAccountScreen(),
+                            ),
+                          );
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          side: const BorderSide(
+                            color: Colors.red,
+                            width: 2,
+                          ),
+                        ),
+                        child: CommonTextWidget(
+                          title: 'DELETE ACCOUNT',
+                          fontWeight: FontWeight.w500,
+                          color: cButtonRed,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
