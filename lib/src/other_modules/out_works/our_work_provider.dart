@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../../import.dart';
 
 class WorkItem {
@@ -88,7 +90,7 @@ class OurWorkProvider with ChangeNotifier {
 
   void connectWithExpert(String expertType) {
     // Implement connection logic here
-    print('Connecting with $expertType expert');
+    log('Connecting with $expertType expert');
     notifyListeners();
   }
 }

@@ -26,4 +26,5 @@ class EndUrl {
   static String addOrRemoveWishListUrl = "${baseUrl}order/wishlist/";
   static String filterProductUrl = "${baseUrl}product/filterProduct/";
   static String getOrUpdateProfileUrl = "${baseUrl}account/profile/";
+  static String addOrEditAddressUrl = "${baseUrl}account/address/";
 }

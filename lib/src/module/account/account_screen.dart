@@ -230,7 +230,7 @@ class AccountScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => WalletScreen(),
+                                      builder: (context) => const WalletScreen(),
                                     ),
                                   );
                                 },

@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import '../../../import.dart';
 
 class MobileNumberProvider extends ChangeNotifier {
@@ -26,24 +25,41 @@ class MobileNumberProvider extends ChangeNotifier {
       final response =
           await _mobileNumberRepository.registerWithMobile(_mobileNumber.text);
       _isLoading = false;
-
       notifyListeners();
 
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => OtpScreen(
-                  mobile: _mobileNumber.text,
-                )),
+          builder: (context) => OtpScreen(mobile: _mobileNumber.text),
+        ),
       );
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      log("Error : $e");
 
+      String errorMessage;
+      if (e is NetworkException) {
+        errorMessage = 'Network error. Please check your internet connection.';
+      } else if (e is ServerException) {
+        errorMessage = 'Server error. Please try again later.';
+      } else {
+        errorMessage = 'An unexpected error occurred. Please try again.';
+      }
+
+      log("Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: $e')),
+        SnackBar(content: Text(errorMessage)),
       );
     }
   }
+}
+
+class NetworkException implements Exception {
+  final String message;
+  NetworkException([this.message = 'Network error occurred']);
+}
+
+class ServerException implements Exception {
+  final String message;
+  ServerException([this.message = 'Server error occurred']);
 }

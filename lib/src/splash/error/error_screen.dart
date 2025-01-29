@@ -1,4 +1,3 @@
-import 'package:biotech_maali/src/authentication/login/login_screen.dart';
 import 'package:biotech_maali/src/authentication/mobile_number/mobile_number_screen.dart';
 import 'package:flutter/material.dart';
 

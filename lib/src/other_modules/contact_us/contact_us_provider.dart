@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 class ContactProvider with ChangeNotifier {
   final ContactRepository _repository = ContactRepository();
 
-  List<CorporateContact> _contacts = [];
-  bool _isLoading = false;
+  final List<CorporateContact> _contacts = [];
+  final bool _isLoading = false;
   bool _isSubmitting = false;
   String? _error;
 

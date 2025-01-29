@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:biotech_maali/import.dart';
 
 class CheckAccessRefresh {
-  Dio _dio = Dio();
+  final Dio _dio = Dio();
   Future<bool> checkAccessTokenValidity(BuildContext context) async {
     String tokenValidityUrl = EndUrl.checkTokenValidityUrl;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? access = prefs.getString("access_token");
-    String? refresh = prefs.getString("refresh_token");
+  
 
     try {
       final response =

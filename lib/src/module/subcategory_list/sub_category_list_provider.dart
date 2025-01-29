@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/import.dart';
-import 'package:biotech_maali/src/module/home/model/category_model.dart';
 import 'package:biotech_maali/src/module/subcategory_list/model/subcategory_model.dart';
 import 'package:biotech_maali/src/module/subcategory_list/sub_category_repository.dart';
 

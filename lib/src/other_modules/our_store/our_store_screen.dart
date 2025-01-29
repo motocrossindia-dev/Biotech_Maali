@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../import.dart';
 
 class OurStoresScreen extends StatelessWidget {
-  const OurStoresScreen({Key? key}) : super(key: key);
+  const OurStoresScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +74,9 @@ class StoreCard extends StatelessWidget {
   final OurStoreModel store;
 
   const StoreCard({
-    Key? key,
+    super.key,
     required this.store,
-  }) : super(key: key);
+  });
 
   Future<void> _launchMap() async {
     if (!await launchUrl(Uri.parse(store.addressLink))) {

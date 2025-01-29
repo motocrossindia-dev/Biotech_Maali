@@ -1,9 +1,12 @@
+import 'package:biotech_maali/src/payment_and_order/change_address/change_address_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/widget/edit_button_widget.dart';
-
 import '../../../../import.dart';
+import '../model/address_model.dart';
 
 class AddressTileWidget extends StatelessWidget {
-  const AddressTileWidget({super.key});
+  final AddressModel address;
+
+  const AddressTileWidget({super.key, required this.address});
 
   @override
   Widget build(BuildContext context) {
@@ -14,24 +17,32 @@ class AddressTileWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const CommonTextWidget(title: 'Deliver to:', color: Colors.grey),
-            EditButtonWidget(
-              title: 'Edit',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                         const AddEditAddressScreen(isAddAddress: false),
-                  ),
-                );
-              },
+            Row(
+              children: [
+                IconButton(onPressed: (){
+                  context.read<ChangeAddressProvider>().deleteAddress(address.id);
+                }, icon: const Icon(Icons.delete)),
+                EditButtonWidget(
+                  title: 'Edit',
+                  onPressed: () {
+                    context.read<AddEditAddressProvider>().setEditData(address);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddEditAddressScreen(
+                            isAddAddress: false, address: address),
+                      ),
+                    );
+                  },
+                ),
+              ],
             )
           ],
         ),
         Row(
           children: [
-            const CommonTextWidget(
-              title: 'Mallikjan Baroodwale',
+            CommonTextWidget(
+              title: '${address.firstName} ${address.lastName}',
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -40,20 +51,20 @@ class AddressTileWidget extends StatelessWidget {
               decoration: BoxDecoration(
                   color: cLightGreyHomeWork,
                   borderRadius: BorderRadius.circular(2)),
-              child: const Padding(
-                padding: EdgeInsets.all(2.0),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
                 child: CommonTextWidget(
-                  title: 'Home',
+                  title: address.addressType,
                   fontSize: 12,
                 ),
               ),
             )
           ],
         ),
-        const CommonTextWidget(
-            title: 'Mahaboon ngar 4th cross Yallapur oni\nHubli'),
+        CommonTextWidget(
+            title: '${address.address}\n${address.city}, ${address.state}'),
         sizedBoxHeight05,
-        const CommonTextWidget(title: '8884981840'),
+        CommonTextWidget(title: address.pincode.toString()),
       ],
     );
   }

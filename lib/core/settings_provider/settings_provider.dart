@@ -86,7 +86,7 @@ class SettingsProvider extends ChangeNotifier {
 
         if (access != null) {
           await prefs.setString("access_token", access["access"] ?? "");
-          log("Access : ${access}");
+          log("Access : $access");
         }
 
         return true;

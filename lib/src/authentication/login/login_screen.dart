@@ -35,6 +35,7 @@ class LoginScreen extends StatelessWidget {
               ),
               sizedBoxHeight15,
               CommonTextFormWidget(
+                
                 controller: loginProvider.name,
                 title: 'Enter Your Name',
                 hint: ' Name is required',

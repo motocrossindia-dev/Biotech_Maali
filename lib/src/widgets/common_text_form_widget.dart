@@ -1,23 +1,30 @@
-import '../../import.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CommonTextFormWidget extends StatelessWidget {
   final String title;
+  final String hint;
   final TextEditingController controller;
-  final String? hint;
   final TextInputType? inputType;
   final int? maxLenght;
-  const CommonTextFormWidget(
-      {required this.controller,
-      required this.title,
-      this.hint,
-      this.inputType,
-      this.maxLenght,
-      super.key});
+  final String? Function(String?)? validator; // Optional validator
+  final EdgeInsetsGeometry? padding; // Optional padding
+
+  const CommonTextFormWidget({
+    super.key,
+    required this.title,
+    required this.hint,
+    required this.controller,
+    this.inputType,
+    this.maxLenght,
+    this.validator, // Optional validator
+    this.padding, // Optional padding
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 30.0, right: 30),
+      padding: padding ?? EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -25,23 +32,22 @@ class CommonTextFormWidget extends StatelessWidget {
             title,
             style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
           ),
-          sizedBoxHeight05,
+          const SizedBox(height: 5),
           SizedBox(
-            height: 50,
-            child: 
-            TextFormField(
+            height: maxLenght == null ? 50 : 65,
+            child: TextFormField(
+              validator: validator,
               maxLength: maxLenght,
               controller: controller,
               keyboardType: inputType,
               decoration: InputDecoration(
                 hintText: hint,
                 hintStyle: GoogleFonts.poppins(
-                    color: cBorderGrey, fontWeight: FontWeight.w300),
-                // alignLabelWithHint: true,
+                    color: Colors.grey, fontWeight: FontWeight.w300),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: cBorderGrey,
+                  borderSide: const BorderSide(
+                    color: Colors.grey,
                   ),
                 ),
               ),

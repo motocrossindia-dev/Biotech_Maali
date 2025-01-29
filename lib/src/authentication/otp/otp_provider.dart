@@ -20,7 +20,7 @@ class OtpProvider extends ChangeNotifier {
   }
 
   Future<void> validateOtp(String mobile, BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_otp == null || _otp!.length != 4) {
       log("Otp : $_otp");
       _errorMessage = 'Please enter a valid OTP';

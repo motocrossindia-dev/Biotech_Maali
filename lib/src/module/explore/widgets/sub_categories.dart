@@ -68,7 +68,7 @@ class SubCategories extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => ProductListScreen(
                             title: subcategory.name,
-                            products: [],
+                            products: const [],
                           ),
                         ),
                       );

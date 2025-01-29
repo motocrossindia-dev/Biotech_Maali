@@ -1,5 +1,4 @@
 import 'package:biotech_maali/src/module/home/model/product_model.dart';
-import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import '../../../../import.dart';
 
 class HomeProductsTileWidget extends StatelessWidget {

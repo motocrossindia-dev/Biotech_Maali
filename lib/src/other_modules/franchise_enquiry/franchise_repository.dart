@@ -6,8 +6,7 @@ import 'package:biotech_maali/src/other_modules/franchise_enquiry/model/franchis
 class FranchiseRepository {
   final Dio _dio = Dio();
 
-  static const String _baseUrl = 'YOUR_BASE_URL';
-  static const String _authTokenKey = 'auth_token';
+
 
   Future<bool> submitFranchiseInquiry(FranchiseModel franchise) async {
     log("add Franchise : ${franchise.toJson()}");

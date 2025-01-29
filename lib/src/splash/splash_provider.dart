@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/src/bottom_nav/bottom_nav_widget.dart';
-import 'package:biotech_maali/src/module/home/home_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,7 +46,7 @@ class SplashProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print("Error during token check: $e");
+      log("Error during token check: $e");
       navigationTarget = "error";
     } finally {
       isLoading = false;

@@ -41,7 +41,7 @@ class WishlistProductTileWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0, top: 8),
                 child: InkWell(
-                    onTap: addDeleteEvent, child: Icon(Icons.delete_outline)),
+                    onTap: addDeleteEvent, child: const Icon(Icons.delete_outline)),
               )
             ],
           ),

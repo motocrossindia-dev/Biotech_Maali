@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
-import 'package:biotech_maali/src/module/account/wallet/wallet_history/wallet_history_screen.dart';
 import 'package:biotech_maali/src/module/home/model/product_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
@@ -316,7 +315,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   // Navigate to wishlist
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => WishlistScreen()),
+                    MaterialPageRoute(builder: (context) => const WishlistScreen()),
                   );
                 },
               )

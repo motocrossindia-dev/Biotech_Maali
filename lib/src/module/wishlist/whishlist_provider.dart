@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
-import 'package:flutter/foundation.dart';
 import 'package:biotech_maali/src/module/wishlist/model/wishlist_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';

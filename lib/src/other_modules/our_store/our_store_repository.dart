@@ -2,7 +2,7 @@ import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/other_modules/our_store/model/our_store_model.dart';
 
 class OurStoresRepository {
-  Dio _dio = Dio();
+  final Dio _dio = Dio();
 
   Future<List<OurStoreModel>> getOurStoreModels() async {
     try {

@@ -8,6 +8,7 @@ import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enqu
 import 'package:biotech_maali/src/other_modules/our_store/our_store_provider.dart';
 import 'package:biotech_maali/src/other_modules/out_works/our_work_provider.dart';
 import 'package:biotech_maali/src/other_modules/services/services_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/change_address/change_address_provider.dart';
 import 'package:biotech_maali/src/splash/splash_provider.dart';
 
 import 'import.dart';
@@ -44,7 +45,9 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ServicesProvider()),
         ChangeNotifierProvider(create: (context) => CarrersProvider()),
         ChangeNotifierProvider(create: (context) => OurStoreProvider()),
-        ChangeNotifierProvider(create: (context)=> ContactProvider()),
+        ChangeNotifierProvider(create: (context) => ContactProvider()),
+        ChangeNotifierProvider(create: (context) => ChangeAddressProvider()),
+        
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
