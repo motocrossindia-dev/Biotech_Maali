@@ -9,7 +9,8 @@ class CustomAppBarWithSearch extends StatelessWidget
   const CustomAppBarWithSearch({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(130);
+  // Increase height to accommodate content
+  Size get preferredSize => const Size.fromHeight(140);
 
   @override
   Widget build(BuildContext context) {
@@ -20,127 +21,134 @@ class CustomAppBarWithSearch extends StatelessWidget
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
-      flexibleSpace: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Image.asset(
-                  'assets/png/biotech_logo.png',
-                  height: 42,
-                  width: 80,
-                ),
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/svg/icons/location_icon.svg',
-                      height: 22,
-                      width: 22,
-                    ),
-                    const Text(
-                      'Location 590019',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    TextButton(
-                      child: const Text(
-                        'CHANGE',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.black,
-                        ),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
+      toolbarHeight: 140, // Match with preferredSize
+      flexibleSpace: 
+      SafeArea(
+        // Add SafeArea
+        child: Column(
+          children: [
+            Padding(
+              // Adjust top padding
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset(
+                    'assets/png/biotech_logo.png',
                     height: 42,
-                    width: 251,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        filled:
-                            true, // This line is necessary to show the fill color
-                        fillColor: cSearchBox, // Your custom color
-                        hintStyle: GoogleFonts.poppins(fontSize: 12),
-                        hintText: 'Search for "plants"',
-                        prefixIcon: const Icon(Icons.search, size: 22),
-                        suffixIcon: IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/svg/icons/microphone.svg',
-                            height: 20,
-                            width: 20,
+                    width: 80,
+                  ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/svg/icons/location_icon.svg',
+                        height: 22,
+                        width: 22,
+                      ),
+                      const Text(
+                        'Location 590019',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextButton(
+                        child: const Text(
+                          'CHANGE',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.black,
                           ),
-                          onPressed: () {
-                            // Handle microphone button press
-                          },
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 16),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(30),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              // Adjust vertical padding
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 42,
+                      width: 251,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          filled:
+                              true, // This line is necessary to show the fill color
+                          fillColor: cSearchBox, // Your custom color
+                          hintStyle: GoogleFonts.poppins(fontSize: 12),
+                          hintText: 'Search for "plants"',
+                          prefixIcon: const Icon(Icons.search, size: 22),
+                          suffixIcon: IconButton(
+                            icon: SvgPicture.asset(
+                              'assets/svg/icons/microphone.svg',
+                              height: 20,
+                              width: 20,
+                            ),
+                            onPressed: () {
+                              // Handle microphone button press
+                            },
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 16),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/svg/icons/heart_unselected.svg',
-                    height: 24,
-                    width: 24,
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/svg/icons/heart_unselected.svg',
+                      height: 24,
+                      width: 24,
+                    ),
+                    onPressed: () async {
+                      final settingsProvider = context.read<SettingsProvider>();
+                      bool status = await settingsProvider
+                          .checkAccessTokenValidity(context);
+                      if (!status) {
+                        _showLoginDialog(context);
+                        return;
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WishlistScreen(),
+                        ),
+                      );
+                    },
                   ),
-                  onPressed: () async {
-                    final settingsProvider = context.read<SettingsProvider>();
-                    bool status = await settingsProvider
-                        .checkAccessTokenValidity(context);
-                    if (!status) {
-                      _showLoginDialog(context);
-                      return;
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const WishlistScreen(),
-                      ),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/svg/icons/notification_unselected.svg',
-                    height: 24,
-                    width: 24,
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/svg/icons/notification_unselected.svg',
+                      height: 24,
+                      width: 24,
+                    ),
+                    onPressed: () {
+                      // Handle notification button press
+                    },
                   ),
-                  onPressed: () {
-                    // Handle notification button press
-                  },
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

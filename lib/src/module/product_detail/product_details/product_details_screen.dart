@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
-import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
-import 'package:biotech_maali/src/module/product_detail/product_details_/widgets/planter_size_widget.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/widgets/planter_size_widget.dart';
 import '../../../../import.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -24,6 +24,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
     final productDetailsProvider = context.watch<ProductDetailsProvider>();
     return Scaffold(
       appBar: AppBar(
@@ -364,43 +366,46 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         width: 160,
                         height: 48,
                         child: CustomizableBorderColoredButton(
-                            title: 'BUY NOW',
-                            event: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const OrderSummaryScreen(),
-                                  ));
-                            }),
+                          title: 'BUY NOW',
+                          event: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const OrderSummaryScreen(),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                       SizedBox(
                         width: 160,
                         height: 48,
                         child: CustomizableButton(
-                            title: 'ADD TO CART',
-                            event: () async {
-                              bool? isAuthenticated = await context
-                                  .read<SettingsProvider>()
-                                  .checkAccessTokenValidity(context);
-                              if (isAuthenticated) {
-                                final productDetailProvider =
-                                    context.read<ProductDetailsProvider>();
-                                context.read<CartProvider>().addToCart(
-                                    product.data.product.id,
-                                    productDetailProvider.quantity,
-                                    context);
-                              } else {
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const MobileNumberScreen(),
-                                  ),
-                                  (route) => false,
-                                );
-                              }
-                            }),
+                          title: 'ADD TO CART',
+                          event: () async {
+                            bool? isAuthenticated = await context
+                                .read<SettingsProvider>()
+                                .checkAccessTokenValidity(context);
+                            if (isAuthenticated) {
+                              final productDetailProvider =
+                                  context.read<ProductDetailsProvider>();
+                              context.read<CartProvider>().addToCart(
+                                  product.data.product.id,
+                                  productDetailProvider.quantity,
+                                  context);
+                            } else {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MobileNumberScreen(),
+                                ),
+                                (route) => false,
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),

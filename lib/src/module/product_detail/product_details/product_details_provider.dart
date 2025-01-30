@@ -1,8 +1,8 @@
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
 import 'package:flutter/material.dart';
-import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
-import 'package:biotech_maali/src/module/product_detail/product_details_/product_details_repository.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsProvider extends ChangeNotifier {
@@ -28,6 +28,9 @@ class ProductDetailsProvider extends ChangeNotifier {
   int? _selectedPlanterId;
   int? _selectedColorId;
 
+  // New property for selected tab
+  int _selectedTab = 0;
+
   // Getters
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -42,6 +45,15 @@ class ProductDetailsProvider extends ChangeNotifier {
   int? get selectedPlanterSizeId => _selectedPlanterSizeId;
   int? get selectedPlanterId => _selectedPlanterId;
   int? get selectedColorId => _selectedColorId;
+
+  // Getter for selected tab
+  int get selectedTab => _selectedTab;
+
+  // Method to set selected tab
+  void setSelectedTab(int index) {
+    _selectedTab = index;
+    notifyListeners();
+  }
 
   Future<void> fetchProductDetails(int productId) async {
     _isLoading = true;

@@ -1,4 +1,4 @@
-import 'package:biotech_maali/src/module/product_detail/product_details_/model/product_details_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
 
 import '../../../../../import.dart';
 

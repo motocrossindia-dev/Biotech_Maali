@@ -71,6 +71,8 @@ class Product {
   final int? planterSizeId;
   final int? planterId;
   final int? colorId;
+  final String? whatsIncluded;
+  final String? videoLink;
 
   Product({
     required this.id,
@@ -82,6 +84,8 @@ class Product {
     this.planterSizeId,
     this.planterId,
     this.colorId,
+    this.whatsIncluded,
+    this.videoLink,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -97,6 +101,8 @@ class Product {
       planterSizeId: json['planter_size_id'],
       planterId: json['planter_id'],
       colorId: json['color_id'],
+      whatsIncluded: json['whats_included'],
+      videoLink: json['vedio_link'],
     );
   }
 }
