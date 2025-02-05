@@ -1,9 +1,6 @@
 import 'dart:developer';
-
-import 'package:biotech_maali/src/bottom_nav/bottom_nav_widget.dart';
+import 'package:biotech_maali/import.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:biotech_maali/src/splash/token_repository.dart';
 
 class SplashProvider extends ChangeNotifier {
@@ -60,11 +57,15 @@ class SplashProvider extends ChangeNotifier {
       return;
     }
     await Future.delayed(const Duration(seconds: 3));
-    Navigator.push(
+    
+    //for getting user data
+    context.read<EditProfileProvider>().fetchProfileData();
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => const BottomNavWidget(),
       ),
+      (route) => false,
     );
   }
 

@@ -355,7 +355,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Container(
+                child: 
+                Container(
                   width: double.infinity,
                   height: 60,
                   color: cWhiteColor,

@@ -34,4 +34,25 @@ class CartItemModel {
       stockStatus: json['stock_status'],
     );
   }
+
+
+  CartItemModel copyWith({
+    int? id,
+    String? name,
+    String? price,
+    int? quantity,
+    String? image,
+  }) {
+    return CartItemModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      productId: productId ?? this.productId,
+      quantity: quantity ?? this.quantity,
+      name: name ?? this.name,
+      image: image ?? this.image,
+      price: price ?? this.price,
+      shortDescription: shortDescription ?? this.shortDescription,
+      stockStatus: stockStatus ?? this.stockStatus,
+    );
+  }
 }

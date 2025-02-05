@@ -11,12 +11,16 @@ class EndUrl {
   static String getProductDetailsUrl = "${baseUrl}product/defaultProduct/";
   static String addToCartUrl = "${baseUrl}order/cart/";
   static String getCartProductListUrl = "${baseUrl}order/cart/";
+  static String updateCartProductQuantityUrl = "${baseUrl}order/cart/";
+  static String deleteCartProductUrl = "${baseUrl}order/cart/";
+
   static String getAllWhishListUrl = "${baseUrl}order/wishlist/";
   static String addOrRemoveWilistProduct = "${baseUrl}order/wishlist/";
   static String getMainCategoriesUrl = "${baseUrl}category/";
   static String getCategoryWiseSubCategoryUrl =
       "${baseUrl}category/categoryWiseSubCategory/";
-  static String getServiceListUrl = "${baseUrl}services/service_list/";
+  static String getServiceListUrl = "${baseUrl}services/publicservice_list/";
+  static String serviceEnquiryUrl = "${baseUrl}services/service_enquiry/";
   static String getStoreList = "${baseUrl}store/store_list";
   static String addContactUs = "${baseUrl}promotion/contactUs/";
   static String addFranchiseEnquiryUrl = "${baseUrl}franchise/";

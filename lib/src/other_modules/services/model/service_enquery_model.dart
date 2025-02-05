@@ -19,7 +19,7 @@ class ServiceEnquiryModel {
       'contact': contact,
       'location': location,
       'service': service,
-      'message': message,
+      'message': message
     };
   }
 }

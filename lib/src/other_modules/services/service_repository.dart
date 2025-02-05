@@ -11,15 +11,14 @@ class ServicesRepository {
   Future<List<ServiceModel>?> getServices() async {
     try {
       final response = await _dio.get(EndUrl.getServiceListUrl);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
+        log("Service List Response : ${response.data}");
         final List<dynamic> data = response.data;
         return data.map((json) => ServiceModel.fromJson(json)).toList();
-      }else{
+      } else {
         log("status code in else case : ${response.statusCode}");
         return null;
       }
-      
-      
     } on DioException catch (e) {
       throw _handleDioError(e);
     } catch (e) {
@@ -30,13 +29,20 @@ class ServicesRepository {
   Future<bool> submitEnquiry(ServiceEnquiryModel enquiry) async {
     try {
       final response = await _dio.post(
-        '/services/submit_enquiry/',
+        EndUrl.serviceEnquiryUrl,
         data: enquiry.toJson(),
       );
-      return response.statusCode == 200;
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
     } on DioException catch (e) {
+      log("Dio Exception : ${e.message}");
       throw _handleDioError(e);
     } catch (e) {
+      log("Exception : $e");
       throw Exception('Failed to submit enquiry: $e');
     }
   }

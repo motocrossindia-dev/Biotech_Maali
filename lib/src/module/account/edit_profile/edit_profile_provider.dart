@@ -37,11 +37,15 @@ class EditProfileProvider extends ChangeNotifier {
   Future<void> fetchProfileData() async {
     _isLoading = true;
     notifyListeners();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
       final profileData = await profileRepository.fetchProfile();
 
       log("Profile Data provider = ${profileData.toString()}");
+
+      prefs.setString('userName',
+          "${profileData['first_name']} ${profileData['last_name']}");
 
       firstName.text = profileData['first_name'] ?? '';
       lastName.text = profileData['last_name'] ?? '';

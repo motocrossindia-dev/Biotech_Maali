@@ -1,4 +1,5 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+import 'package:biotech_maali/src/module/account/account_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
@@ -47,6 +48,7 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => OurStoreProvider()),
         ChangeNotifierProvider(create: (context) => ContactProvider()),
         ChangeNotifierProvider(create: (context) => ChangeAddressProvider()),
+        ChangeNotifierProvider(create: (context) => AccountProvider()),
         
       ],
       child: MaterialApp(

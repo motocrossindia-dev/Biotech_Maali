@@ -8,11 +8,17 @@ class CartProvider extends ChangeNotifier {
   final CartRepository _repository = CartRepository();
   List<CartItemModel> _cartItems = [];
   bool _isLoading = false;
+  final Map<int, bool> _quantityLoadingStates = {};
+  final Map<int, bool> _deleteLoadingStates = {};
   String _error = '';
 
   List<CartItemModel> get cartItems => _cartItems;
   bool get isLoading => _isLoading;
+  
   String get error => _error;
+
+   bool isQuantityLoading(int cartId) => _quantityLoadingStates[cartId] ?? false;
+  bool isDeleteLoading(int cartId) => _deleteLoadingStates[cartId] ?? false;
 
   double get totalAmount {
     return _cartItems.fold(
@@ -36,15 +42,19 @@ class CartProvider extends ChangeNotifier {
 
   Future<bool> updateCartItemQuantity(int cartId, int quantity) async {
     try {
-      _isLoading = true;
+      _quantityLoadingStates[cartId] = true;
       notifyListeners();
 
-      final success =
-          await _repository.updateCartItemQuantity(cartId, quantity);
+      final success = await _repository.updateCartItemQuantity(cartId, quantity);
 
       if (success) {
-        await fetchCartItems(); // Refresh cart items after successful update
+        final itemIndex = _cartItems.indexWhere((item) => item.id == cartId);
+        if (itemIndex != -1) {
+          _cartItems[itemIndex] = _cartItems[itemIndex].copyWith(quantity: quantity);
+          notifyListeners();
+        }
       } else {
+        await fetchCartItems();
         Fluttertoast.showToast(
           msg: "Failed to update quantity",
           backgroundColor: Colors.red,
@@ -55,21 +65,17 @@ class CartProvider extends ChangeNotifier {
       return success;
     } catch (e) {
       _error = e.toString();
-      Fluttertoast.showToast(
-        msg: "Error updating quantity",
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      await fetchCartItems();
       return false;
     } finally {
-      _isLoading = false;
+      _quantityLoadingStates[cartId] = false;
       notifyListeners();
     }
   }
 
   Future<bool> deleteCartItem(int cartId) async {
     try {
-      _isLoading = true;
+      _deleteLoadingStates[cartId] = true;
       notifyListeners();
 
       final success = await _repository.deleteCartItem(cartId);
@@ -99,7 +105,7 @@ class CartProvider extends ChangeNotifier {
       );
       return false;
     } finally {
-      _isLoading = false;
+      _deleteLoadingStates[cartId] = false;
       notifyListeners();
     }
   }

@@ -1,3 +1,4 @@
+import 'package:biotech_maali/src/module/account/account_provider.dart';
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
 import 'package:biotech_maali/src/other_modules/carrers/carrers_screen.dart';
@@ -66,17 +67,22 @@ class AccountScreen extends StatelessWidget {
                                   width: 50,
                                 ),
                                 sizedBoxWidth15,
-                                const Column(
+                                Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CommonTextWidget(
+                                    const CommonTextWidget(
                                       title: 'Hello',
                                       fontSize: 12,
                                     ),
-                                    CommonTextWidget(
-                                      title: 'mallikjan baroodwale',
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
+                                    Consumer<AccountProvider>(
+                                      builder:
+                                          (context, accountProvider, child) {
+                                        return CommonTextWidget(
+                                          title: accountProvider.userName ,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
@@ -230,7 +236,8 @@ class AccountScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const WalletScreen(),
+                                      builder: (context) =>
+                                          const WalletScreen(),
                                     ),
                                   );
                                 },
@@ -362,7 +369,6 @@ class AccountScreen extends StatelessWidget {
                 ),
                 CustomButtonWidget(
                   onPressedCallBack: () {
-                    
                     Navigator.push(
                       context,
                       MaterialPageRoute(

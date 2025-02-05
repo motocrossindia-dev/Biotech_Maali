@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_screen.dart';
+
 import '../../../import.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
@@ -155,7 +157,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     height: 48,
                     child: CustomizableButton(
                       title: 'PAYMENT',
-                      event: () {},
+                      event: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PaymentScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

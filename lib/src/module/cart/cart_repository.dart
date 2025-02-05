@@ -19,7 +19,7 @@ class CartRepository {
     try {
       // Changed from PATCH to PUT based on the error
       final response = await dio.patch(
-        'http://www.dev.back.biotechmaali.com:8000/order/cart/', // Using full URL
+        EndUrl.updateCartProductQuantityUrl, // Using full URL
         data: {
           'cart_id': cartId,
           'quantity': quantity,
@@ -58,7 +58,7 @@ class CartRepository {
 
     try {
       final response = await dio.delete(
-        'http://www.dev.back.biotechmaali.com:8000/order/cart/$cartId/', // Using full URL with trailing slash
+        '${EndUrl.deleteCartProductUrl}$cartId/', // Using full URL with trailing slash
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -162,7 +162,7 @@ class CartRepository {
     if (token == null || token.isEmpty) {
       throw Exception('Authentication token is missing');
     }
-    
+
     try {
       final response = await dio.post(
         EndUrl.addToCartUrl,

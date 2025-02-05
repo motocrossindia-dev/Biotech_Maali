@@ -19,7 +19,7 @@ class CustomAppBarWithSearch extends StatelessWidget
       elevation: 4,
       shadowColor: Colors.black,
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent, 
       scrolledUnderElevation: 0,
       toolbarHeight: 140, // Match with preferredSize
       flexibleSpace: 
