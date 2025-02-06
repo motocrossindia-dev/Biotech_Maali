@@ -10,6 +10,6 @@ class BaseUrl {
 
 // LocaL Mayoor Server
 
-  // static const baseUrl = "http://192.168.0.127:8001/";
-  // static const baseUrlForImages = "http://192.168.0.127:8001";
+  // static const baseUrl = 'http://192.168.0.127:8001/';
+  // static const baseUrlForImages = 'http://192.168.0.127:8001';
 }
