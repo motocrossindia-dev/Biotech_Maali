@@ -10,9 +10,14 @@ import 'package:biotech_maali/src/other_modules/our_store/our_store_provider.dar
 import 'package:biotech_maali/src/other_modules/out_works/our_work_provider.dart';
 import 'package:biotech_maali/src/other_modules/services/services_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/change_address/change_address_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history.dart/order_history_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_provider.dart';
 import 'package:biotech_maali/src/splash/splash_provider.dart';
 
 import 'import.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class BiotechApp extends StatelessWidget {
   const BiotechApp({super.key});
@@ -39,7 +44,6 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => WalletProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => SettingsProvider()),
-        // ChangeNotifierProvider(create: (context) => LocalStorageService()),
         ChangeNotifierProvider(create: (context) => WishlistProvider()),
         ChangeNotifierProvider(create: (context) => FranchiseProvider()),
         ChangeNotifierProvider(create: (context) => OurWorkProvider()),
@@ -49,7 +53,12 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ContactProvider()),
         ChangeNotifierProvider(create: (context) => ChangeAddressProvider()),
         ChangeNotifierProvider(create: (context) => AccountProvider()),
-        
+        ChangeNotifierProvider(create: (context) => OrderSummaryProvider()),
+        ChangeNotifierProvider(
+            create: (context) => ChoosePaymentProvider(context)),
+        ChangeNotifierProvider(create: (context) => OrderHistoryProvider()),
+        ChangeNotifierProvider(
+            create: (context) => OrderHistoryDetailProvider())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -57,6 +66,7 @@ class BiotechApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: orderSummaryBackground),
           useMaterial3: true,
         ),
+        navigatorKey: navigatorKey,
         home: const SplashScreen(),
       ),
     );

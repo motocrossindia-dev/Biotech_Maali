@@ -31,4 +31,7 @@ class EndUrl {
   static String filterProductUrl = "${baseUrl}product/filterProduct/";
   static String getOrUpdateProfileUrl = "${baseUrl}account/profile/";
   static String addOrEditAddressUrl = "${baseUrl}account/address/";
+  static String getAddressUrl = "${baseUrl}account/address/";
+  static String addSingleProductUrl = "${baseUrl}order/placeOrder/";
+  static String orderSummaryUrl = "${baseUrl}order/orderSummary/";
 }

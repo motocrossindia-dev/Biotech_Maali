@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/product_details_shimmer.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/planter_size_widget.dart';
 import '../../../../import.dart';
 
@@ -24,8 +25,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
     final productDetailsProvider = context.watch<ProductDetailsProvider>();
     return Scaffold(
       appBar: AppBar(
@@ -43,10 +42,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
       body: Consumer<ProductDetailsProvider>(
         builder: (context, provider, child) {
-          ProductDetailModel? product = provider.productDetails;
+          if (provider.isLoading) {
+            return const ProductDetailsShimmer();
+          }
 
+          ProductDetailModel? product = provider.productDetails;
           if (product == null) {
-            return const Text('Data is not available');
+            return const Center(
+              child: Text('Data is not available'),
+            );
           }
           log("Product Id in UI: ${widget.productId}");
           ProductData productDetail = product.data;
@@ -355,8 +359,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: 
-                Container(
+                child: Container(
                   width: double.infinity,
                   height: 60,
                   color: cWhiteColor,
@@ -366,18 +369,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       SizedBox(
                         width: 160,
                         height: 48,
-                        child: CustomizableBorderColoredButton(
-                          title: 'BUY NOW',
-                          event: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const OrderSummaryScreen(),
+                        child: provider.isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: cButtonGreen,
+                                  color: cButtonRed,
+                                ),
+                              )
+                            : CustomizableBorderColoredButton(
+                                title: 'BUY NOW',
+                                event: () {
+                                  provider.placeOrder(
+                                      productDetail.product.id, context);
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ),
                       SizedBox(
                         width: 160,

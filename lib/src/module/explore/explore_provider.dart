@@ -23,7 +23,7 @@ class ExploreProvider extends ChangeNotifier {
 
   List<Subcategory> _subcategories = [];
   List<MainCategoryModel> _mainCategories = [];
-  
+
   List<Subcategory> get subcategories => _subcategories;
   List<MainCategoryModel> get maincategories => _mainCategories;
 
@@ -41,7 +41,7 @@ class ExploreProvider extends ChangeNotifier {
       notifyListeners();
 
       final response = await exploreRepository.getSubcategories(categoryId);
-      
+
       if (response == null) {
         return;
       }
@@ -65,7 +65,7 @@ class ExploreProvider extends ChangeNotifier {
 
       final categoryResponse = await exploreRepository.getMainCategories();
       _mainCategories = categoryResponse.data.categories;
-      
+
       // Set initial category and fetch its subcategories
       if (_mainCategories.isNotEmpty) {
         _selectedCategoryId = _mainCategories[0].id;
@@ -81,4 +81,19 @@ class ExploreProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // Future<void> fetchCategories() async {
+  //   try {
+  //     _isLoading = true;
+  //     notifyListeners();
+
+  //     // Your fetch logic here
+
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   } catch (e) {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
 }

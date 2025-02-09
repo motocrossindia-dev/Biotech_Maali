@@ -171,6 +171,9 @@ class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
                               bool result = await provider
                                   .changeDeliveryAddress(addressId);
                               if (result) {
+                                context
+                                    .read<OrderSummaryProvider>()
+                                    .fetchAllAddress();
                                 Navigator.pop(context);
                               } else {
                                 Fluttertoast.showToast(

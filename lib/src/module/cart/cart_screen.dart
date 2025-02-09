@@ -186,20 +186,31 @@ class _CartScreenState extends State<CartScreen> {
                 event: () => Navigator.of(context).pop(),
               ),
             ),
-            SizedBox(
-              width: 160,
-              height: 48,
-              child: CustomizableButton(
-                title: 'PLACE ORDER',
-                event: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const OrderSummaryScreen(),
-                    ),
-                  );
-                },
-              ),
+            Consumer<CartProvider>(
+              builder: (context, provider, child) {
+                return SizedBox(
+                  width: 160,
+                  height: 48,
+                  child: provider.isPlacingOrder
+                      ? const Center(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : CustomizableButton(
+                          title: 'PLACE ORDER',
+                          event: () {
+                            provider.placeOrder(context);
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => const OrderSummaryScreen(),
+                            //   ),
+                            // );
+                          },
+                        ),
+                );
+              },
             ),
           ],
         ),

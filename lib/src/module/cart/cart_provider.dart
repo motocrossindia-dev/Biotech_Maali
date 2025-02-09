@@ -1,4 +1,6 @@
+import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/cart/model/cart_item_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
 import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,13 +13,15 @@ class CartProvider extends ChangeNotifier {
   final Map<int, bool> _quantityLoadingStates = {};
   final Map<int, bool> _deleteLoadingStates = {};
   String _error = '';
+  bool _isPlacingOrder = false;
 
+  bool get isPlacingOrder => _isPlacingOrder;
   List<CartItemModel> get cartItems => _cartItems;
   bool get isLoading => _isLoading;
-  
+
   String get error => _error;
 
-   bool isQuantityLoading(int cartId) => _quantityLoadingStates[cartId] ?? false;
+  bool isQuantityLoading(int cartId) => _quantityLoadingStates[cartId] ?? false;
   bool isDeleteLoading(int cartId) => _deleteLoadingStates[cartId] ?? false;
 
   double get totalAmount {
@@ -45,12 +49,14 @@ class CartProvider extends ChangeNotifier {
       _quantityLoadingStates[cartId] = true;
       notifyListeners();
 
-      final success = await _repository.updateCartItemQuantity(cartId, quantity);
+      final success =
+          await _repository.updateCartItemQuantity(cartId, quantity);
 
       if (success) {
         final itemIndex = _cartItems.indexWhere((item) => item.id == cartId);
         if (itemIndex != -1) {
-          _cartItems[itemIndex] = _cartItems[itemIndex].copyWith(quantity: quantity);
+          _cartItems[itemIndex] =
+              _cartItems[itemIndex].copyWith(quantity: quantity);
           notifyListeners();
         }
       } else {
@@ -165,6 +171,59 @@ class CartProvider extends ChangeNotifier {
       return false;
     } finally {
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> placeOrder(BuildContext context) async {
+    try {
+      _isPlacingOrder = true;
+      notifyListeners();
+
+      final orderResponse = await _repository.placeOrderFromCart();
+
+      _isPlacingOrder = false;
+      Fluttertoast.showToast(msg: "Order initiated successfully");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrderSummaryScreen(
+            isSingleProduct: false,
+            orderData: orderResponse.data,
+          ),
+        ),
+      );
+    } on ProfileNotUpdatedException {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const EditProfileScreen(),
+        ),
+      );
+      Fluttertoast.showToast(
+        msg: "Please complete your profile first",
+        backgroundColor: Colors.red,
+      );
+    } on AddressNotUpdatedException {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AddEditAddressScreen(
+            isAddAddress: true,
+          ),
+        ),
+      );
+      Fluttertoast.showToast(
+        msg: "Please add delivery address",
+        backgroundColor: Colors.red,
+      );
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: e.toString(),
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      _isPlacingOrder = false;
       notifyListeners();
     }
   }

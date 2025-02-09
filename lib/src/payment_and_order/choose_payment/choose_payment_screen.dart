@@ -1,66 +1,69 @@
 import 'dart:developer';
 
+import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_summary_response.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../../import.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final OrderSummaryResponse orderSummaryResponse;
+  const PaymentScreen({required this.orderSummaryResponse, super.key});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  late Razorpay _razorpay;
+  // late Razorpay _razorpay;
 
-  @override
-  void initState() {
-    super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _razorpay = Razorpay();
+  //   _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+  //   _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+  //   _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  // }
 
-  @override
-  void dispose() {
-    _razorpay.clear();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _razorpay.clear();
+  //   super.dispose();
+  // }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    // Handle payment success
-    log("Payment Success: ${response.paymentId} ${response.orderId} ${response.data.toString()}");
-  }
+  // void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  //   // Handle payment success
+  //   log("Payment Success: ${response.paymentId} ${response.orderId} ${response.data.toString()}");
+  // }
 
-  void _handlePaymentError(PaymentFailureResponse response) {
-    // Handle payment error
-  }
+  // void _handlePaymentError(PaymentFailureResponse response) {
+  //   // Handle payment error
+  // }
 
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    // Handle external wallet
-  }
+  // void _handleExternalWallet(ExternalWalletResponse response) {
+  //   // Handle external wallet
+  // }
 
-  void checkout() async {
-    final options = {
-      "key": "rzp_test_zu1D9WznwNYRVG",
-      "amount": 2000,
-      "name": "Acme Corp.",
-      "description": "Fine T-Shirt",
-      "prefill": {
-        "contact": "8907444333",
-        "email": "test@razprpay.com",
-      }
-    };
+  // void checkout() async {
+  //   final options = {
+  //     "key": "rzp_test_zu1D9WznwNYRVG",
+  //     "amount": 2000,
+  //     "name": "Acme Corp.",
+  //     "description": "Fine T-Shirt",
+  //     "prefill": {
+  //       "contact": "8907444333",
+  //       "email": "test@razprpay.com",
+  //     }
+  //   };
 
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      log("Razorpay Error: ${e.toString()}");
-      debugPrint(e.toString());
-    }
-  }
+  //   try {
+  //     _razorpay.open(options);
+  //   } catch (e) {
+  //     log("Razorpay Error: ${e.toString()}");
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +179,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     child: CustomizableButton(
                       title: 'PROCEED',
                       event: () async {
-                        checkout();
+                        context.read<ChoosePaymentProvider>().initiatePayment(
+                            context, widget.orderSummaryResponse);
                       },
                     ),
                   ),

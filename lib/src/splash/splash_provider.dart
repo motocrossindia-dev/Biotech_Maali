@@ -57,7 +57,7 @@ class SplashProvider extends ChangeNotifier {
       return;
     }
     await Future.delayed(const Duration(seconds: 3));
-    
+
     //for getting user data
     context.read<EditProfileProvider>().fetchProfileData();
     Navigator.pushAndRemoveUntil(

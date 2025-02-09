@@ -1,7 +1,5 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class ChangeAddressRepository {
   Dio dio = Dio();
@@ -9,7 +7,7 @@ class ChangeAddressRepository {
   Future<dynamic> getAllAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('access_token');
-    String url = 'http://www.dev.back.biotechmaali.com:8000/account/address';
+    String url = EndUrl.getAddressUrl;
 
     try {
       final response = await dio.get(

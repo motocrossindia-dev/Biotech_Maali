@@ -2,6 +2,8 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/network/app_end_url.dart';
 import 'package:biotech_maali/src/module/cart/model/cart_item_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -193,4 +195,43 @@ class CartRepository {
       // throw Exception('Failed to add to cart: $e');
     }
   }
+
+
+    Future<OrderResponseModel> placeOrderFromCart() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+
+    if (token == null) throw Exception('Authentication token is missing');
+
+    try {
+      final response = await dio.post(
+        'http://www.dev.back.biotechmaali.com:8000/order/placeOrder/',
+        data: {
+          'order_source': 'cart',
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return OrderResponseModel.fromJson(response.data);
+      }
+
+      throw Exception(response.data['message']);
+    } catch (e) {
+      log("Place order error: ${e.toString()}");
+      if (e.toString().contains('User profile is not updated')) {
+        throw ProfileNotUpdatedException();
+      } else if (e.toString().contains('User address is not updated')) {
+        throw AddressNotUpdatedException();
+      }
+      throw Exception('Failed to place order: $e');
+    }
+  }
+
+
 }

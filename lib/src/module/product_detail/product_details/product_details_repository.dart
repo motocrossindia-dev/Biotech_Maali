@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
 
 import '../../../../import.dart';
@@ -98,4 +99,56 @@ class ProductDetailsRepository {
       throw 'Failed to remove from wishlist: ${e.message}';
     }
   }
+
+  Future<OrderResponseModel> buySingleProduct(
+      int productId, int quantity) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("access_token");
+
+      if (token == null) throw Exception('Authentication token is missing');
+
+      final response = await _dio.post(
+        EndUrl.addSingleProductUrl,
+        data: {
+          'order_source': 'product',
+          'prod_id': productId,
+          'quantity': quantity,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        log('Order response: ${response.data}');
+        return OrderResponseModel.fromJson(response.data);
+      } else if (response.statusCode == 400) {
+        throw Exception(response.data['message']);
+      }
+
+      throw Exception('Failed to place order');
+    } catch (e) {
+      if (e.toString().contains('User profile is not updated')) {
+        log("Error : ${e.toString()}");
+        throw ProfileNotUpdatedException();
+      } else if (e.toString().contains('User address is not updated')) {
+        log("Error : ${e.toString()}");
+        throw AddressNotUpdatedException();
+      }
+      log("Error : ${e.toString()}");
+      throw Exception('Error placing order: ${e.toString()}');
+    }
+  }
+}
+
+class ProfileNotUpdatedException implements Exception {
+  String message = 'User profile is not updated.';
+}
+
+class AddressNotUpdatedException implements Exception {
+  String message = 'User address is not updated.';
 }

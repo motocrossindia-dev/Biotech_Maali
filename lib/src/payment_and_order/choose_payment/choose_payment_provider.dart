@@ -1,41 +1,136 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_repository.dart';
+import 'package:biotech_maali/src/payment_and_order/choose_payment/widgets/payment_success_popup.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_summary_response.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class ChoosePaymentProvider extends ChangeNotifier {
+  final ChoosePaymentRepository _repository = ChoosePaymentRepository();
   late Razorpay _razorpay;
+  bool _isLoading = false;
+  String _error = '';
+  OrderSummaryResponse? _orderSummaryResponse;
 
-  ChoosePaymentProvider() {
+  bool get isLoading => _isLoading;
+  String get error => _error;
+  BuildContext context;
+
+  ChoosePaymentProvider(this.context) {
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    // Handle payment success
-    log("Payment Success: ${response.paymentId} ${response.orderId} ${response.data.toString()}");
+  void setOrderSummary(OrderSummaryResponse response) {
+    _orderSummaryResponse = response;
+    notifyListeners();
+  }
+
+  Future<void> initiatePayment(
+      BuildContext context, OrderSummaryResponse response) async {
+    log("order summary response : ${response.toString()}");
+
+    _orderSummaryResponse = response;
+    try {
+      _isLoading = true;
+      _error = '';
+      notifyListeners();
+
+      if (_orderSummaryResponse == null) {
+        throw Exception('Order details not found');
+      }
+
+      final response = await _repository.proceedToPayment(
+        orderId: _orderSummaryResponse!.data.orders.id,
+        paymentMethod: 'UPI',
+      );
+
+      final options = {
+        "key": "rzp_test_zu1D9WznwNYRVG",
+        "amount": (_orderSummaryResponse!.data.orders.grandTotal * 100).toInt(),
+        "name": "Biotech Maali",
+        "description": "Order #${_orderSummaryResponse!.data.orders.id}",
+        "order_id": response['id'],
+        "prefill": {
+          "contact": "8907444333",
+          "email": "customer@email.com",
+        },
+        "notes": {
+          "order_id": _orderSummaryResponse!.data.orders.id.toString(),
+        },
+        "theme": {"color": "#4CAF50"}
+      };
+
+      _razorpay.open(options);
+    } catch (e) {
+      _error = e.toString();
+      Fluttertoast.showToast(
+        msg: _error,
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    try {
+
+      
+      await _repository.verifyPayment(
+        razorpayPaymentId: response.paymentId!,
+        razorpayOrderId: response.orderId!,
+        razorpaySignature: response.signature!,
+        orderId: response.orderId!,
+        paymentMethod: 'UPI',
+      );
+
+      if (navigatorKey.currentContext != null) {
+        // Show success dialog
+        showDialog(
+          context: navigatorKey.currentContext!,
+          barrierDismissible: false,
+          builder: (context) => const PaymentSuccessPopup(),
+        );
+      } else {
+        log("Navigator context is null");
+        throw Exception("Navigation failed - context is null");
+      }
+    } catch (e) {
+      _error = e.toString();
+      log("Error in payment success handler: ${e.toString()}");
+      Fluttertoast.showToast(
+        msg: "Payment verified but navigation failed. Please restart the app.",
+        backgroundColor: Colors.orange,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    // Handle payment error
+    _error = response.message ?? 'Payment failed';
+    log("Response : ${_error.toString()}");
+    Fluttertoast.showToast(
+      msg: _error,
+      backgroundColor: Colors.red,
+    );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    // Handle external wallet
+    Fluttertoast.showToast(
+      msg: "External Wallet Selected: ${response.walletName}",
+      backgroundColor: Colors.green,
+    );
   }
 
-  void checkout() async {
-    final options = {
-      "key": "rzp_test_zu1D9WznwNYRVG",
-      "amount": 2000,
-      "name": "Acme Corp.",
-      "description": "Fine T-Shirt",
-      "prefill": {
-        "contact": "8907444333",
-        "email": "",
-      }
-    };
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
   }
 }

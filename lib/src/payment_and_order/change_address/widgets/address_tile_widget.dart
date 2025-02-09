@@ -19,9 +19,16 @@ class AddressTileWidget extends StatelessWidget {
             const CommonTextWidget(title: 'Deliver to:', color: Colors.grey),
             Row(
               children: [
-                IconButton(onPressed: (){
-                  context.read<ChangeAddressProvider>().deleteAddress(address.id);
-                }, icon: const Icon(Icons.delete)),
+                !address.isDefault
+                    ? IconButton(
+                        onPressed: () {
+                          context
+                              .read<ChangeAddressProvider>()
+                              .deleteAddress(address.id);
+                        },
+                        icon: const Icon(Icons.delete),
+                      )
+                    : const SizedBox(),
                 EditButtonWidget(
                   title: 'Edit',
                   onPressed: () {

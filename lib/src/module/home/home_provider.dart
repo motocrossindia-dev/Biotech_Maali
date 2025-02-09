@@ -73,12 +73,33 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> refreshAll() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await Future.wait([
+        fetchHomeProducts(),
+        fetchMainCategories(),
+        fetchBanners(),
+      ]);
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
   // Fetch banners
   Future<void> fetchBanners() async {
     try {
       _isBannersLoading = true;
       _bannersError = null;
-      notifyListeners();
+      // notifyListeners();
 
       _banners = await _repository.getBanners();
       _bannersError = null;
@@ -96,7 +117,7 @@ class HomeProvider extends ChangeNotifier {
     try {
       _isLoading = true;
       _error = null;
-      notifyListeners();
+      // notifyListeners();
 
       _allProducts = await _repository.getHomeProducts();
 
@@ -117,7 +138,7 @@ class HomeProvider extends ChangeNotifier {
     try {
       _isLoading = true;
       _error = null;
-      notifyListeners();
+      // notifyListeners();
 
       final categoryResponse = await _repository.getMainCategories();
       _mainCategories = categoryResponse.data.categories;
@@ -134,9 +155,6 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<void> fetchWishlistProductId() async {
-    
-
-
     try {
       _isLoading = true;
       _error = null;
@@ -158,10 +176,10 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  refreshAll() {
-    fetchBanners();
-    fetchHomeProducts();
-    fetchMainCategories();
-    fetchWishlistProductId();
-  }
+  // refreshAll() {
+  //   fetchBanners();
+  //   fetchHomeProducts();
+  //   fetchMainCategories();
+  //   fetchWishlistProductId();
+  // }
 }

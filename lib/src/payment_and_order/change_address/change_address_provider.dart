@@ -6,6 +6,8 @@ import 'change_address_repository.dart';
 import 'model/address_model.dart';
 
 class ChangeAddressProvider extends ChangeNotifier {
+
+  
   int? selectedAddressIndex;
   final List<AddressModel> addresses = [];
   final ChangeAddressRepository _repository = ChangeAddressRepository();
@@ -64,6 +66,7 @@ class ChangeAddressProvider extends ChangeNotifier {
       final response = await _repository.changeDeliveryAddress(addressId);
       if (response) {
         Fluttertoast.showToast(msg: 'Delivery address changed successfully');
+        
         return true;
       } else {
         Fluttertoast.showToast(msg: 'Failed to change delivery address');
@@ -71,11 +74,11 @@ class ChangeAddressProvider extends ChangeNotifier {
       }
     } catch (e) {
       log('Error changing delivery address: $e');
-      Fluttertoast.showToast(msg: 'An error occurred while changing the delivery address');
+      Fluttertoast.showToast(
+          msg: 'An error occurred while changing the delivery address');
       return false;
     } finally {
       await fetchAllAddress();
-      
     }
   }
 }

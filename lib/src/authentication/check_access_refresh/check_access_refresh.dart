@@ -9,7 +9,6 @@ class CheckAccessRefresh {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? access = prefs.getString("access_token");
-  
 
     try {
       final response =
@@ -32,14 +31,13 @@ class CheckAccessRefresh {
             (route) => false,
           );
         }
-      }else{
+      } else {
         return false;
       }
       return false;
     } catch (e) {
       return false;
     }
-    
   }
 
   Future<bool> checkRefreshTokenValidity() async {
@@ -55,7 +53,11 @@ class CheckAccessRefresh {
 
       if (response.statusCode == 200) {
         log("refresh data : ${response.data.toString()}");
-
+        final newAccessToken = response.data['access'];
+        if (newAccessToken != null) {
+          await prefs.setString("access_token", newAccessToken);
+          log("Access token updated successfully");
+        }
         return true;
       } else if (response.statusCode == 401) {
         return false;

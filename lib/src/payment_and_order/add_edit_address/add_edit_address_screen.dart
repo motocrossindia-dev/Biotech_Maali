@@ -234,6 +234,7 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
                                 TextFormField(
                                   controller: provider.pincodeController,
                                   keyboardType: TextInputType.number,
+                                  maxLength: 6,
                                   decoration: InputDecoration(
                                     hintText: 'Pincode',
                                     border: OutlineInputBorder(
@@ -324,54 +325,70 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
                       SizedBox(
                         width: 160,
                         height: 48,
-                        child: CustomizableButton(
-                          title: widget.isAddAddress ? 'ADD ADDRESS' : 'UPDATE',
-                          event: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Additional custom validations if needed
-                              if (provider.firstNameController.text.isEmpty ||
-                                  provider.lastNameController.text.isEmpty ||
-                                  provider.addressController.text.isEmpty ||
-                                  provider.cityController.text.isEmpty ||
-                                  provider.stateController.text.isEmpty ||
-                                  provider.pincodeController.text.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Please fill in all required fields')),
-                                );
-                                return;
-                              }
+                        child: provider.isLoading
+                            ? const Center(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : CustomizableButton(
+                                title: widget.isAddAddress
+                                    ? 'ADD ADDRESS'
+                                    : 'UPDATE',
+                                event: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    // Additional custom validations if needed
+                                    if (provider
+                                            .firstNameController.text.isEmpty ||
+                                        provider
+                                            .lastNameController.text.isEmpty ||
+                                        provider
+                                            .addressController.text.isEmpty ||
+                                        provider.cityController.text.isEmpty ||
+                                        provider.stateController.text.isEmpty ||
+                                        provider
+                                            .pincodeController.text.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Please fill in all required fields')),
+                                      );
+                                      return;
+                                    }
 
-                              // Validate pincode
-                              if (provider.pincodeController.text.length != 6) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Please enter a valid 6-digit pincode')),
-                                );
-                                return;
-                              }
+                                    // Validate pincode
+                                    if (provider
+                                            .pincodeController.text.length !=
+                                        6) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Please enter a valid 6-digit pincode')),
+                                      );
+                                      return;
+                                    }
 
-                              // Add or update address
-                              if (widget.isAddAddress) {
-                                provider.addAddress(context);
-                              } else {
-                                provider.updateAddress(
-                                    context, widget.address!.id);
-                              }
+                                    // Add or update address
+                                    if (widget.isAddAddress) {
+                                      provider.addAddress(context);
+                                    } else {
+                                      provider.updateAddress(
+                                          context, widget.address!.id);
+                                    }
 
-                              // Show success message
-                              // ScaffoldMessenger.of(context).showSnackBar(
-                              //   SnackBar(
-                              //     content: Text(widget.isAddAddress
-                              //         ? 'Address Added Successfully'
-                              //         : 'Address Updated Successfully'),
-                              //   ),
-                              // );
-                            }
-                          },
-                        ),
+                                    // Show success message
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   SnackBar(
+                                    //     content: Text(widget.isAddAddress
+                                    //         ? 'Address Added Successfully'
+                                    //         : 'Address Updated Successfully'),
+                                    //   ),
+                                    // );
+                                  }
+                                },
+                              ),
                       ),
                     ],
                   ),

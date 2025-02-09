@@ -1,9 +1,11 @@
+import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
-import 'package:flutter/material.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
-import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../../../import.dart';
 
 class ProductDetailsProvider extends ChangeNotifier {
   final ProductDetailsRepository productDetailsRepository;
@@ -18,6 +20,10 @@ class ProductDetailsProvider extends ChangeNotifier {
   int _quantity = 1;
   bool _isWishlist = false;
   bool _isLoadingWishList = false;
+
+  OrderResponseModel? _orderResponse;
+
+  OrderResponseModel? get orderResponse => _orderResponse;
 
   ProductDetailModel? _productDetails;
   List<String> _carouselProductImageList = [];
@@ -218,6 +224,59 @@ class ProductDetailsProvider extends ChangeNotifier {
 
       notifyListeners();
     }
+  }
+
+  Future<void> placeOrder(int productId, BuildContext context) async {
+    try {
+      _isLoading = true;
+      _error = '';
+      notifyListeners();
+
+      _orderResponse =
+          await productDetailsRepository.buySingleProduct(productId, quantity);
+
+      _isLoading = false;
+      Fluttertoast.showToast(msg: "Order initiated successfully");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  OrderSummaryScreen(
+            orderData: _orderResponse!.data,
+            isSingleProduct: true,
+          ),
+        ),
+      );
+
+    
+    } on ProfileNotUpdatedException {
+      _error = 'Please update your profile first';
+      Fluttertoast.showToast(msg: _error!);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+      );
+    } on AddressNotUpdatedException {
+      _error = 'Please add delivery address';
+      Fluttertoast.showToast(msg: _error!);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AddEditAddressScreen(
+            isAddAddress: true,
+          ),
+        ),
+      );
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void clearError() {
+    _error = '';
+    notifyListeners();
   }
 
   void _updateCarouselImages() {

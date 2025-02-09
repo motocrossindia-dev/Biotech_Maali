@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/explore/explore_shimmer.dart';
+
 import '../../../import.dart';
 
 class ExploreScreen extends StatelessWidget {
@@ -18,25 +20,33 @@ class ExploreScreen extends StatelessWidget {
           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w400),
         ),
       ),
-      body: const Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 650,
-                    child: ExploreCategoryWidget(),
-                  )
-                ],
+      body: Consumer<ExploreProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const ExploreScreenShimmer();
+          }
+
+          return const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 100,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 650,
+                        child: ExploreCategoryWidget(),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          SubCategories()
-        ],
+              SubCategories()
+            ],
+          );
+        },
       ),
     );
   }
