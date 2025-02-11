@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/cart/cart_shimmer.dart';
 
 import '../../../../import.dart';
 
@@ -125,22 +126,20 @@ class CartProductTile extends StatelessWidget {
               Positioned(
                 top: 0,
                 right: 0,
-                child: provider.isDeleteLoading(cartId)
-                    ? const Center(
-                        child: SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(),
+                child: SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: provider.isDeleteLoading(cartId)
+                      ? const DeleteButtonShimmer()
+                      : IconButton(
+                          onPressed: onDelete,
+                          icon: SvgPicture.asset(
+                            'assets/svg/icons/delete_icon.svg',
+                            width: 24,
+                            height: 24,
+                          ),
                         ),
-                      )
-                    : IconButton(
-                        onPressed: onDelete,
-                        icon: SvgPicture.asset(
-                          'assets/svg/icons/delete_icon.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
+                ),
               ),
             ],
           ),

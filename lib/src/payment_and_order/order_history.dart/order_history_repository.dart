@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/src/payment_and_order/order_history.dart/model.dart/order_history_model.dart';
 
 import '../../../import.dart';
@@ -21,6 +23,7 @@ class OrderHistoryRepository {
       );
 
       if (response.statusCode == 200) {
+        log("Delivery Address: ${response.data.toString()}");
         return OrderHistoryResponse.fromJson(response.data);
       }
       throw Exception('Failed to load order history');

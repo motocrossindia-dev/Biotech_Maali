@@ -2,7 +2,6 @@ import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/cart/model/cart_item_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
 import 'package:biotech_maali/src/widgets/add_to_cart.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'cart_repository.dart';
 
@@ -32,7 +31,6 @@ class CartProvider extends ChangeNotifier {
   Future<void> fetchCartItems() async {
     try {
       _isLoading = true;
-      notifyListeners();
 
       _cartItems = await _repository.getCartItems();
       _error = '';
@@ -193,6 +191,8 @@ class CartProvider extends ChangeNotifier {
           ),
         ),
       );
+
+      fetchCartItems();
     } on ProfileNotUpdatedException {
       Navigator.push(
         context,

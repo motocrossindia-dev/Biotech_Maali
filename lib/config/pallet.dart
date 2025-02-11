@@ -37,7 +37,7 @@ Color timeLineColor = const Color(0xFF0043CE);
 Color orderSummaryBackground = const Color(0xFFF4F4F4);
 
 
-// Gradient Color
+
 
 LinearGradient lgBanner = const LinearGradient(colors: [Color(0xFFFFFFFF),Color(0xFFD6D0D0)]);
 

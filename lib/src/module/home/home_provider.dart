@@ -8,10 +8,7 @@ import '../../../import.dart';
 
 class HomeProvider extends ChangeNotifier {
   HomeProvider() {
-    fetchHomeProducts();
-    fetchMainCategories();
-    fetchBanners();
-    fetchWishlistProductId();
+    refreshAll();
   }
   final HomeRepository _repository = HomeRepository();
 

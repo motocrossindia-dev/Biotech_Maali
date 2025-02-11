@@ -7,6 +7,7 @@ import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enqu
 import 'package:biotech_maali/src/other_modules/our_store/our_store_screen.dart';
 import 'package:biotech_maali/src/other_modules/out_works/our_work_screen.dart';
 import 'package:biotech_maali/src/other_modules/services/services_screen.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history.dart/order_history_screen.dart';
 
 import '../../../import.dart';
 
@@ -78,7 +79,7 @@ class AccountScreen extends StatelessWidget {
                                       builder:
                                           (context, accountProvider, child) {
                                         return CommonTextWidget(
-                                          title: accountProvider.userName ,
+                                          title: accountProvider.userName,
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
                                         );
@@ -101,32 +102,43 @@ class AccountScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/svg/icons/my_orders.svg',
-                                        height: 25,
-                                        width: 25,
-                                      ),
-                                      sizedBoxWidth20,
-                                      CommonTextWidget(
-                                        title: 'MY ORDERS',
-                                        color: cAccountText,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                  Icon(
-                                    Icons.chevron_right,
-                                    size: 30,
-                                    color: cAccountText,
-                                  )
-                                ],
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const OrderHistoryScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/svg/icons/my_orders.svg',
+                                          height: 25,
+                                          width: 25,
+                                        ),
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'MY ORDERS',
+                                          color: cAccountText,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 30,
+                                      color: cAccountText,
+                                    )
+                                  ],
+                                ),
                               ),
                               sizedBoxHeight30,
                               Row(

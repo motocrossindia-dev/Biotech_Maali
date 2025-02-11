@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+import 'package:biotech_maali/src/module/cart/cart_shimmer.dart';
 import '../../import.dart';
 
 class BottomNavWidget extends StatelessWidget {
@@ -27,9 +28,9 @@ class BottomNavWidget extends StatelessWidget {
                 future: settingsProvider.checkAccessTokenValidity(context),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CartShimmer());
                   }
-                  
+
                   final isTokenValid = snapshot.data ?? false;
                   if (isTokenValid) {
                     return const CartScreen();
@@ -46,7 +47,6 @@ class BottomNavWidget extends StatelessWidget {
           }
         },
       ),
-
       bottomNavigationBar: Consumer<BottomNavProvider>(
         builder: (context, bottomNavProvider, child) {
           return BottomNavigationBar(

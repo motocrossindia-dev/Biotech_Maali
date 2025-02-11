@@ -6,7 +6,8 @@ class PriceDetailRow extends StatelessWidget {
   final Color? color;
   final bool isBold;
 
-  const PriceDetailRow({super.key, 
+  const PriceDetailRow({
+    super.key,
     required this.title,
     required this.amount,
     this.color,

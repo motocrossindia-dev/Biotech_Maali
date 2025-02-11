@@ -1,4 +1,5 @@
 import 'package:biotech_maali/core/network/app_base_url.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history.dart/model.dart/order_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'order_history_detail_provider.dart';
@@ -10,6 +11,11 @@ class OrderHistoryDetailScreen extends StatefulWidget {
   final String orderDate;
   final double grandTotal;
   final String? paymentMethod;
+  final DeliveryAddress? deliveryAddress;
+  final String customerName;
+  final double totalPrice;
+  final double totalDiscount;
+  final String deliveryOption;
 
   const OrderHistoryDetailScreen({
     required this.orderId,
@@ -17,6 +23,11 @@ class OrderHistoryDetailScreen extends StatefulWidget {
     required this.orderDate,
     required this.grandTotal,
     this.paymentMethod,
+    this.deliveryAddress,
+    required this.customerName,
+    required this.totalPrice,
+    required this.totalDiscount,
+    required this.deliveryOption,
     super.key,
   });
 
@@ -26,6 +37,8 @@ class OrderHistoryDetailScreen extends StatefulWidget {
 }
 
 class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
+  final Color borderColor = Colors.grey;
+
   @override
   void initState() {
     super.initState();
@@ -38,33 +51,34 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order #${widget.orderNumber}'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.file_download),
-            onPressed: () {
-              // TODO: Implement invoice download
-            },
-          ),
-        ],
+        title: Text('Order #${widget.orderNumber}',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.file_download),
+        //     onPressed: () {}, // TODO: Implement invoice download
+        //   ),
+        // ],
       ),
       body: Consumer<OrderHistoryDetailProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (provider.error != null) {
-            return Center(child: Text(provider.error!));
+            return Center(
+                child: Text(provider.error!,
+                    style: const TextStyle(color: Colors.red)));
           }
-
           return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildOrderSummaryCard(),
-                _buildShippingInformationCard(),
-                _buildOrderItemsList(provider),
+                _buildCard('Order Summary', _buildOrderSummaryContent()),
+                _buildCard(
+                    'Shipping Information', _buildShippingInformationContent()),
+                _buildCard('Order Items', _buildOrderItemsList(provider)),
               ],
             ),
           );
@@ -73,132 +87,115 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
     );
   }
 
-  Widget _buildOrderSummaryCard() {
+  Widget _buildCard(String title, Widget child) {
     return Card(
-      margin: const EdgeInsets.all(16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(color: borderColor, width: 1.5),
+      ),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Order Summary',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
-            _buildInfoRow('Order Date', widget.orderDate),
-            _buildInfoRow(
-                'Payment Method', widget.paymentMethod ?? 'Not defined'),
-            _buildInfoRow('Order Status', 'Processing'),
-            const Divider(),
-            _buildInfoRow('Total Amount', '₹${widget.grandTotal}',
-                isBold: true),
+            const SizedBox(height: 12),
+            child,
           ],
         ),
       ),
     );
   }
 
-  Widget _buildShippingInformationCard() {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Shipping Information',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildInfoRow('Name', 'John Doe'),
-            _buildInfoRow('Address', '123 Main St, City, State'),
-            _buildInfoRow('Phone', '+1234567890'),
-            const Divider(),
-            _buildInfoRow('Delivery Status', 'Out for Delivery'),
-            _buildInfoRow('Expected Delivery', '2-3 Business Days'),
-          ],
-        ),
-      ),
+  Widget _buildOrderSummaryContent() {
+    return Column(
+      children: [
+        _buildInfoRow('Order Number', widget.orderNumber),
+        _buildInfoRow('Order Date', widget.orderDate),
+        _buildInfoRow('Payment Method', widget.paymentMethod ?? 'Not defined'),
+        _buildInfoRow('Delivery Option', widget.deliveryOption),
+        const Divider(),
+        _buildInfoRow('Total Price', '₹${widget.totalPrice}'),
+        _buildInfoRow('Discount', '- ₹${widget.totalDiscount}',
+            valueColor: Colors.green),
+        _buildInfoRow('Grand Total', '₹${widget.grandTotal}', isBold: true),
+      ],
+    );
+  }
+
+  Widget _buildShippingInformationContent() {
+    return Column(
+      children: [
+        _buildInfoRow('Customer Name', widget.customerName),
+        if (widget.deliveryAddress != null) ...[
+          const Divider(),
+          _buildInfoRow('Address', widget.deliveryAddress!.address),
+          _buildInfoRow('City', widget.deliveryAddress!.city),
+          _buildInfoRow('State', widget.deliveryAddress!.state),
+          _buildInfoRow('Pincode', widget.deliveryAddress!.pincode.toString()),
+        ] else
+          const Center(
+              child: Text('Delivery address not available',
+                  style: TextStyle(
+                      color: Colors.grey, fontStyle: FontStyle.italic))),
+      ],
     );
   }
 
   Widget _buildOrderItemsList(OrderHistoryDetailProvider provider) {
     final orderItems = provider.orderDetails?.data.orderItems ?? [];
-
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'Order Items',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: orderItems.length,
-          itemBuilder: (context, index) {
-            return _buildOrderItemCard(orderItems[index]);
-          },
-        ),
-      ],
+      children: orderItems.map((item) => _buildOrderItemCard(item)).toList(),
     );
   }
 
   Widget _buildOrderItemCard(OrderItem item) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(color: borderColor, width: 1.5),
+      ),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(4),
               child: Image.network(
                 '${BaseUrl.baseUrlForImages}${item.image}',
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 80,
-                    height: 80,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.image_not_supported),
-                  );
-                },
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.grey[300],
+                  child: const Icon(
+                    Icons.image_not_supported),
+                ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'SKU: ${item.sku}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
+                  Text('SKU: ${item.sku}',
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   Text('Quantity: ${item.quantity}'),
                   Text('Price: ₹${item.price}'),
                   if (item.discount > 0)
-                    Text(
-                      'Discount: ₹${item.discount}',
-                      style: const TextStyle(color: Colors.green),
-                    ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Total: ₹${item.total}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
+                    Text('Discount: ₹${item.discount}',
+                        style: const TextStyle(color: Colors.green)),
+                  const SizedBox(height: 4),
+                  Text('Total: ₹${item.total}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16)),
                 ],
               ),
             ),
@@ -208,19 +205,18 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {bool isBold = false}) {
+  Widget _buildInfoRow(String label, String value,
+      {bool isBold = false, Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
+          Text(label, style: const TextStyle(color: Colors.grey)),
+          Text(value,
+              style: TextStyle(
+                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+                  color: valueColor)),
         ],
       ),
     );

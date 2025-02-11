@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/cart/cart_shimmer.dart';
 import 'package:biotech_maali/src/module/cart/widgets/cart_product_tile.dart';
 import 'package:biotech_maali/src/module/cart/widgets/delivery_changesrow.dart';
 import 'package:biotech_maali/src/module/cart/widgets/price_detailrow.dart';
@@ -16,9 +17,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CartProvider>().fetchCartItems();
-    });
+    context.read<CartProvider>().fetchCartItems();
   }
 
   @override
@@ -38,9 +37,9 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
-          if (cartProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          // if (cartProvider.isLoading || cartProvider.isPlacingOrder) {
+          //   return const CartShimmer();
+          // }
 
           if (cartProvider.error.isNotEmpty) {
             return Center(
@@ -192,22 +191,10 @@ class _CartScreenState extends State<CartScreen> {
                   width: 160,
                   height: 48,
                   child: provider.isPlacingOrder
-                      ? const Center(
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
+                      ? const ButtonShimmer() // Use ButtonShimmer instead of CartShimmer
                       : CustomizableButton(
                           title: 'PLACE ORDER',
-                          event: () {
-                            provider.placeOrder(context);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => const OrderSummaryScreen(),
-                            //   ),
-                            // );
-                          },
+                          event: () => provider.placeOrder(context),
                         ),
                 );
               },

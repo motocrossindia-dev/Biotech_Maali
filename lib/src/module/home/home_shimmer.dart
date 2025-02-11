@@ -13,12 +13,6 @@ class HomeShimmer extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Banner Shimmer
-            Container(
-              height: 200,
-              color: Colors.white,
-            ),
-            sizedBoxHeight20,
             // Categories Shimmer
             SizedBox(
               height: 100,
@@ -48,6 +42,13 @@ class HomeShimmer extends StatelessWidget {
                 ),
               ),
             ),
+            // Banner Shimmer
+            Container(
+              height: 200,
+              color: Colors.white,
+            ),
+            sizedBoxHeight20,
+
             // Featured Products Shimmer
             ListView.builder(
               shrinkWrap: true,

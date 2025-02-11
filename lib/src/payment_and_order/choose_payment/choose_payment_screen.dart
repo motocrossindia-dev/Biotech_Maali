@@ -15,55 +15,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  // late Razorpay _razorpay;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _razorpay = Razorpay();
-  //   _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-  //   _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-  //   _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  // }
-
-  // @override
-  // void dispose() {
-  //   _razorpay.clear();
-  //   super.dispose();
-  // }
-
-  // void _handlePaymentSuccess(PaymentSuccessResponse response) {
-  //   // Handle payment success
-  //   log("Payment Success: ${response.paymentId} ${response.orderId} ${response.data.toString()}");
-  // }
-
-  // void _handlePaymentError(PaymentFailureResponse response) {
-  //   // Handle payment error
-  // }
-
-  // void _handleExternalWallet(ExternalWalletResponse response) {
-  //   // Handle external wallet
-  // }
-
-  // void checkout() async {
-  //   final options = {
-  //     "key": "rzp_test_zu1D9WznwNYRVG",
-  //     "amount": 2000,
-  //     "name": "Acme Corp.",
-  //     "description": "Fine T-Shirt",
-  //     "prefill": {
-  //       "contact": "8907444333",
-  //       "email": "test@razprpay.com",
-  //     }
-  //   };
-
-  //   try {
-  //     _razorpay.open(options);
-  //   } catch (e) {
-  //     log("Razorpay Error: ${e.toString()}");
-  //     debugPrint(e.toString());
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
