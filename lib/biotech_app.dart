@@ -60,7 +60,9 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => OrderHistoryDetailProvider())
       ],
-      child: MaterialApp(
+      child: 
+      
+      MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: orderSummaryBackground),

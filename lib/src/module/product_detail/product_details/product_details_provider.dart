@@ -167,6 +167,8 @@ class ProductDetailsProvider extends ChangeNotifier {
         final ProductDetailModel mergedDetails = ProductDetailModel(
           message: filteredDetails.message,
           data: ProductData(
+            productWeights: filteredDetails.data.productWeights,
+            productType: filteredDetails.data.productType,
             product: filteredDetails.data.product,
             productSizes: filteredDetails.data.productSizes,
             productPlanterSizes: filteredDetails.data.productPlanterSizes,

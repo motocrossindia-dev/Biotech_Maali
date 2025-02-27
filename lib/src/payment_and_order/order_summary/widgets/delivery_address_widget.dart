@@ -45,9 +45,9 @@ class DeliveryAddressWidget extends StatelessWidget {
                       color: cLightGreyHomeWork,
                       borderRadius: BorderRadius.circular(2)),
                   child: Padding(
-                    padding: EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: CommonTextWidget(
-                      title: '${selectedAddress.addressType}',
+                      title: selectedAddress.addressType,
                       fontSize: 12,
                     ),
                   ),

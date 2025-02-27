@@ -22,7 +22,7 @@ class MobileNumberProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response =
+      
           await _mobileNumberRepository.registerWithMobile(_mobileNumber.text);
       _isLoading = false;
       notifyListeners();

@@ -4,9 +4,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:biotech_maali/src/splash/token_repository.dart';
 
 class SplashProvider extends ChangeNotifier {
-  SplashProvider({required BuildContext context}) {}
-  bool isLoading = true; // To show the loading spinner initially
-  String navigationTarget = ""; // "home", "login", or "error"
+  SplashProvider({required BuildContext context});
+  bool isLoading = true;
+  String navigationTarget = "";
 
   final TokenRepository _tokenRepository = TokenRepository();
 

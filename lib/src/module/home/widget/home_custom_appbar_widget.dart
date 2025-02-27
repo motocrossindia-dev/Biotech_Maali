@@ -1,4 +1,5 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+import 'package:biotech_maali/src/module/location_popup/location_pincode_popup.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
@@ -19,11 +20,10 @@ class CustomAppBarWithSearch extends StatelessWidget
       elevation: 4,
       shadowColor: Colors.black,
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.transparent, 
+      surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
       toolbarHeight: 140, // Match with preferredSize
-      flexibleSpace: 
-      SafeArea(
+      flexibleSpace: SafeArea(
         // Add SafeArea
         child: Column(
           children: [
@@ -57,7 +57,14 @@ class CustomAppBarWithSearch extends StatelessWidget
                             color: Colors.black,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const LocationPincodePopup(),
+                              ));
+                        },
                       ),
                     ],
                   ),

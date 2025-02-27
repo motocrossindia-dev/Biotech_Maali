@@ -10,24 +10,28 @@ class ProductDetailModel {
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
     return ProductDetailModel(
       message: json['message'] ?? '',
-      data: ProductData.fromJson(json['data']),
+      data: ProductData.fromJson(json['data'] ?? {}),
     );
   }
 }
 
 class ProductData {
+  final String productType;
   final Product product;
   final List<ProductSize> productSizes;
   final List<ProductPlanterSize> productPlanterSizes;
+  final List<ProductWeight> productWeights;
   final List<ProductPlanter> productPlanters;
   final List<ProductColor> productColors;
-  final ProductRating? productRating; // Optional
-  final List<ProductReview>? productReviews; // Optional
+  final ProductRating? productRating;
+  final List<ProductReview>? productReviews;
 
   ProductData({
+    required this.productType,
     required this.product,
     required this.productSizes,
     required this.productPlanterSizes,
+    required this.productWeights,
     required this.productPlanters,
     required this.productColors,
     this.productRating,
@@ -36,17 +40,21 @@ class ProductData {
 
   factory ProductData.fromJson(Map<String, dynamic> json) {
     return ProductData(
-      product: Product.fromJson(json['product']),
-      productSizes: (json['product_sizes'] as List)
+      productType: json['product_type'] ?? '',
+      product: Product.fromJson(json['product'] ?? {}),
+      productSizes: (json['product_sizes'] as List? ?? [])
           .map((e) => ProductSize.fromJson(e))
           .toList(),
-      productPlanterSizes: (json['product_planter_sizes'] as List)
+      productPlanterSizes: (json['product_planter_sizes'] as List? ?? [])
           .map((e) => ProductPlanterSize.fromJson(e))
           .toList(),
-      productPlanters: (json['product_planters'] as List)
+      productWeights: (json['product_weights'] as List? ?? [])
+          .map((e) => ProductWeight.fromJson(e))
+          .toList(),
+      productPlanters: (json['product_planters'] as List? ?? [])
           .map((e) => ProductPlanter.fromJson(e))
           .toList(),
-      productColors: (json['product_colors'] as List)
+      productColors: (json['product_colors'] as List? ?? [])
           .map((e) => ProductColor.fromJson(e))
           .toList(),
       productRating: json['product_rating'] != null
@@ -63,7 +71,7 @@ class ProductData {
 
 class Product {
   final int id;
-  final String price;
+  final double price;
   final List<ProductImage> images;
   final String shortDescription;
   final String mainProductName;
@@ -90,20 +98,42 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      price: json['price'] ?? '',
-      images: (json['images'] as List)
+      id: _parseId(json['id']),
+      price: _parseDouble(json['price']),
+      images: (json['images'] as List? ?? [])
           .map((e) => ProductImage.fromJson(e))
           .toList(),
       shortDescription: json['short_description'] ?? '',
       mainProductName: json['main_product_name'] ?? '',
-      sizeId: json['size_id'],
-      planterSizeId: json['planter_size_id'],
-      planterId: json['planter_id'],
-      colorId: json['color_id'],
+      sizeId: _parseNullableId(json['size_id']),
+      planterSizeId: _parseNullableId(json['planter_size_id']),
+      planterId: _parseNullableId(json['planter_id']),
+      colorId: _parseNullableId(json['color_id']),
       whatsIncluded: json['whats_included'],
-      videoLink: json['vedio_link'],
+      videoLink: json['video_link'], // Fixed typo from 'vedio_link'
     );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  static int? _parseNullableId(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is int) return value.toDouble();
+    if (value is double) return value;
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 }
 
@@ -114,6 +144,41 @@ class ProductImage {
 
   factory ProductImage.fromJson(Map<String, dynamic> json) {
     return ProductImage(image: json['image'] ?? '');
+  }
+}
+
+class ProductWeight {
+  final int id;
+  final int sizeGrams;
+  final bool status;
+
+  ProductWeight({
+    required this.id,
+    required this.sizeGrams,
+    required this.status,
+  });
+
+  factory ProductWeight.fromJson(Map<String, dynamic> json) {
+    return ProductWeight(
+      id: _parseId(json['id']),
+      sizeGrams: _parseIntValue(json['size_grams']),
+      status: json['status'] ?? false,
+    );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  static int _parseIntValue(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    if (value is double) return value.toInt();
+    return 0;
   }
 }
 
@@ -130,10 +195,17 @@ class ProductSize {
 
   factory ProductSize.fromJson(Map<String, dynamic> json) {
     return ProductSize(
-      id: json['id'],
-      name: json['name'],
-      size: json['size'],
+      id: _parseId(json['id']),
+      name: json['name'] ?? '',
+      size: json['size'] ?? '',
     );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 }
 
@@ -150,10 +222,17 @@ class ProductPlanterSize {
 
   factory ProductPlanterSize.fromJson(Map<String, dynamic> json) {
     return ProductPlanterSize(
-      id: json['id'],
-      name: json['name'],
-      size: json['size'],
+      id: _parseId(json['id']),
+      name: json['name'] ?? '',
+      size: json['size'] ?? '',
     );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 }
 
@@ -168,9 +247,16 @@ class ProductPlanter {
 
   factory ProductPlanter.fromJson(Map<String, dynamic> json) {
     return ProductPlanter(
-      id: json['id'],
-      name: json['name'],
+      id: _parseId(json['id']),
+      name: json['name'] ?? '',
     );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 }
 
@@ -187,10 +273,17 @@ class ProductColor {
 
   factory ProductColor.fromJson(Map<String, dynamic> json) {
     return ProductColor(
-      id: json['id'],
-      colorName: json['color_name'],
-      colorCode: json['color_code'],
+      id: _parseId(json['id']),
+      colorName: json['color_name'] ?? '',
+      colorCode: json['color_code'] ?? '',
     );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 }
 
@@ -207,9 +300,9 @@ class ProductRating {
 
   factory ProductRating.fromJson(Map<String, dynamic> json) {
     return ProductRating(
-      avgRating: (json['avg_rating'] as num).toDouble(),
-      numRatings: json['num_ratings'],
-      starsGiven: (json['stars_given'] as List)
+      avgRating: (json['avg_rating'] as num?)?.toDouble() ?? 0.0,
+      numRatings: json['num_ratings'] ?? 0,
+      starsGiven: (json['stars_given'] as List? ?? [])
           .map((e) => StarRating.fromJson(e))
           .toList(),
     );
@@ -227,8 +320,8 @@ class StarRating {
 
   factory StarRating.fromJson(Map<String, dynamic> json) {
     return StarRating(
-      roundedRating: (json['rounded_rating'] as num).toDouble(),
-      count: json['count'],
+      roundedRating: (json['rounded_rating'] as num?)?.toDouble() ?? 0.0,
+      count: json['count'] ?? 0,
     );
   }
 }
@@ -252,12 +345,19 @@ class ProductReview {
 
   factory ProductReview.fromJson(Map<String, dynamic> json) {
     return ProductReview(
-      id: json['id'],
-      userId: json['user_id'],
-      userName: json['user_name'],
-      productReview: json['product_review'],
-      date: json['date'],
-      latestRating: (json['latest_rating'] as num).toDouble(),
+      id: _parseId(json['id']),
+      userId: _parseId(json['user_id']),
+      userName: json['user_name'] ?? '',
+      productReview: json['product_review'] ?? '',
+      date: json['date'] ?? '',
+      latestRating: (json['latest_rating'] as num?)?.toDouble() ?? 0.0,
     );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 }

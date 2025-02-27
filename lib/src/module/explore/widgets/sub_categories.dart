@@ -7,6 +7,7 @@ class SubCategories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String imageBaseUrl = BaseUrl.baseUrlForImages;
     return Consumer<ExploreProvider>(
       builder: (context, provider, child) {
         if (provider.isLoading) {
@@ -63,12 +64,14 @@ class SubCategories extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: () {
+                      provider.fetchSubcategoryProducts(
+                          subcategory.name, subcategory.id, context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductListScreen(
+                            products: provider.products,
                             title: subcategory.name,
-                            products: const [],
                           ),
                         ),
                       );
@@ -90,9 +93,10 @@ class SubCategories extends StatelessWidget {
                                   top: Radius.circular(8),
                                   bottom: Radius.circular(8),
                                 ),
-                                image: const DecorationImage(
+                                image: DecorationImage(
                                   image: NetworkImage(
-                                      'https://i.pinimg.com/564x/62/db/7b/62db7b0f2ac03bbf8a9b66722754d71e.jpg'),
+                                    imageBaseUrl + subcategory.image,
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                               ),

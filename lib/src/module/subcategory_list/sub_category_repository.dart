@@ -4,13 +4,9 @@ import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/subcategory_list/model/subcategory_model.dart';
 
 class SubCategoryRepository {
-
-
   final Dio _dio = Dio();
 
-   Future<SubcategoryModel> getSubcategories() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? token = prefs.getString("access_token");
+  Future<SubcategoryModel> getSubcategories() async {
     try {
       final response = await _dio.get(
         EndUrl.getCategoryWiseSubCategoryUrl,
@@ -50,6 +46,4 @@ class SubCategoryRepository {
       }
     }
   }
-
-
 }

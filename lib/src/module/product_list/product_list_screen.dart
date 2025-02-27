@@ -4,6 +4,7 @@ import 'package:biotech_maali/src/module/home/model/product_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
+import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
 
 import '../../../import.dart';
 
@@ -19,6 +20,7 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   String _selectedOption = 'Default';
+  bool _isLoading = true;
 
   final List<String> _sortOptions = [
     'Default',
@@ -30,6 +32,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
     'Alphabetically A-Z',
     'Alphabetically Z-A',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,82 +70,87 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       body: Stack(
         children: [
-          SingleChildScrollView(
-            child: Consumer<HomeProvider>(
-              builder: (context, provider, child) {
-                return Column(
-                  children: [
-                    const CustomBannerWidget(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: widget.products.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 15.0,
-                          mainAxisSpacing: 15.0,
-                          childAspectRatio: 0.48,
-                        ),
-                        itemBuilder: (context, index) {
-                          ProductModel productDetails = widget.products[index];
-                          bool isWishlistId = provider.mainWishlistProductId
-                              .contains(productDetails.id);
+          _isLoading
+              ? const ProductListShimmer()
+              : SingleChildScrollView(
+                  child: Consumer<HomeProvider>(
+                    builder: (context, provider, child) {
+                      return Column(
+                        children: [
+                          const CustomBannerWidget(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: widget.products.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 15.0,
+                                mainAxisSpacing: 15.0,
+                                childAspectRatio: 0.48,
+                              ),
+                              itemBuilder: (context, index) {
+                                ProductModel productDetails =
+                                    widget.products[index];
+                                bool isWishlistId = provider
+                                    .mainWishlistProductId
+                                    .contains(productDetails.id);
 
-                          return InkWell(
-                            onTap: () {
-                              context
-                                  .read<ProductDetailsProvider>()
-                                  .fetchProductDetails(productDetails.id);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductDetailsScreen(
-                                    productId: productDetails.id,
+                                return InkWell(
+                                  onTap: () {
+                                    context
+                                        .read<ProductDetailsProvider>()
+                                        .fetchProductDetails(productDetails.id);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductDetailsScreen(
+                                          productId: productDetails.id,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: ProductTileWidget(
+                                    mainProdId: productDetails.id,
+                                    productTitle: productDetails.name,
+                                    productImage: productDetails.image,
+                                    tempImage:
+                                        'assets/png/products/sample_product.png',
+                                    discountAmount: productDetails.price,
+                                    actualAmount: productDetails.price,
+                                    rating: 4.5,
+                                    home: true,
+                                    isWishlist: isWishlistId,
+                                    addToFavouriteEvent: () async {
+                                      final settingsProvider =
+                                          context.read<SettingsProvider>();
+                                      bool isAuth = await settingsProvider
+                                          .checkAccessTokenValidity(context);
+
+                                      if (!isAuth) {
+                                        _showLoginDialog(context);
+                                        return;
+                                      }
+                                      final wishlistProvider =
+                                          context.read<WishlistProvider>();
+                                      wishlistProvider
+                                          .addOrRemoveWhishlistMainProduct(
+                                              productDetails.id, context);
+                                    },
                                   ),
-                                ),
-                              );
-                            },
-                            child: ProductTileWidget(
-                              mainProdId: productDetails.id,
-                              productTitle: productDetails.name,
-                              productImage: productDetails.image,
-                              tempImage:
-                                  'assets/png/products/sample_product.png',
-                              discountAmount: productDetails.price,
-                              actualAmount: productDetails.price,
-                              rating: 4.5,
-                              home: true,
-                              isWishlist: isWishlistId,
-                              addToFavouriteEvent: () async {
-                                final settingsProvider =
-                                    context.read<SettingsProvider>();
-                                bool isAuth = await settingsProvider
-                                    .checkAccessTokenValidity(context);
-
-                                if (!isAuth) {
-                                  _showLoginDialog(context);
-                                  return;
-                                }
-                                final wishlistProvider =
-                                    context.read<WishlistProvider>();
-                                wishlistProvider
-                                    .addOrRemoveWhishlistMainProduct(
-                                        productDetails.id, context);
+                                );
                               },
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                    sizedBoxHeight70,
-                  ],
-                );
-              },
-            ),
-          ),
+                          ),
+                          sizedBoxHeight70,
+                        ],
+                      );
+                    },
+                  ),
+                ),
           Positioned(
             bottom: 0,
             left: 0,
@@ -181,8 +203,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(
                             8), // Round corners for the ripple effect
-                        splashColor: cButtonGreen
-                            .withOpacity(0.3), 
+                        splashColor: cButtonGreen.withOpacity(0.3),
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
                           log('message');
@@ -315,7 +336,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   // Navigate to wishlist
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const WishlistScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const WishlistScreen()),
                   );
                 },
               )

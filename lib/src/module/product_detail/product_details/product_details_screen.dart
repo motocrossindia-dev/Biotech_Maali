@@ -172,111 +172,174 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                           sizedBoxHeight10,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CommonTextWidget(
-                                  title: 'Select Plant Size'),
-                              sizedBoxHeight05,
-                              SizedBox(
-                                height:
-                                    50, // Adjust height based on your ProductSizeWidget
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: productDetail.productSizes.length,
-                                  itemBuilder: (context, index) {
-                                    ProductSize productSize =
-                                        productDetail.productSizes[index];
+                          productDetail.productWeights.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CommonTextWidget(
+                                        title: 'Select Product Waight'),
+                                    sizedBoxHeight05,
+                                    SizedBox(
+                                      height:
+                                          50, // Adjust height based on your ProductSizeWidget
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount:
+                                            productDetail.productWeights.length,
+                                        itemBuilder: (context, index) {
+                                          ProductWeight productWeight =
+                                              productDetail
+                                                  .productWeights[index];
 
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: ProductSizeWidget(
-                                        id: productSize.id,
-                                        name: productSize.size,
-                                        event: () {
-                                          provider.updateSize(productSize.id,
-                                              productDetail.product.id);
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: ProductSizeWidget(
+                                              id: productWeight.id,
+                                              name: productWeight.sizeGrams
+                                                  .toString(),
+                                              event: () {
+                                                provider.updateSize(
+                                                    productWeight.id,
+                                                    productDetail.product.id);
+                                              },
+                                            ),
+                                          );
                                         },
                                       ),
-                                    );
-                                  },
+                                    ),
+                                    sizedBoxHeight20,
+                                  ],
+                                )
+                              : const SizedBox(
+                                  height: 0,
                                 ),
-                              )
-                            ],
-                          ),
-                          sizedBoxHeight20,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CommonTextWidget(
-                                  title: 'Select Planter Size'),
-                              sizedBoxHeight05,
-                              SizedBox(
-                                height:
-                                    50, // Adjust height based on your ProductSizeWidget
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount:
-                                      productDetail.productPlanterSizes.length,
-                                  itemBuilder: (context, index) {
-                                    ProductPlanterSize productPlanterSizes =
-                                        productDetail
-                                            .productPlanterSizes[index];
+                          productDetail.productSizes.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CommonTextWidget(
+                                        title: 'Select Plant Size'),
+                                    sizedBoxHeight05,
+                                    SizedBox(
+                                      height:
+                                          50, // Adjust height based on your ProductSizeWidget
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount:
+                                            productDetail.productSizes.length,
+                                        itemBuilder: (context, index) {
+                                          ProductSize productSize =
+                                              productDetail.productSizes[index];
 
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: PlanterSizeWidget(
-                                        id: productPlanterSizes.id,
-                                        name: productPlanterSizes.size,
-                                        event: () {
-                                          provider.updatePlanterSize(
-                                              productPlanterSizes.id,
-                                              productDetail.product.id);
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: ProductSizeWidget(
+                                              id: productSize.id,
+                                              name: productSize.size,
+                                              event: () {
+                                                provider.updateSize(
+                                                    productSize.id,
+                                                    productDetail.product.id);
+                                              },
+                                            ),
+                                          );
                                         },
                                       ),
-                                    );
-                                  },
+                                    ),
+                                    sizedBoxHeight10,
+                                  ],
+                                )
+                              : const SizedBox(
+                                  height: 0,
                                 ),
-                              )
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CommonTextWidget(title: 'Select Planter'),
-                              sizedBoxHeight05,
-                              SizedBox(
-                                height:
-                                    50, // Adjust height based on your ProductSizeWidget
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount:
-                                      productDetail.productPlanters.length,
-                                  itemBuilder: (context, index) {
-                                    ProductPlanter productPlanter =
-                                        productDetail.productPlanters[index];
+                          productDetail.productPlanterSizes.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CommonTextWidget(
+                                        title: 'Select Planter Size'),
+                                    sizedBoxHeight05,
+                                    SizedBox(
+                                      height:
+                                          50, // Adjust height based on your ProductSizeWidget
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: productDetail
+                                            .productPlanterSizes.length,
+                                        itemBuilder: (context, index) {
+                                          ProductPlanterSize
+                                              productPlanterSizes =
+                                              productDetail
+                                                  .productPlanterSizes[index];
 
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: PlanterWidget(
-                                        id: productPlanter.id,
-                                        name: productPlanter.name,
-                                        event: () {
-                                          provider.updatePlanter(
-                                              productPlanter.id,
-                                              productDetail.product.id);
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: PlanterSizeWidget(
+                                              id: productPlanterSizes.id,
+                                              name: productPlanterSizes.size,
+                                              event: () {
+                                                provider.updatePlanterSize(
+                                                    productPlanterSizes.id,
+                                                    productDetail.product.id);
+                                              },
+                                            ),
+                                          );
                                         },
                                       ),
-                                    );
-                                  },
+                                    ),
+                                    sizedBoxHeight10,
+                                  ],
+                                )
+                              : const SizedBox(
+                                  height: 0,
                                 ),
-                              )
-                            ],
-                          ),
+                          productDetail.productPlanters.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CommonTextWidget(
+                                        title: 'Select Planter'),
+                                    sizedBoxHeight05,
+                                    SizedBox(
+                                      height:
+                                          50, // Adjust height based on your ProductSizeWidget
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: productDetail
+                                            .productPlanters.length,
+                                        itemBuilder: (context, index) {
+                                          ProductPlanter productPlanter =
+                                              productDetail
+                                                  .productPlanters[index];
+
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: PlanterWidget(
+                                              id: productPlanter.id,
+                                              name: productPlanter.name,
+                                              event: () {
+                                                provider.updatePlanter(
+                                                    productPlanter.id,
+                                                    productDetail.product.id);
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    sizedBoxHeight10,
+                                  ],
+                                )
+                              : const SizedBox(
+                                  height: 0,
+                                )
                         ],
                       ),
                     ),
-                    sizedBoxHeight20,
                     Padding(
                       padding: const EdgeInsets.only(left: 15.0),
                       child: SizedBox(
@@ -284,43 +347,57 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const CommonTextWidget(
-                              title: 'Color:',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            sizedBoxHeight05,
-                            SizedBox(
-                              height:
-                                  50, // Adjust height based on your ProductSizeWidget
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: productDetail.productColors.length,
-                                itemBuilder: (context, index) {
-                                  ProductColor productColor =
-                                      productDetail.productColors[index];
-                                  Color color = Color(int.parse(
-                                          productColor.colorCode.substring(1),
-                                          radix: 16) |
-                                      0xFF000000);
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: ColorContainerWidget(
-                                      onTap: () {
-                                        provider.updateColor(productColor.id,
-                                            productDetail.product.id);
-                                      },
-                                      color: color,
-                                      isSelected: provider.selectedColorId ==
-                                              productColor.id
-                                          ? true
-                                          : false,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            sizedBoxHeight20,
+                            productDetail.productColors.isNotEmpty
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const CommonTextWidget(
+                                        title: 'Color:',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      sizedBoxHeight05,
+                                      SizedBox(
+                                        height:
+                                            50, // Adjust height based on your ProductSizeWidget
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: productDetail
+                                              .productColors.length,
+                                          itemBuilder: (context, index) {
+                                            ProductColor productColor =
+                                                productDetail
+                                                    .productColors[index];
+                                            Color color = Color(int.parse(
+                                                    productColor.colorCode
+                                                        .substring(1),
+                                                    radix: 16) |
+                                                0xFF000000);
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 10),
+                                              child: ColorContainerWidget(
+                                                onTap: () {
+                                                  provider.updateColor(
+                                                      productColor.id,
+                                                      productDetail.product.id);
+                                                },
+                                                color: color,
+                                                isSelected:
+                                                    provider.selectedColorId ==
+                                                            productColor.id
+                                                        ? true
+                                                        : false,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox(height: 0),
+                            sizedBoxHeight10,
                             Row(
                               children: [
                                 const CommonTextWidget(title: 'Qty: '),

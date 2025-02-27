@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/explore/model/product_list_response.dart';
 import 'package:biotech_maali/src/module/home/model/category_model.dart';
+import 'package:biotech_maali/src/module/home/model/product_model.dart';
 import 'package:biotech_maali/src/module/subcategory_list/model/subcategory_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -32,12 +34,11 @@ class ExploreRepository {
   }
 
   Future<SubcategoryModel?> getSubcategories(int categoryId) async {
-    if(categoryId == 0){
+    if (categoryId == 0) {
       Fluttertoast.showToast(msg: "Category id is missing");
       return null;
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? token = prefs.getString("access_token");
+
     try {
       final response = await dio.get(
         "${EndUrl.getCategoryWiseSubCategoryUrl}$categoryId",
@@ -78,5 +79,35 @@ class ExploreRepository {
     }
   }
 
-  
+  Future<List<ProductModel>?> getSubcategoryProducts(int subcategoryId) async {
+    if (subcategoryId == 0) {
+      Fluttertoast.showToast(msg: "Category id is missing");
+      return null;
+    }
+
+    try {
+      final response = await dio.get(
+        "${EndUrl.getSubcategoryWiseProductUrl}$subcategoryId",
+        options: Options(
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      log('Products Response: ${response.data}');
+
+      if (response.statusCode == 200) {
+        final productListResponse = ProductListResponse.fromJson(response.data);
+        return productListResponse.data.products;
+      } else if (response.statusCode == 401) {
+        throw 'Unauthorized access. Please login again.';
+      } else if (response.statusCode == 403) {
+        throw 'Access forbidden. You don\'t have permission.';
+      } else {
+        throw 'Failed to fetch products. Status code: ${response.statusCode}';
+      }
+    } on DioError catch (e) {
+      log('Products Error: ${e.message}');
+      rethrow;
+    }
+  }
 }

@@ -35,7 +35,6 @@ class CartItemModel {
     );
   }
 
-
   CartItemModel copyWith({
     int? id,
     String? name,
@@ -45,14 +44,14 @@ class CartItemModel {
   }) {
     return CartItemModel(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
-      productId: productId ?? this.productId,
+      userId: userId,
+      productId: productId,
       quantity: quantity ?? this.quantity,
       name: name ?? this.name,
       image: image ?? this.image,
       price: price ?? this.price,
-      shortDescription: shortDescription ?? this.shortDescription,
-      stockStatus: stockStatus ?? this.stockStatus,
+      shortDescription: shortDescription,
+      stockStatus: stockStatus,
     );
   }
 }

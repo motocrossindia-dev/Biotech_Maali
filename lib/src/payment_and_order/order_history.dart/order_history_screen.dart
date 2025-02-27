@@ -273,7 +273,6 @@ class OrderHistoryCard extends StatelessWidget {
               if (order.trackingId != "0") ...[
                 OutlinedButton.icon(
                   onPressed: () {
-                    // TODO: Implement tracking
                   },
                   icon: const Icon(Icons.local_shipping_outlined, size: 18),
                   label: const Text(
@@ -295,7 +294,6 @@ class OrderHistoryCard extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.file_download_outlined),
                 onPressed: () {
-                  // TODO: Implement invoice download
                 },
                 tooltip: 'Download Invoice',
                 iconSize: 20,

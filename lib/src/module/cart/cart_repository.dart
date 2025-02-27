@@ -105,6 +105,7 @@ class CartRepository {
       );
 
       if (response.statusCode == 200) {
+        log("cart items : ${response.data.toString()}");
         List<CartItemModel> cartItems = (response.data['data']['cart'] as List)
             .map((item) => CartItemModel.fromJson(item))
             .toList();
@@ -196,8 +197,7 @@ class CartRepository {
     }
   }
 
-
-    Future<OrderResponseModel> placeOrderFromCart() async {
+  Future<OrderResponseModel> placeOrderFromCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("access_token");
 
@@ -205,7 +205,7 @@ class CartRepository {
 
     try {
       final response = await dio.post(
-        'http://www.dev.back.biotechmaali.com:8000/order/placeOrder/',
+        EndUrl.placeOrderUrl,
         data: {
           'order_source': 'cart',
         },
@@ -232,6 +232,4 @@ class CartRepository {
       throw Exception('Failed to place order: $e');
     }
   }
-
-
 }

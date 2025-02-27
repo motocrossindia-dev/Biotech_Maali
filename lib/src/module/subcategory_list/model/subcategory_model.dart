@@ -50,12 +50,14 @@ class SubcategoryData {
 class Subcategory {
   final int id;
   final String name;
+  final String image;
   final bool isPublished;
   final int category;
 
   Subcategory({
     required this.id,
     required this.name,
+    required this.image,
     required this.isPublished,
     required this.category,
   });
@@ -64,6 +66,7 @@ class Subcategory {
     return Subcategory(
       id: json['id'],
       name: json['name'],
+      image: json['image'],
       isPublished: json['is_published'],
       category: json['category'],
     );
@@ -73,6 +76,7 @@ class Subcategory {
     return {
       'id': id,
       'name': name,
+      'image': image,
       'is_published': isPublished,
       'category': category,
     };

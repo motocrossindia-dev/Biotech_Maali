@@ -34,15 +34,17 @@ class _ProductDescriptionState extends State<ProductDescription> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider =
-          Provider.of<ProductDetailsProvider>(context, listen: false);
-      final videoUrl = provider.productDetails?.data.product.videoLink;
-      log("Video URL: $videoUrl"); // Debug log
-      if (videoUrl != null && videoUrl.isNotEmpty) {
-        initializeVideo(videoUrl);
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        final provider =
+            Provider.of<ProductDetailsProvider>(context, listen: false);
+        final videoUrl = provider.productDetails?.data.product.videoLink;
+        log("Video URL: $videoUrl"); // Debug log
+        if (videoUrl != null && videoUrl.isNotEmpty) {
+          initializeVideo(videoUrl);
+        }
+      },
+    );
   }
 
   void initializeVideo(String? videoUrl) async {
@@ -77,10 +79,12 @@ class _ProductDescriptionState extends State<ProductDescription> {
               showLiveFullscreenButton: true,
             ),
           );
-          setState(() {
-            _isInitialized = true;
-            _errorMessage = null;
-          });
+          setState(
+            () {
+              _isInitialized = true;
+              _errorMessage = null;
+            },
+          );
         } else {
           setState(() => _errorMessage = 'Invalid YouTube URL');
         }
@@ -115,10 +119,12 @@ class _ProductDescriptionState extends State<ProductDescription> {
     } catch (error) {
       log("Error initializing video: $error");
       if (mounted) {
-        setState(() {
-          _errorMessage = 'Error loading video: ${error.toString()}';
-          _isInitialized = false;
-        });
+        setState(
+          () {
+            _errorMessage = 'Error loading video: ${error.toString()}';
+            _isInitialized = false;
+          },
+        );
       }
     }
   }

@@ -178,7 +178,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                     return;
                                   }
 
-                                  final success =
+                                  // final success =
                                       await provider.updateOrderSummary(
                                     context: context,
                                     orderId: orderDetails.id,

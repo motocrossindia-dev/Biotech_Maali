@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/other_modules/services/services_screen.dart';
+
 import '../../../../import.dart';
 
 class ExploreOurWorkWidget extends StatelessWidget {
@@ -18,13 +20,15 @@ class ExploreOurWorkWidget extends StatelessWidget {
         ),
         SizedBox(
           height: 370,
-          child: Image.asset('assets/png/images/home_screen_img_3.jpg', fit: BoxFit.fill,),
+          child: Image.asset(
+            'assets/png/images/home_screen_img_3.jpg',
+            fit: BoxFit.fill,
+          ),
         ),
         sizedBoxHeight10,
         const Center(
           child: CommonTextWidget(
-            title:
-                'What Makes Biotech Maali Stand Out?',
+            title: 'What Makes Biotech Maali Stand Out?',
             fontSize: 16,
             fontWeight: FontWeight.w400,
             textAlign: TextAlign.center,
@@ -36,7 +40,14 @@ class ExploreOurWorkWidget extends StatelessWidget {
             width: 170,
             child: CommonButtonWidget(
               title: 'Explore Now',
-              event: () {},
+              event: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ServicesScreen(),
+                  ),
+                );
+              },
             ),
           ),
         )

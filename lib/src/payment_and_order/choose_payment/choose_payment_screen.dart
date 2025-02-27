@@ -1,8 +1,6 @@
-import 'dart:developer';
 
 import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_summary_response.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../../import.dart';
 

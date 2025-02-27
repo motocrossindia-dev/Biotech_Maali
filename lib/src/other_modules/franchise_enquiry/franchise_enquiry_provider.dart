@@ -163,7 +163,8 @@ class FranchiseProvider extends ChangeNotifier {
         message: _message,
       );
 
-      final result = await _repository.submitFranchiseInquiry(franchise);
+      // final result = 
+      await _repository.submitFranchiseInquiry(franchise);
       
       // Reset form after successful submission
       _resetForm();

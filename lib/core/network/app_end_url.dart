@@ -19,6 +19,8 @@ class EndUrl {
   static String getMainCategoriesUrl = "${baseUrl}category/";
   static String getCategoryWiseSubCategoryUrl =
       "${baseUrl}category/categoryWiseSubCategory/";
+  static String getSubcategoryWiseProductUrl =
+      "${baseUrl}product/subcategoryProducts/";
   static String getServiceListUrl = "${baseUrl}services/publicservice_list/";
   static String serviceEnquiryUrl = "${baseUrl}services/service_enquiry/";
   static String getStoreList = "${baseUrl}store/store_list";
@@ -34,4 +36,5 @@ class EndUrl {
   static String getAddressUrl = "${baseUrl}account/address/";
   static String addSingleProductUrl = "${baseUrl}order/placeOrder/";
   static String orderSummaryUrl = "${baseUrl}order/orderSummary/";
+  static String placeOrderUrl = "${baseUrl}order/placeOrder/";
 }
