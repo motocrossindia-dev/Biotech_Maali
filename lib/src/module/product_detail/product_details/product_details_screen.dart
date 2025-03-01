@@ -5,6 +5,8 @@ import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_shimmer.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/planter_size_widget.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/widgets/pot_litre_widget.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/widgets/seed_weight_widget.dart';
 import '../../../../import.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -19,7 +21,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   void initState() {
     final provider = context.read<ProductDetailsProvider>();
-    provider.fetchProductDetails(widget.productId);
+    // provider.fetchProductDetails(widget.productId);
     super.initState();
   }
 
@@ -172,54 +174,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                           sizedBoxHeight10,
-                          productDetail.productWeights.isNotEmpty
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const CommonTextWidget(
-                                        title: 'Select Product Waight'),
-                                    sizedBoxHeight05,
-                                    SizedBox(
-                                      height:
-                                          50, // Adjust height based on your ProductSizeWidget
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount:
-                                            productDetail.productWeights.length,
-                                        itemBuilder: (context, index) {
-                                          ProductWeight productWeight =
-                                              productDetail
-                                                  .productWeights[index];
-
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 10),
-                                            child: ProductSizeWidget(
-                                              id: productWeight.id,
-                                              name: productWeight.sizeGrams
-                                                  .toString(),
-                                              event: () {
-                                                provider.updateSize(
-                                                    productWeight.id,
-                                                    productDetail.product.id);
-                                              },
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    sizedBoxHeight20,
-                                  ],
-                                )
-                              : const SizedBox(
-                                  height: 0,
-                                ),
                           productDetail.productSizes.isNotEmpty
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const CommonTextWidget(
-                                        title: 'Select Plant Size'),
+                                    CommonTextWidget(
+                                        title: productDetail.productType ==
+                                                "plant"
+                                            ? "Select Plant Size"
+                                            : productDetail.productType ==
+                                                    "tool"
+                                                ? 'Select Tool Size'
+                                                : productDetail.productType ==
+                                                        "seed"
+                                                    ? "Select Seed Size"
+                                                    : productDetail
+                                                                .productType ==
+                                                            "pot"
+                                                        ? "Select Pot Size"
+                                                        : ""),
                                     sizedBoxHeight05,
                                     SizedBox(
                                       height:
@@ -336,7 +309,92 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 )
                               : const SizedBox(
                                   height: 0,
+                                ),
+                          productDetail.productLitres.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CommonTextWidget(
+                                        title: 'Select Litre'),
+                                    sizedBoxHeight05,
+                                    SizedBox(
+                                      height:
+                                          50, // Adjust height based on your ProductSizeWidget
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount:
+                                            productDetail.productLitres.length,
+                                        itemBuilder: (context, index) {
+                                          ProductLitre productLitre =
+                                              productDetail
+                                                  .productLitres[index];
+
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: PotLitreWidget(
+                                              id: productLitre.id,
+                                              name:
+                                                  productLitre.name.toString(),
+                                              event: () {
+                                                provider.updateLitre(
+                                                  productLitre.id,
+                                                  productDetail.product.id,
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    sizedBoxHeight20,
+                                  ],
                                 )
+                              : const SizedBox(
+                                  height: 0,
+                                ),
+                          productDetail.productWeights.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CommonTextWidget(
+                                        title: 'Select Product Waight'),
+                                    sizedBoxHeight05,
+                                    SizedBox(
+                                      height:
+                                          50, // Adjust height based on your ProductSizeWidget
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount:
+                                            productDetail.productWeights.length,
+                                        itemBuilder: (context, index) {
+                                          ProductWeight productWeight =
+                                              productDetail
+                                                  .productWeights[index];
+
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: SeedWeightWidget(
+                                              id: productWeight.id,
+                                              name: productWeight.sizeGrams
+                                                  .toString(),
+                                              event: () {
+                                                provider.updateWeight(
+                                                    productWeight.id,
+                                                    productDetail.product.id);
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    sizedBoxHeight20,
+                                  ],
+                                )
+                              : const SizedBox(
+                                  height: 0,
+                                ),
                         ],
                       ),
                     ),
@@ -379,6 +437,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                   right: 10),
                                               child: ColorContainerWidget(
                                                 onTap: () {
+                                                  if (productDetail
+                                                          .productType ==
+                                                      "pot") {
+                                                    provider.updateColorForPot(
+                                                        productColor.id,
+                                                        productDetail
+                                                            .product.id);
+                                                    return;
+                                                  }
                                                   provider.updateColor(
                                                       productColor.id,
                                                       productDetail.product.id);

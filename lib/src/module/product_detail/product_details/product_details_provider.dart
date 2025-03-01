@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
@@ -32,7 +34,9 @@ class ProductDetailsProvider extends ChangeNotifier {
   int? _selectedSizeId;
   int? _selectedPlanterSizeId;
   int? _selectedPlanterId;
+  int? _selectedLitreId;
   int? _selectedColorId;
+  int? _selectedWeightId;
 
   // New property for selected tab
   int _selectedTab = 0;
@@ -50,7 +54,9 @@ class ProductDetailsProvider extends ChangeNotifier {
   int? get selectedSizeId => _selectedSizeId;
   int? get selectedPlanterSizeId => _selectedPlanterSizeId;
   int? get selectedPlanterId => _selectedPlanterId;
+  int? get selectedLitreId => _selectedLitreId;
   int? get selectedColorId => _selectedColorId;
+  int? get selectedWeightId => _selectedWeightId;
 
   // Getter for selected tab
   int get selectedTab => _selectedTab;
@@ -76,6 +82,8 @@ class ProductDetailsProvider extends ChangeNotifier {
       _selectedPlanterSizeId = details.data.product.planterSizeId;
       _selectedPlanterId = details.data.product.planterId;
       _selectedColorId = details.data.product.colorId;
+      _selectedWeightId = details.data.product.weightId;
+      _selectedLitreId = details.data.product.litreId;
 
       _isLoading = false;
       notifyListeners();
@@ -125,6 +133,16 @@ class ProductDetailsProvider extends ChangeNotifier {
     );
   }
 
+  Future<void> updateLitre(int litreId, int productId) async {
+    if (_selectedPlanterId == litreId) return;
+
+    log("litre Id : $litreId , Product Id : $productId");
+    await _filterProduct(
+        productId: productId,
+        // planterSizeId: _selectedPlanterSizeId,
+        litreId: litreId);
+  }
+
   Future<void> updateColor(int colorId, int productId) async {
     if (_selectedColorId == colorId) return;
 
@@ -137,53 +155,87 @@ class ProductDetailsProvider extends ChangeNotifier {
     );
   }
 
+  Future<void> updateColorForPot(int colorId, int productId) async {
+    if (_selectedColorId == colorId) return;
+
+    await _filterProduct(
+      productId: productId,
+      litreId: _selectedLitreId,
+      colorId: colorId,
+    );
+  }
+
+  Future<void> updateWeight(int weightId, int productId) async {
+    if (_selectedPlanterId == weightId) return;
+
+    await _filterProduct(
+      productId: productId,
+      weightId: weightId,
+    );
+  }
+
   Future<void> _filterProduct({
     required int productId,
     int? sizeId,
     int? planterSizeId,
     int? planterId,
+    int? litreId,
     int? colorId,
+    int? weightId,
   }) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       final filteredDetails = await productDetailsRepository.filterProduct(
-        productId: productId,
-        sizeId: sizeId,
-        planterSizeId: planterSizeId,
-        planterId: planterId,
-        colorId: colorId,
-      );
+          productId: productId,
+          sizeId: sizeId,
+          planterSizeId: planterSizeId,
+          planterId: planterId,
+          litreId: litreId,
+          colorId: colorId,
+          weightId: weightId);
 
       // Update selected IDs
       if (sizeId != null) _selectedSizeId = sizeId;
       if (planterSizeId != null) _selectedPlanterSizeId = planterSizeId;
       if (planterId != null) _selectedPlanterId = planterId;
+      if (litreId != null) _selectedLitreId = litreId;
       if (colorId != null) _selectedColorId = colorId;
+      if (weightId != null) _selectedWeightId = weightId;
 
       // Preserve ratings and reviews from original product details
       if (_productDetails != null) {
         final ProductDetailModel mergedDetails = ProductDetailModel(
           message: filteredDetails.message,
           data: ProductData(
-            productWeights: filteredDetails.data.productWeights,
             productType: filteredDetails.data.productType,
             product: filteredDetails.data.product,
             productSizes: filteredDetails.data.productSizes,
             productPlanterSizes: filteredDetails.data.productPlanterSizes,
             productPlanters: filteredDetails.data.productPlanters,
+            productLitres: filteredDetails.data.productLitres,
             productColors: filteredDetails.data.productColors,
+            productWeights: filteredDetails.data.productWeights,
             productRating: _productDetails!.data.productRating,
             productReviews: _productDetails!.data.productReviews,
           ),
         );
 
+        log("Litre : ${filteredDetails.data.productLitres}");
+        log("weight : ${filteredDetails.data.productWeights}");
+        log("Product size : ${filteredDetails.data.productSizes}");
+        log("planter size : ${filteredDetails.data.productPlanterSizes}");
+        log("Planter : ${filteredDetails.data.productPlanters}");
+        log("color : ${filteredDetails.data.productColors}");
+
         _productDetails = mergedDetails;
         _selectedSizeId = mergedDetails.data.product.sizeId;
         _selectedPlanterSizeId = mergedDetails.data.product.planterSizeId;
         _selectedPlanterId = mergedDetails.data.product.planterId;
+        _selectedLitreId = mergedDetails.data.product.litreId;
         _selectedColorId = mergedDetails.data.product.colorId;
+        _selectedWeightId = mergedDetails.data.product.weightId;
       } else {
         _productDetails = filteredDetails;
       }
@@ -242,14 +294,12 @@ class ProductDetailsProvider extends ChangeNotifier {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  OrderSummaryScreen(
+          builder: (context) => OrderSummaryScreen(
             orderData: _orderResponse!.data,
             isSingleProduct: true,
           ),
         ),
       );
-
-    
     } on ProfileNotUpdatedException {
       _error = 'Please update your profile first';
       Fluttertoast.showToast(msg: _error!);

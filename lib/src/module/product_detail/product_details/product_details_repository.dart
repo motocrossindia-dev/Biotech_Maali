@@ -26,19 +26,22 @@ class ProductDetailsRepository {
     }
   }
 
-  Future<ProductDetailModel> filterProduct({
-    required int productId,
-    int? sizeId,
-    int? planterSizeId,
-    int? planterId,
-    int? colorId,
-  }) async {
+  Future<ProductDetailModel> filterProduct(
+      {required int productId,
+      int? sizeId,
+      int? planterSizeId,
+      int? planterId,
+      int? litreId,
+      int? colorId,
+      int? weightId}) async {
     try {
       final queryParams = {
         if (sizeId != null) 'size_id': sizeId.toString(),
         if (planterSizeId != null) 'planter_size_id': planterSizeId.toString(),
         if (planterId != null) 'planter_id': planterId.toString(),
+        if (litreId != null) 'litre_id': litreId.toString(),
         if (colorId != null) 'color_id': colorId.toString(),
+        if (weightId != null) 'weight_id': weightId.toString(),
       };
 
       log("Filter params: $queryParams");
@@ -55,6 +58,8 @@ class ProductDetailsRepository {
         planterSizeId = null;
         planterId = null;
         colorId = null;
+        ProductDetailModel model = ProductDetailModel.fromJson(response.data);
+        log("produt littre = ${model.data.productLitres}");
         return ProductDetailModel.fromJson(response.data);
       } else {
         throw Exception('Failed to filter product');

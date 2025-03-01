@@ -22,6 +22,7 @@ class ProductData {
   final List<ProductPlanterSize> productPlanterSizes;
   final List<ProductWeight> productWeights;
   final List<ProductPlanter> productPlanters;
+  final List<ProductLitre> productLitres;
   final List<ProductColor> productColors;
   final ProductRating? productRating;
   final List<ProductReview>? productReviews;
@@ -33,6 +34,7 @@ class ProductData {
     required this.productPlanterSizes,
     required this.productWeights,
     required this.productPlanters,
+    required this.productLitres,
     required this.productColors,
     this.productRating,
     this.productReviews,
@@ -53,6 +55,9 @@ class ProductData {
           .toList(),
       productPlanters: (json['product_planters'] as List? ?? [])
           .map((e) => ProductPlanter.fromJson(e))
+          .toList(),
+      productLitres: (json['product_litres'] as List? ?? [])
+          .map((e) => ProductLitre.fromJson(e))
           .toList(),
       productColors: (json['product_colors'] as List? ?? [])
           .map((e) => ProductColor.fromJson(e))
@@ -78,6 +83,8 @@ class Product {
   final int? sizeId;
   final int? planterSizeId;
   final int? planterId;
+  final int? weightId;
+  final int? litreId;
   final int? colorId;
   final String? whatsIncluded;
   final String? videoLink;
@@ -91,6 +98,8 @@ class Product {
     this.sizeId,
     this.planterSizeId,
     this.planterId,
+    this.weightId,
+    this.litreId,
     this.colorId,
     this.whatsIncluded,
     this.videoLink,
@@ -108,9 +117,11 @@ class Product {
       sizeId: _parseNullableId(json['size_id']),
       planterSizeId: _parseNullableId(json['planter_size_id']),
       planterId: _parseNullableId(json['planter_id']),
+      weightId: _parseNullableId(json['weight_id']),
+      litreId: _parseNullableId(json['litre_id']),
       colorId: _parseNullableId(json['color_id']),
       whatsIncluded: json['whats_included'],
-      videoLink: json['video_link'], // Fixed typo from 'vedio_link'
+      videoLink: json['vedio_link'], // API uses 'vedio_link'
     );
   }
 
@@ -134,6 +145,30 @@ class Product {
     if (value is double) return value;
     if (value is String) return double.tryParse(value) ?? 0.0;
     return 0.0;
+  }
+}
+
+class ProductLitre {
+  final int id;
+  final String name;
+
+  ProductLitre({
+    required this.id,
+    required this.name,
+  });
+
+  factory ProductLitre.fromJson(Map<String, dynamic> json) {
+    return ProductLitre(
+      id: _parseId(json['id']),
+      name: json['name'] ?? '',
+    );
+  }
+
+  static int _parseId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 }
 
