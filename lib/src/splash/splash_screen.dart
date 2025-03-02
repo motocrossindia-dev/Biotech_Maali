@@ -57,12 +57,12 @@ class SplashScreen extends StatelessWidget {
         // Handle navigation after state is updated
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (splashProvider.navigationTarget == "home") {
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => const BottomNavWidget(),
-            //   ),
-            // );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomNavWidget(),
+              ),
+            );
           } else if (splashProvider.navigationTarget == "login") {
             Navigator.pushReplacement(
               context,
