@@ -60,13 +60,13 @@ class SplashProvider extends ChangeNotifier {
 
     //for getting user data
     context.read<EditProfileProvider>().fetchProfileData();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const BottomNavWidget(),
-      ),
-      (route) => false,
-    );
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => const BottomNavWidget(),
+    //   ),
+    //   (route) => false,
+    // );
   }
 
   Future<bool> _checkInternetConnection(BuildContext context) async {
