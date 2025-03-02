@@ -160,6 +160,7 @@ class ProductDetailsProvider extends ChangeNotifier {
 
     await _filterProduct(
       productId: productId,
+      planterSizeId: _selectedPlanterSizeId,
       litreId: _selectedLitreId,
       colorId: colorId,
     );

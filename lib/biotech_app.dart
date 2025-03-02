@@ -70,6 +70,7 @@ class BiotechApp extends StatelessWidget {
         ),
         navigatorKey: navigatorKey,
         home: const SplashScreen(),
+        
       ),
     );
   }
