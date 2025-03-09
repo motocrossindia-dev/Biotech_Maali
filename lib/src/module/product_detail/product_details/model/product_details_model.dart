@@ -26,6 +26,7 @@ class ProductData {
   final List<ProductColor> productColors;
   final ProductRating? productRating;
   final List<ProductReview>? productReviews;
+  final List<ProductAddOn> productAddOns; // New field
 
   ProductData({
     required this.productType,
@@ -38,6 +39,7 @@ class ProductData {
     required this.productColors,
     this.productRating,
     this.productReviews,
+    required this.productAddOns, // New parameter
   });
 
   factory ProductData.fromJson(Map<String, dynamic> json) {
@@ -70,6 +72,9 @@ class ProductData {
               .map((e) => ProductReview.fromJson(e))
               .toList()
           : null,
+      productAddOns: (json['product_add_ons'] as List? ?? [])
+          .map((e) => ProductAddOn.fromJson(e))
+          .toList(),
     );
   }
 }
@@ -394,5 +399,37 @@ class ProductReview {
     if (value is int) return value;
     if (value is String) return int.tryParse(value) ?? 0;
     return 0;
+  }
+}
+
+class ProductAddOn {
+  final int id;
+  final String name;
+  final int productId;
+  final double mrp;
+  final double price;
+  final String image;
+  final ProductRating productRating;
+
+  ProductAddOn({
+    required this.id,
+    required this.name,
+    required this.productId,
+    required this.mrp,
+    required this.price,
+    required this.image,
+    required this.productRating,
+  });
+
+  factory ProductAddOn.fromJson(Map<String, dynamic> json) {
+    return ProductAddOn(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      productId: json['product_id'] ?? 0,
+      mrp: (json['mrp'] as num?)?.toDouble() ?? 0.0,
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      image: json['image'] ?? '',
+      productRating: ProductRating.fromJson(json['product_rating'] ?? {}),
+    );
   }
 }

@@ -8,7 +8,7 @@ class CommonTextWidget extends StatelessWidget {
   final TextDecoration? lineThrough;
   final TextAlign? textAlign;
   final int? maxLines;
-  final TextOverflow? textOverflow;
+  final TextOverflow? overflow;
   const CommonTextWidget(
       {required this.title,
       this.fontSize,
@@ -17,7 +17,7 @@ class CommonTextWidget extends StatelessWidget {
       this.lineThrough,
       this.textAlign,
       this.maxLines,
-      this.textOverflow,
+      this.overflow,
       super.key});
 
   @override
@@ -32,7 +32,7 @@ class CommonTextWidget extends StatelessWidget {
       ),
       textAlign: textAlign,
       maxLines: maxLines,
-      overflow: textOverflow,
+      overflow: overflow,
     );
   }
 }

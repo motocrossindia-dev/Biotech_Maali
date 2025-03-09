@@ -1,4 +1,6 @@
 import 'package:biotech_maali/src/module/account/account_provider.dart';
+import 'package:biotech_maali/src/module/account/gift_card/gift_card_screen.dart';
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_screen.dart';
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
 import 'package:biotech_maali/src/other_modules/carrers/carrers_screen.dart';
@@ -7,7 +9,7 @@ import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enqu
 import 'package:biotech_maali/src/other_modules/our_store/our_store_screen.dart';
 import 'package:biotech_maali/src/other_modules/out_works/our_work_screen.dart';
 import 'package:biotech_maali/src/other_modules/services/services_screen.dart';
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/order_history_screen.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/order_history_screen.dart';
 
 import '../../../import.dart';
 
@@ -225,6 +227,43 @@ class AccountScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              sizedBoxHeight10,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AddEditAddressScreen(
+                                        isFromAccount: true,
+                                        isAddAddress: true,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Row(
+                                      children: [
+                                        sizedBoxWidth25,
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'Add Address',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 30,
+                                      color: cAccountText,
+                                    )
+                                  ],
+                                ),
+                              ),
                               sizedBoxHeight35,
                               Row(
                                 children: [
@@ -294,27 +333,72 @@ class AccountScreen extends StatelessWidget {
                                 ],
                               ),
                               sizedBoxHeight20,
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Row(
-                                    children: [
-                                      sizedBoxWidth25,
-                                      sizedBoxWidth20,
-                                      CommonTextWidget(
-                                        title: 'My Refferals',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                  Icon(
-                                    Icons.chevron_right,
-                                    size: 30,
-                                    color: cAccountText,
-                                  )
-                                ],
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ReferFriendScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Row(
+                                      children: [
+                                        sizedBoxWidth25,
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'My Refferals',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 30,
+                                      color: cAccountText,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              sizedBoxHeight10,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const GiftCardScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Row(
+                                      children: [
+                                        sizedBoxWidth25,
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'My Gift Card',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      size: 30,
+                                      color: cAccountText,
+                                    )
+                                  ],
+                                ),
                               ),
                             ],
                           ),

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/widgets/pick_store_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../import.dart';
 
@@ -55,6 +58,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                   currentStatus: OrderStatus.address),
                               sizedBoxHeight30,
                               DeliveryAddressWidget(),
+                              sizedBoxHeight20,
+                              PickStoreWidget(),
                             ],
                           ),
                         ),
@@ -109,6 +114,16 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
                           child: DeliveryOptionsWidget(),
+                        ),
+                      ),
+                      const Card(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CouponWidget(),
                         ),
                       ),
                       sizedBoxHeight20,
@@ -179,7 +194,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                   }
 
                                   // final success =
-                                      await provider.updateOrderSummary(
+                                  await provider.updateOrderSummary(
                                     context: context,
                                     orderId: orderDetails.id,
                                     addressId: provider.selectedAddressId!,
@@ -216,9 +231,10 @@ class OrderItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("image :${item.image}");
     return ListTile(
       leading: Image.network(
-        item.image,
+        "${BaseUrl.baseUrlForImages}${item.image}",
         width: 50,
         height: 50,
         fit: BoxFit.cover,

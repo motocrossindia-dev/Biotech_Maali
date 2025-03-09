@@ -4,9 +4,13 @@ import '../../../import.dart';
 
 class AddEditAddressScreen extends StatefulWidget {
   final AddressModel? address;
+  final bool? isFromAccount;
   final bool isAddAddress;
   const AddEditAddressScreen(
-      {this.address, required this.isAddAddress, super.key});
+      {this.address,
+      this.isFromAccount,
+      required this.isAddAddress,
+      super.key});
 
   @override
   State<AddEditAddressScreen> createState() => _AddEditAddressScreenState();
@@ -49,23 +53,24 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Card(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Column(
-                              children: [
-                                OrderTrackerTimeline(
-                                    currentStatus: OrderStatus.address),
-                                sizedBoxHeight10,
-                              ],
-                            ),
-                          ),
-                        ),
-                        sizedBoxHeight10,
+                        widget.isFromAccount != true
+                            ? const Card(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Column(
+                                    children: [
+                                      OrderTrackerTimeline(
+                                          currentStatus: OrderStatus.address),
+                                      sizedBoxHeight10,
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : sizedBoxHeight10,
                         Card(
                           color: Colors.white,
                           shape: const RoundedRectangleBorder(

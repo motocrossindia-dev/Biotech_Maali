@@ -1,24 +1,24 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
-import 'package:biotech_maali/src/module/home/model/product_model.dart';
+import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
 
-import '../../../import.dart';
+import '../../../../import.dart';
 
-class ProductListScreen extends StatefulWidget {
+class HomeProductListScreen extends StatefulWidget {
   final String title;
-  final List<ProductModel> products;
-  const ProductListScreen(
+  final List<HomeProductModel> products;
+  const HomeProductListScreen(
       {required this.title, required this.products, super.key});
 
   @override
-  State<ProductListScreen> createState() => _ProductListScreenState();
+  State<HomeProductListScreen> createState() => _HomeProductListScreenState();
 }
 
-class _ProductListScreenState extends State<ProductListScreen> {
+class _HomeProductListScreenState extends State<HomeProductListScreen> {
   String _selectedOption = 'Default';
   bool _isLoading = true;
 
@@ -36,6 +36,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   void initState() {
     super.initState();
+
     _loadData();
   }
 
@@ -92,11 +93,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                 childAspectRatio: 0.48,
                               ),
                               itemBuilder: (context, index) {
-                                ProductModel productDetails =
+                                HomeProductModel productDetails =
                                     widget.products[index];
-                                bool isWishlistId = provider
-                                    .mainWishlistProductId
-                                    .contains(productDetails.id);
+                                // bool isWishlistId = provider
+                                //     .mainWishlistProductId
+                                //     .contains(productDetails.id);
 
                                 return InkWell(
                                   onTap: () {
@@ -119,11 +120,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                     productImage: productDetails.image,
                                     tempImage:
                                         'assets/png/products/sample_product.png',
-                                    discountAmount: productDetails.price,
-                                    actualAmount: productDetails.price,
+                                    discountAmount:
+                                        productDetails.price.toString(),
+                                    actualAmount:
+                                        productDetails.price.toString(),
                                     rating: 4.5,
                                     home: true,
-                                    isWishlist: isWishlistId,
+                                    isWishlist: productDetails.isWishlist,
+                                    isCart: productDetails.isCart,
                                     addToFavouriteEvent: () async {
                                       final settingsProvider =
                                           context.read<SettingsProvider>();
@@ -135,10 +139,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                         return;
                                       }
                                       final wishlistProvider =
-                                          context.read<WishlistProvider>();
-                                      wishlistProvider
-                                          .addOrRemoveWhishlistMainProduct(
-                                              productDetails.id, context);
+                                          context.read<HomeProvider>();
+                                      wishlistProvider.addToWishlist(
+                                          productDetails.id,
+                                          productDetails.isWishlist,
+                                          context);
                                     },
                                   ),
                                 );

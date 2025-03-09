@@ -1,3 +1,4 @@
+import 'package:biotech_maali/src/module/product_list/product_list/product_list_screen.dart';
 import 'package:biotech_maali/src/module/subcategory_list/model/subcategory_model.dart';
 
 import '../../../../import.dart';
@@ -64,13 +65,12 @@ class SubCategories extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: () {
-                      provider.fetchSubcategoryProducts(
-                          subcategory.name, subcategory.id, context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductListScreen(
-                            products: provider.products,
+                            id: subcategory.id.toString(),
+                            isCategory: false,
                             title: subcategory.name,
                           ),
                         ),

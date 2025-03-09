@@ -1,4 +1,4 @@
-import 'package:biotech_maali/src/module/home/model/product_model.dart';
+import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 
 class ProductListResponse {
   final String message;
@@ -18,7 +18,7 @@ class ProductListResponse {
 }
 
 class ProductListData {
-  final List<ProductModel> products;
+  final List<HomeProductModel> products;
 
   ProductListData({
     required this.products,
@@ -27,7 +27,7 @@ class ProductListData {
   factory ProductListData.fromJson(Map<String, dynamic> json) {
     return ProductListData(
       products: (json['products'] as List)
-          .map((item) => ProductModel.fromJson(item))
+          .map((item) => HomeProductModel.fromJson(item))
           .toList(),
     );
   }

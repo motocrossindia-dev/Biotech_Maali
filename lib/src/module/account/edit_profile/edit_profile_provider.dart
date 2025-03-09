@@ -80,6 +80,7 @@ class EditProfileProvider extends ChangeNotifier {
 
       if (success) {
         _isEditing = false;
+        
       }
       return success;
     } catch (e) {

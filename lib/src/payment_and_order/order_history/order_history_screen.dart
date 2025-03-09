@@ -1,5 +1,5 @@
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/model.dart/order_history_model.dart';
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/order_history_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_screen.dart';
 
 import '../../../import.dart';
@@ -69,8 +69,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/no_orders.png', // Add this image
-                    height: 120,
+                    'assets/png/images/no_order_history.jpg', // Add this image
+                    height: 220,
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -88,7 +88,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/home');
+                      context.read<BottomNavProvider>().updateIndex(0);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BottomNavWidget(),
+                        ),
+                      );
                     },
                     child: const Text('Start Shopping'),
                   ),
@@ -272,8 +278,7 @@ class OrderHistoryCard extends StatelessWidget {
             children: [
               if (order.trackingId != "0") ...[
                 OutlinedButton.icon(
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                   icon: const Icon(Icons.local_shipping_outlined, size: 18),
                   label: const Text(
                     'Track',
@@ -293,8 +298,7 @@ class OrderHistoryCard extends StatelessWidget {
               ],
               IconButton(
                 icon: const Icon(Icons.file_download_outlined),
-                onPressed: () {
-                },
+                onPressed: () {},
                 tooltip: 'Download Invoice',
                 iconSize: 20,
                 constraints: const BoxConstraints(

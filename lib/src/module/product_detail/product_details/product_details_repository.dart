@@ -6,8 +6,7 @@ import '../../../../import.dart';
 
 class ProductDetailsRepository {
   final Dio _dio = Dio();
-  // final String _baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
-
+  
   Future<ProductDetailModel> fetchProductDetails(int productId) async {
     try {
       final response =
@@ -146,6 +145,29 @@ class ProductDetailsRepository {
       }
       log("Error : ${e.toString()}");
       throw Exception('Error placing order: ${e.toString()}');
+    }
+  }
+
+  Future<bool> increaseOrDecreaseQty(
+      int qty, String productId, bool isIncrease) async {
+    log("Qty : $qty, productId : $productId, Method : increment - $isIncrease");
+
+    log("Url : ${EndUrl.increaseOrDecreaseQtyUrl}$productId/?quantity=$qty&action=${isIncrease ? "increment" : "decrement"}");
+    try {
+      Response response = await _dio.get(
+        "${EndUrl.increaseOrDecreaseQtyUrl}$productId/?quantity=$qty&action=${isIncrease ? "increment" : "decrement"}",
+      );
+
+      if (response.statusCode == 200) {
+        dynamic data = response.data;
+        log(" ${data.toString()}");
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log("Error in repository : $e");
+      return false;
     }
   }
 }

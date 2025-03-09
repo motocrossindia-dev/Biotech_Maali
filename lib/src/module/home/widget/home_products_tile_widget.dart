@@ -1,4 +1,7 @@
-import 'package:biotech_maali/src/module/home/model/product_model.dart';
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import '../../../../import.dart';
 
 class HomeProductsTileWidget extends StatelessWidget {
@@ -23,7 +26,7 @@ class HomeProductsTileWidget extends StatelessWidget {
               ),
               Consumer<HomeProvider>(
                 builder: (context, provider, child) {
-                  List<ProductModel> products = [];
+                  List<HomeProductModel> products = [];
                   if (title == "Featured") {
                     products = provider.allProducts;
                   } else if (title == "Latest") {
@@ -37,11 +40,11 @@ class HomeProductsTileWidget extends StatelessWidget {
                   return CustomizableButton(
                     title: 'View All',
                     event: () {
-                      context.read<HomeProvider>().fetchWishlistProductId();
+                      // context.read<HomeProvider>().fetchWishlistProductId();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProductListScreen(
+                          builder: (context) => HomeProductListScreen(
                             title: title,
                             products: products,
                           ),
@@ -60,7 +63,7 @@ class HomeProductsTileWidget extends StatelessWidget {
             height: 280,
             child: Consumer<HomeProvider>(
               builder: (context, provider, child) {
-                List<ProductModel> products = [];
+                List<HomeProductModel> products = [];
                 if (title == "Featured") {
                   products = provider.allProducts;
                 } else if (title == "Latest") {
@@ -74,10 +77,10 @@ class HomeProductsTileWidget extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: products.length,
                   itemBuilder: (context, index) {
-                    ProductModel productDetails = products[index];
+                    HomeProductModel productDetails = products[index];
 
-                    bool isWishlistId = provider.mainWishlistProductId
-                        .contains(productDetails.id);
+                    // bool isWishlistId = provider.mainWishlistProductId
+                    //     .contains(productDetails.id);
 
                     return Row(
                       children: [
@@ -96,16 +99,28 @@ class HomeProductsTileWidget extends StatelessWidget {
                             productTitle: productDetails.name,
                             productImage: productDetails.image,
                             tempImage: 'assets/png/products/sample_product.png',
-                            discountAmount: productDetails.price,
-                            actualAmount: productDetails.price,
+                            discountAmount: productDetails.price.toString(),
+                            actualAmount: productDetails.price.toString(),
                             rating: 4.5,
                             home:
                                 false, // Changed to true to show the heart icon
-                            isWishlist: isWishlistId,
+                            isWishlist: productDetails.isWishlist,
+                            isCart: productDetails.isCart,
                             addToFavouriteEvent: () async {
-                              // Add your wishlist toggle logic here if needed
-                              // You might want to call a method in your provider to toggle wishlist
-                              // await provider.toggleWishlist(productDetails.id);
+                              final settingsProvider =
+                                          context.read<SettingsProvider>();
+                                      bool isAuth = await settingsProvider
+                                          .checkAccessTokenValidity(context);
+
+                                      if (!isAuth) {
+                                        _showLoginDialog(context);
+                                        return;
+                                      }
+                                      final wishlistProvider =
+                                          context.read<WishlistProvider>();
+                                      wishlistProvider
+                                          .addOrRemoveWhishlistMainProduct(
+                                              productDetails.id, context);
                             },
                             mainProdId: productDetails.id,
                           ),
@@ -120,6 +135,14 @@ class HomeProductsTileWidget extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
+      },
     );
   }
 }

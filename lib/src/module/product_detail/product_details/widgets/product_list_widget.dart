@@ -43,6 +43,7 @@ class ProductListWidget extends StatelessWidget {
                       rating: 4.5,
                       home: true,
                       isWishlist: false,
+                      isCart: false,
                     ),
                     sizedBoxWidth15
                   ],

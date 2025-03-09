@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import '../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -14,6 +18,7 @@ class ProductTileWidget extends StatelessWidget {
   final VoidCallback? addToFavouriteEvent;
   final VoidCallback? addToCartEvent;
   final bool isWishlist;
+  final bool isCart;
   final int? mainProdId;
 
   const ProductTileWidget({
@@ -27,6 +32,7 @@ class ProductTileWidget extends StatelessWidget {
     this.addToCartEvent,
     required this.home,
     required this.isWishlist,
+    required this.isCart,
     this.mainProdId,
     super.key,
   });
@@ -99,10 +105,13 @@ class ProductTileWidget extends StatelessWidget {
           ),
           sizedBoxHeight10,
           CommonTextWidget(
-            title: productTitle,
+            title: productTitle.length > 18
+                ? '${productTitle.substring(0, 18)}...'
+                : productTitle,
             color: cProductTitle,
             fontSize: 14,
             fontWeight: FontWeight.w400,
+            maxLines: 1,
           ),
           sizedBoxHeight10,
           Row(
@@ -129,10 +138,19 @@ class ProductTileWidget extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(left: 1.0, right: 1),
                   child: BorderColoredButton(
-                    title: 'Add To Cart',
+                    title: isCart ? "Go To Cart" : 'Add To Cart',
                     height: 38,
                     event: addToCartEvent ??
-                        () {
+                        () async {
+                          final settingsProvider =
+                              context.read<SettingsProvider>();
+                          bool isAuth = await settingsProvider
+                              .checkAccessTokenValidity(context);
+
+                          if (!isAuth) {
+                            _showLoginDialog(context);
+                            return;
+                          }
                           context
                               .read<CartProvider>()
                               .addToCartMainProduct(mainProdId!, context);
@@ -172,6 +190,15 @@ class ProductTileWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
+      },
     );
   }
 }

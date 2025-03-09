@@ -78,12 +78,11 @@ class WishlistProvider extends ChangeNotifier {
       bool result =
           await _wishlistRepository.addOrRemoveWishListMainProduct(productId);
       if (result) {
-        context.read<HomeProvider>().fetchWishlistProductId();
+        // context.read<HomeProvider>().fetchWishlistProductId();
         showWishlistMessage(context, true);
         // Fluttertoast.showToast(msg: "Item added to the wishlist");
       } else {
-        
-        context.read<HomeProvider>().fetchWishlistProductId();
+        // context.read<HomeProvider>().fetchWishlistProductId();
         showWishlistMessage(context, false);
       }
       await fetchWishlist();

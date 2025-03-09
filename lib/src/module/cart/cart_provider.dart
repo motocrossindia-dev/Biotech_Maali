@@ -194,6 +194,7 @@ class CartProvider extends ChangeNotifier {
 
       fetchCartItems();
     } on ProfileNotUpdatedException {
+      context.read<EditProfileProvider>().toggleEditMode();
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -210,6 +211,7 @@ class CartProvider extends ChangeNotifier {
         MaterialPageRoute(
           builder: (context) => const AddEditAddressScreen(
             isAddAddress: true,
+            isFromAccount: true,
           ),
         ),
       );

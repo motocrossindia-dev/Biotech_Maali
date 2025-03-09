@@ -1,9 +1,7 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
-import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
 import 'package:biotech_maali/src/module/explore/explore_repository.dart';
 import 'package:biotech_maali/src/module/home/model/category_model.dart';
-import 'package:biotech_maali/src/module/home/model/product_model.dart';
 import 'package:biotech_maali/src/module/subcategory_list/model/subcategory_model.dart';
 
 class ExploreProvider extends ChangeNotifier {
@@ -25,11 +23,9 @@ class ExploreProvider extends ChangeNotifier {
 
   List<Subcategory> _subcategories = [];
   List<MainCategoryModel> _mainCategories = [];
-  List<ProductModel> _products = [];
 
   List<Subcategory> get subcategories => _subcategories;
   List<MainCategoryModel> get maincategories => _mainCategories;
-  List<ProductModel> get products => _products;
 
   void setSelectedCategory(int index, int categoryId) {
     _selectedCategoryIndex = index;
@@ -86,40 +82,5 @@ class ExploreProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<ProductModel>> fetchSubcategoryProducts(
-      String subcategoryName, int subcategoryId, BuildContext context) async {
-    try {
-      _isLoading = true;
-      _error = null;
-      notifyListeners();
-
-      List<ProductModel>? response =
-          await exploreRepository.getSubcategoryProducts(subcategoryId);
-
-      _isLoading = false;
-      notifyListeners();
-
-      if (response != null) {
-        _products = response;
-        // Only navigate if the context is still mounted
-        if (context.mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const WalletScreen(),
-            ),
-          );
-        }
-        return _products;
-      }
-
-      return [];
-    } catch (e) {
-      log("error: ${e.toString()}");
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
-      return [];
-    }
-  }
+  
 }

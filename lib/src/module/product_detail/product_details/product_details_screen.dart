@@ -1,11 +1,11 @@
 import 'dart:developer';
-
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_shimmer.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/planter_size_widget.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/pot_litre_widget.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/widgets/product_list_addon_widget.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/seed_weight_widget.dart';
 import '../../../../import.dart';
 
@@ -22,6 +22,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   void initState() {
     final provider = context.read<ProductDetailsProvider>();
     // provider.fetchProductDetails(widget.productId);
+    provider.updateQuantity();
     super.initState();
   }
 
@@ -74,9 +75,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CommonTextWidget(
-                                title: product.data.product.mainProductName,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400,
+                                title: product.data.product.mainProductName
+                                            .length >
+                                        28
+                                    ? '${product.data.product.mainProductName.substring(0, 28)}...'
+                                    : product.data.product.mainProductName,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(right: 12.0),
@@ -473,17 +478,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   child: AddQuantityWidget(
                                     quantity: provider.quantity,
                                     addition: () {
-                                      provider.increaseQuantity(1);
+                                      provider.increaseQuantity(
+                                          1, productDetail.product.id);
                                     },
                                     substaction: () {
-                                      provider.decreaseQuantity(1);
+                                      provider.decreaseQuantity(
+                                          1, productDetail.product.id);
                                     },
                                   ),
                                 )
                               ],
                             ),
                             sizedBoxHeight20,
-                            const ProductListWidget(title: 'Add On'),
+                            ProductListAddonWidget(
+                                title: 'Add On',
+                                productAddonList: productDetail.productAddOns),
                             sizedBoxHeight40,
                             const ProductDescription(),
                             sizedBoxHeight20,

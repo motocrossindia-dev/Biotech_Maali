@@ -151,7 +151,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       : editProfileProvider.mobileNumber.text,
                               labelText: 'Mobile Number',
                               keyboardType: TextInputType.phone,
-                              readOnly: !editProfileProvider.isEditing,
+                              readOnly: true,
                             ),
                             sizedBoxHeight20,
                             EditProfileTextForm(
@@ -196,6 +196,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           content: Text(
                                               'Profile Updated Successfully')),
                                     );
+                                    Navigator.pop(context);
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(

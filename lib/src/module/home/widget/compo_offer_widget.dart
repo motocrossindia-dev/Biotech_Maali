@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/product_compo_list/product_compo_list_screen.dart';
+
 import '../../../../import.dart';
 
 class CompoOfferWidget extends StatelessWidget {
@@ -37,7 +39,15 @@ class CompoOfferWidget extends StatelessWidget {
             width: 170,
             child: CommonButtonWidget(
               title: 'Explore Combo',
-              event: () {},
+              event: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const ProductCompoListScreen(title: "", products: []),
+                  ),
+                );
+              },
             ),
           ),
         )

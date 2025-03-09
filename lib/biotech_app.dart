@@ -2,6 +2,7 @@ import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/account/account_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/product_search/product_search_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/other_modules/carrers/carrers_provider.dart';
 import 'package:biotech_maali/src/other_modules/contact_us/contact_us_provider.dart';
@@ -11,7 +12,8 @@ import 'package:biotech_maali/src/other_modules/out_works/our_work_provider.dart
 import 'package:biotech_maali/src/other_modules/services/services_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/change_address/change_address_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/order_history_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/local_store_list/local_store_list_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_provider.dart';
 import 'package:biotech_maali/src/splash/splash_provider.dart';
 
@@ -58,11 +60,12 @@ class BiotechApp extends StatelessWidget {
             create: (context) => ChoosePaymentProvider(context)),
         ChangeNotifierProvider(create: (context) => OrderHistoryProvider()),
         ChangeNotifierProvider(
-            create: (context) => OrderHistoryDetailProvider())
+            create: (context) => OrderHistoryDetailProvider()),
+        ChangeNotifierProvider(create: (context) => ProductSearchProvider()),
+        ChangeNotifierProvider(create: (context) => ProductListProdvider()),
+        ChangeNotifierProvider(create: (context) => LocalStoreListProvider())
       ],
-      child: 
-      
-      MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: orderSummaryBackground),
@@ -70,7 +73,6 @@ class BiotechApp extends StatelessWidget {
         ),
         navigatorKey: navigatorKey,
         home: const SplashScreen(),
-        
       ),
     );
   }

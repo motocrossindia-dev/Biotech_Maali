@@ -18,6 +18,7 @@ class OrderSummaryProvider extends ChangeNotifier {
   String _error = '';
   int? _selectedAddressId;
   String selectedDeliveryOption = 'Standard';
+  bool isAddressSelected = false;
 
   bool get isLoading => _isLoading;
   String get error => _error;
@@ -33,6 +34,11 @@ class OrderSummaryProvider extends ChangeNotifier {
       state: "",
       user: 0,
       isDefault: true);
+
+  void setAddressSelection(bool value){
+    isAddressLoading = value;
+    notifyListeners();
+  }
 
   void setSelectedAddressIndex(int index) {
     selectedAddressIndex = index;

@@ -1,5 +1,6 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/location_popup/location_pincode_popup.dart';
+import 'package:biotech_maali/src/module/product_search/product_search_screen.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
@@ -59,11 +60,12 @@ class CustomAppBarWithSearch extends StatelessWidget
                         ),
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const LocationPincodePopup(),
-                              ));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const LocationPincodePopup(),
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -81,6 +83,14 @@ class CustomAppBarWithSearch extends StatelessWidget
                       height: 42,
                       width: 251,
                       child: TextField(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProductSearchView(),
+                            ),
+                          );
+                        },
                         decoration: InputDecoration(
                           filled:
                               true, // This line is necessary to show the fill color
@@ -95,6 +105,13 @@ class CustomAppBarWithSearch extends StatelessWidget
                               width: 20,
                             ),
                             onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ProductSearchView(),
+                                ),
+                              );
                               // Handle microphone button press
                             },
                             padding: EdgeInsets.zero,

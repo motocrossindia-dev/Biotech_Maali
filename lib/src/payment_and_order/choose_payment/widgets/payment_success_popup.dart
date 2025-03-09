@@ -1,4 +1,4 @@
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/order_history_screen.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/order_history_screen.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../import.dart';

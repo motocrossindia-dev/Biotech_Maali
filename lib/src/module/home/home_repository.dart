@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:biotech_maali/src/module/home/model/banner_model.dart';
 import 'package:biotech_maali/src/module/home/model/category_model.dart';
-import 'package:biotech_maali/src/module/home/model/product_model.dart';
+import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import '../../../import.dart';
 
 class HomeRepository {
@@ -11,9 +11,26 @@ class HomeRepository {
   final String bannerUrl = EndUrl.promotionBannerUrl;
   final String mainCategoriesUrl = EndUrl.getMainCategoriesUrl;
 
-  Future<List<ProductModel>> getHomeProducts() async {
+  Future<List<HomeProductModel>> getHomeProducts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+    log("tokenin home : $token");
     try {
-      final response = await dio.get(productUrl);
+      Response? response;
+
+      if (token != null) {
+        response = await dio.get(
+          productUrl,
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "Application/json"
+            },
+          ),
+        );
+      } else {
+        response = await dio.get(productUrl);
+      }
 
       if (response.statusCode == 200 && response.data != null) {
         final Map<String, dynamic> responseData = response.data;
@@ -27,7 +44,7 @@ class HomeRepository {
         log("Home Product Data ============== ${productsData.toString()}");
         return productsData
             .map((product) =>
-                ProductModel.fromJson(product as Map<String, dynamic>))
+                HomeProductModel.fromJson(product as Map<String, dynamic>))
             .toList();
       } else {
         throw Exception('Failed to load products: ${response.statusCode}');

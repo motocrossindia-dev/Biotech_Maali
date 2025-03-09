@@ -214,20 +214,31 @@ class CartRepository {
             'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
+          validateStatus: (status) {
+            return status! < 500; // Accept all status codes below 500
+          },
         ),
       );
+      log("Response status : ${response.statusCode.toString()}");
+      log("Response data : ${response.data.toString()}");
 
       if (response.statusCode == 200) {
         return OrderResponseModel.fromJson(response.data);
+      } else if (response.statusCode == 400) {
+        final responseData = response.data;
+        if (responseData['profile_status'] == false) {
+          throw ProfileNotUpdatedException();
+        } else if (responseData['address_status'] == false) {
+          throw AddressNotUpdatedException();
+        }
+        throw Exception(responseData['message']);
       }
 
-      throw Exception(response.data['message']);
+      throw Exception('Unexpected error occurred');
     } catch (e) {
       log("Place order error: ${e.toString()}");
-      if (e.toString().contains('User profile is not updated')) {
-        throw ProfileNotUpdatedException();
-      } else if (e.toString().contains('User address is not updated')) {
-        throw AddressNotUpdatedException();
+      if (e is ProfileNotUpdatedException || e is AddressNotUpdatedException) {
+        rethrow;
       }
       throw Exception('Failed to place order: $e');
     }

@@ -231,79 +231,7 @@ class LandscapingServiceCard extends StatelessWidget {
   }
 }
 
-// class LandscapingServiceCards extends StatelessWidget {
-//   const LandscapingServiceCards({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Consumer<ServicesProvider>(
-//       builder: (context, provider, child) {
-//         final services = provider.services;
-
-//         return ListView.builder(
-//           shrinkWrap: true,
-//           physics: const NeverScrollableScrollPhysics(),
-//           itemCount: services.length,
-//           itemBuilder: (context, index) {
-//             final service = services[index];
-//             return Container(
-//               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   ClipRRect(
-//                     borderRadius: BorderRadius.circular(12),
-//                     child: Image.network(
-//                       'http://www.dev.back.biotechmaali.com:8000${service.image}',
-//                       width: double.infinity,
-//                       height: 200,
-//                       fit: BoxFit.cover,
-//                       loadingBuilder: (context, child, loadingProgress) {
-//                         if (loadingProgress == null) return child;
-//                         return Container(
-//                           width: double.infinity,
-//                           height: 200,
-//                           color: Colors.grey[300],
-//                           child: const Center(
-//                             child: CircularProgressIndicator(),
-//                           ),
-//                         );
-//                       },
-//                       errorBuilder: (context, error, stackTrace) {
-//                         return Container(
-//                           width: double.infinity,
-//                           height: 200,
-//                           color: Colors.grey[300],
-//                           child: const Icon(Icons.error),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                   const SizedBox(height: 12),
-//                   Text(
-//                     service.title,
-//                     style: const TextStyle(
-//                       fontSize: 18,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 4),
-//                   Text(
-//                     service.heading,
-//                     style: const TextStyle(
-//                       fontSize: 14,
-//                       color: Colors.grey,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-// }
 
 class HowItWorksSection extends StatelessWidget {
   const HowItWorksSection({super.key});

@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_screen.dart';
+
 import '../../../../import.dart';
 
 class ReferFriendWidget extends StatelessWidget {
@@ -57,7 +59,14 @@ class ReferFriendWidget extends StatelessWidget {
                     width: 150,
                     child: CommonButtonWidget(
                       title: 'Refer A Friend',
-                      event: () {},
+                      event: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReferFriendScreen(),
+                          ),
+                        );
+                      },
                     ),
                   )
                 ],

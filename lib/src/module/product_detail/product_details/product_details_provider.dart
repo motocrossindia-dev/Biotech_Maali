@@ -10,11 +10,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../import.dart';
 
 class ProductDetailsProvider extends ChangeNotifier {
-  final ProductDetailsRepository productDetailsRepository;
+  final ProductDetailsRepository productDetailsRepository =
+      ProductDetailsRepository();
 
-  ProductDetailsProvider({
-    ProductDetailsRepository? repository,
-  }) : productDetailsRepository = repository ?? ProductDetailsRepository();
+  ProductDetailsProvider() {
+    updateQuantity();
+  }
 
   bool _isLoading = false;
   String? _error;
@@ -22,13 +23,10 @@ class ProductDetailsProvider extends ChangeNotifier {
   int _quantity = 1;
   bool _isWishlist = false;
   bool _isLoadingWishList = false;
-
   OrderResponseModel? _orderResponse;
-
-  OrderResponseModel? get orderResponse => _orderResponse;
-
   ProductDetailModel? _productDetails;
   List<String> _carouselProductImageList = [];
+  List<ProductAddOn> _productAddOn = [];
 
   // Selected IDs
   int? _selectedSizeId;
@@ -48,8 +46,11 @@ class ProductDetailsProvider extends ChangeNotifier {
   int get quantity => _quantity;
   bool get isWishlist => _isWishlist;
   bool get isLoadingWishList => _isLoadingWishList;
+  OrderResponseModel? get orderResponse => _orderResponse;
   ProductDetailModel? get productDetails => _productDetails;
   List<String> get carouselProductImageList => _carouselProductImageList;
+  List<ProductAddOn> get productAddOn => _productAddOn;
+  
 
   int? get selectedSizeId => _selectedSizeId;
   int? get selectedPlanterSizeId => _selectedPlanterSizeId;
@@ -60,6 +61,10 @@ class ProductDetailsProvider extends ChangeNotifier {
 
   // Getter for selected tab
   int get selectedTab => _selectedTab;
+
+  void updateQuantity() {
+    _quantity = 1;
+  }
 
   // Method to set selected tab
   void setSelectedTab(int index) {
@@ -210,6 +215,7 @@ class ProductDetailsProvider extends ChangeNotifier {
         final ProductDetailModel mergedDetails = ProductDetailModel(
           message: filteredDetails.message,
           data: ProductData(
+            productAddOns: filteredDetails.data.productAddOns,
             productType: filteredDetails.data.productType,
             product: filteredDetails.data.product,
             productSizes: filteredDetails.data.productSizes,
@@ -231,6 +237,7 @@ class ProductDetailsProvider extends ChangeNotifier {
         log("color : ${filteredDetails.data.productColors}");
 
         _productDetails = mergedDetails;
+        
         _selectedSizeId = mergedDetails.data.product.sizeId;
         _selectedPlanterSizeId = mergedDetails.data.product.planterSizeId;
         _selectedPlanterId = mergedDetails.data.product.planterId;
@@ -340,15 +347,27 @@ class ProductDetailsProvider extends ChangeNotifier {
     }
   }
 
-  void increaseQuantity(int newQuantity) {
-    _quantity += newQuantity;
-    notifyListeners();
+  void increaseQuantity(int newQuantity, int productId) async {
+    bool result = await productDetailsRepository.increaseOrDecreaseQty(
+        _quantity, productId.toString(), true);
+
+    if (result) {
+      _quantity += newQuantity;
+      notifyListeners();
+    } else {
+      Fluttertoast.showToast(msg: "Item is out of stock");
+    }
   }
 
-  void decreaseQuantity(int newQuantity) {
-    if (_quantity > 1) {
-      _quantity -= newQuantity;
-      notifyListeners();
+  void decreaseQuantity(int newQuantity, int productId) async {
+    bool result = await productDetailsRepository.increaseOrDecreaseQty(
+        _quantity, productId.toString(), false);
+
+    if (result == true) {
+      if (_quantity > 1) {
+        _quantity -= newQuantity;
+        notifyListeners();
+      }
     }
   }
 

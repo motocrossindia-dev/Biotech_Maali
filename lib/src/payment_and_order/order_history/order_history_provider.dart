@@ -1,5 +1,5 @@
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/model.dart/order_history_model.dart';
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/order_history_repository.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/order_history_repository.dart';
 
 import '../../../import.dart';
 

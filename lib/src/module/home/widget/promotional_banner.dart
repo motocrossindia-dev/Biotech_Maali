@@ -38,8 +38,8 @@ class PromotionalBanner extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const ProductListScreen(title: "Plants", products: []),
+                    builder: (context) => const HomeProductListScreen(
+                        title: "Plants", products: []),
                   ),
                 );
               },

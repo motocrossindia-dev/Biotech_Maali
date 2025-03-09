@@ -1,5 +1,5 @@
 import 'package:biotech_maali/core/network/app_base_url.dart';
-import 'package:biotech_maali/src/payment_and_order/order_history.dart/model.dart/order_history_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'order_history_detail_provider.dart';
