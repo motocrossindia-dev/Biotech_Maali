@@ -22,7 +22,7 @@ class LoginProvider extends ChangeNotifier {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const BottomNavWidget(),
+            builder: (context) =>  BottomNavWidget(),
           ),
           (route) => false,
         );

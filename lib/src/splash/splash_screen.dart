@@ -60,7 +60,7 @@ class SplashScreen extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const BottomNavWidget(),
+                builder: (context) =>  BottomNavWidget(),
               ),
             );
           } else if (splashProvider.navigationTarget == "login") {

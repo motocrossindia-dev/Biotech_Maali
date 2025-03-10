@@ -19,10 +19,7 @@ class WishlistProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
-  final Set<int> _loadingProductIds = {};
-  Set<int> get loadingProductIds => _loadingProductIds;
-  bool isProductLoading(int productId) =>
-      _loadingProductIds.contains(productId);
+  
   Future<void> fetchWishlist() async {
     try {
       _isLoading = true;
@@ -71,7 +68,7 @@ class WishlistProvider extends ChangeNotifier {
   Future<void> addOrRemoveWhishlistMainProduct(
       int productId, BuildContext context) async {
     // Add productId to loading set
-    _loadingProductIds.add(productId);
+    
     notifyListeners();
 
     try {
@@ -91,7 +88,7 @@ class WishlistProvider extends ChangeNotifier {
       notifyListeners();
     } finally {
       // Remove productId from loading set
-      _loadingProductIds.remove(productId);
+     
       notifyListeners();
     }
   }

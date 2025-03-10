@@ -51,7 +51,7 @@ class OtpRepository {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => const BottomNavWidget(),
+              builder: (context) =>  BottomNavWidget(),
             ),
             (route) => false,
           );

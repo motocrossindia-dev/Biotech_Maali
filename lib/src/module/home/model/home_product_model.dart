@@ -5,7 +5,7 @@ class HomeProductModel {
   final bool isBestSeller;
   final bool isSeasonalCollection;
   final bool isTrending;
-  final bool isCart;
+   bool isCart;
    bool isWishlist;
   final String? image;
   final double price;

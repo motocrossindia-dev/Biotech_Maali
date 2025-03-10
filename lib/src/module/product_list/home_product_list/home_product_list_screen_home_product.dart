@@ -95,9 +95,7 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                               itemBuilder: (context, index) {
                                 HomeProductModel productDetails =
                                     widget.products[index];
-                                // bool isWishlistId = provider
-                                //     .mainWishlistProductId
-                                //     .contains(productDetails.id);
+                         
 
                                 return InkWell(
                                   onTap: () {
@@ -140,10 +138,11 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                                       }
                                       final wishlistProvider =
                                           context.read<HomeProvider>();
-                                      wishlistProvider.addToWishlist(
+                                      wishlistProvider.addOrRemoveToWishlist(
                                           productDetails.id,
                                           productDetails.isWishlist,
                                           context);
+                                        
                                     },
                                   ),
                                 );

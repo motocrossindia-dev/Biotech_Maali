@@ -264,7 +264,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           if (dialogContext.mounted) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const BottomNavWidget()),
+              MaterialPageRoute(builder: (context) =>  BottomNavWidget()),
               (Route<dynamic> route) => false,
             );
           }

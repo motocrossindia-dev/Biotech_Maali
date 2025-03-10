@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/cart/cart_repository.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
@@ -12,6 +15,8 @@ import '../../../../import.dart';
 class ProductDetailsProvider extends ChangeNotifier {
   final ProductDetailsRepository productDetailsRepository =
       ProductDetailsRepository();
+
+  final CartRepository _cartRepository = CartRepository();
 
   ProductDetailsProvider() {
     updateQuantity();
@@ -25,8 +30,12 @@ class ProductDetailsProvider extends ChangeNotifier {
   bool _isLoadingWishList = false;
   OrderResponseModel? _orderResponse;
   ProductDetailModel? _productDetails;
+
   List<String> _carouselProductImageList = [];
+
   List<ProductAddOn> _productAddOn = [];
+  String? _productVideo = "";
+  String? _whatsIncluded = "";
 
   // Selected IDs
   int? _selectedSizeId;
@@ -50,7 +59,8 @@ class ProductDetailsProvider extends ChangeNotifier {
   ProductDetailModel? get productDetails => _productDetails;
   List<String> get carouselProductImageList => _carouselProductImageList;
   List<ProductAddOn> get productAddOn => _productAddOn;
-  
+  String? get productVideo => _productVideo;
+  String? get whatsIncluded => _whatsIncluded;
 
   int? get selectedSizeId => _selectedSizeId;
   int? get selectedPlanterSizeId => _selectedPlanterSizeId;
@@ -89,11 +99,58 @@ class ProductDetailsProvider extends ChangeNotifier {
       _selectedColorId = details.data.product.colorId;
       _selectedWeightId = details.data.product.weightId;
       _selectedLitreId = details.data.product.litreId;
+      _productAddOn = details.data.productAddOns;
+      _productVideo = details.data.product.videoLink;
+      _whatsIncluded = details.data.product.whatsIncluded;
 
       _isLoading = false;
       notifyListeners();
     } catch (e) {
       _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> addToCartMainProduct(
+      int productId, bool isCart, BuildContext context) async {
+    log("productId add to cart : $productId");
+    try {
+      // _isLoading = true;
+      notifyListeners();
+
+      final success = await _cartRepository.addToCartForMainProduct(
+        productId,
+      );
+
+      if (success) {
+        final cartProvider = context.read<CartProvider>();
+        await cartProvider
+            .fetchCartItems(); // Refresh cart items after successful addition
+
+        final productIndex =
+            _productAddOn.indexWhere((product) => product.id == productId);
+        if (productIndex != -1) {
+          _productAddOn[productIndex].isCart = !isCart;
+
+          notifyListeners(); // Notify listeners about the update
+        }
+        if (isCart) {
+          showCartMessage(context, false);
+        } else if (!isCart) {
+          showCartMessage(context, true);
+        }
+      }
+      return success;
+    } catch (e) {
+      _error = e.toString();
+      Fluttertoast.showToast(
+        msg: "Error adding item to cart",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return false;
+    } finally {
       _isLoading = false;
       notifyListeners();
     }
@@ -237,7 +294,7 @@ class ProductDetailsProvider extends ChangeNotifier {
         log("color : ${filteredDetails.data.productColors}");
 
         _productDetails = mergedDetails;
-        
+
         _selectedSizeId = mergedDetails.data.product.sizeId;
         _selectedPlanterSizeId = mergedDetails.data.product.planterSizeId;
         _selectedPlanterId = mergedDetails.data.product.planterId;

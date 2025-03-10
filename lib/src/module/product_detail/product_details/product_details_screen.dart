@@ -147,7 +147,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ),
                                     sizedBoxWidth5,
                                     CommonTextWidget(
-                                      title: '₹${productDetail.product.price}',
+                                      title: '₹${productDetail.product.mrp}',
                                       fontSize: 10,
                                       fontWeight: FontWeight.w300,
                                       color: cProductRateCrossed,
@@ -161,9 +161,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         color: cOffer,
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      child: const Center(
+                                      child: Center(
                                         child: CommonTextWidget(
-                                          title: '25% OFF',
+                                          title: '% OFF',
+                                          // ${(100 - (productDetail.product.price / productDetail.product.mrp * 100)).toInt()}
                                           fontSize: 12,
                                           fontWeight: FontWeight.w400,
                                         ),
@@ -490,11 +491,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ],
                             ),
                             sizedBoxHeight20,
-                            ProductListAddonWidget(
-                                title: 'Add On',
-                                productAddonList: productDetail.productAddOns),
-                            sizedBoxHeight40,
-                            const ProductDescription(),
+                            provider.productAddOn.isNotEmpty
+                                ? ProductListAddonWidget(title: 'Add On')
+                                : sizedBoxHeight40,
+                            ProductDescription(provider: provider),
                             sizedBoxHeight20,
                             const ProductListWidget(
                                 title: 'Customers Also Bought'),

@@ -1,8 +1,4 @@
-import 'dart:developer';
-
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
-import 'package:biotech_maali/src/module/cart/cart_provider.dart';
-import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import '../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -39,7 +35,7 @@ class ProductTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wishListProviderWatch = context.watch<WishlistProvider>();
+    final homeProviderWatch = context.watch<HomeProvider>();
     const baseUrl = BaseUrl.baseUrlForImages;
 
     return Container(
@@ -53,7 +49,7 @@ class ProductTileWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, top: 8),
-                      child: wishListProviderWatch.isProductLoading(mainProdId ??
+                      child: homeProviderWatch.isProductLoading(mainProdId ??
                               0) // Check loading state for this specific product
                           ? Column(
                               children: [
@@ -140,21 +136,31 @@ class ProductTileWidget extends StatelessWidget {
                   child: BorderColoredButton(
                     title: isCart ? "Go To Cart" : 'Add To Cart',
                     height: 38,
-                    event: addToCartEvent ??
-                        () async {
-                          final settingsProvider =
-                              context.read<SettingsProvider>();
-                          bool isAuth = await settingsProvider
-                              .checkAccessTokenValidity(context);
-
-                          if (!isAuth) {
-                            _showLoginDialog(context);
-                            return;
+                    event: 
+                    isCart
+                        ? () {
+                            context.read<BottomNavProvider>().updateIndex(3);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  BottomNavWidget(),
+                              ),
+                              (route) => false,
+                            );
                           }
-                          context
-                              .read<CartProvider>()
-                              .addToCartMainProduct(mainProdId!, context);
-                        },
+                        : () async {
+                            final settingsProvider =
+                                context.read<SettingsProvider>();
+                            bool isAuth = await settingsProvider
+                                .checkAccessTokenValidity(context);
+
+                            if (!isAuth) {
+                              _showLoginDialog(context);
+                              return;
+                            }
+                            context.read<HomeProvider>().addToCartMainProduct(
+                                mainProdId!, isCart, context);
+                          },
                   ),
                 )
               : sizedBoxHeight0

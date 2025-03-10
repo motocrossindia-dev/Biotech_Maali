@@ -3,7 +3,8 @@ import 'package:chewie/chewie.dart';
 import '../../../../../import.dart';
 
 class ProductDescription extends StatefulWidget {
-  const ProductDescription({super.key});
+  final ProductDetailsProvider provider;
+  const ProductDescription({required this.provider,super.key});
 
   @override
   _ProductDescriptionState createState() => _ProductDescriptionState();
@@ -38,7 +39,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
       (_) {
         final provider =
             Provider.of<ProductDetailsProvider>(context, listen: false);
-        final videoUrl = provider.productDetails?.data.product.videoLink;
+        final videoUrl = provider.productVideo;
         log("Video URL: $videoUrl"); // Debug log
         if (videoUrl != null && videoUrl.isNotEmpty) {
           initializeVideo(videoUrl);
@@ -135,7 +136,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
     final provider =
         Provider.of<ProductDetailsProvider>(context, listen: false);
     if (provider.selectedTab == 2 && !_isInitialized) {
-      final videoUrl = provider.productDetails?.data.product.videoLink;
+      final videoUrl = provider.productVideo;
       if (videoUrl != null && videoUrl.isNotEmpty) {
         initializeVideo(videoUrl);
       }
@@ -311,7 +312,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                     title: provider.selectedTab == 0
                         ? product?.shortDescription ?? ''
                         : provider.selectedTab == 1
-                            ? product?.whatsIncluded ?? ''
+                            ? provider.whatsIncluded ?? ''
                             : "",
                     textAlign: TextAlign.justify,
                   ),

@@ -6,11 +6,27 @@ import '../../../../import.dart';
 
 class ProductDetailsRepository {
   final Dio _dio = Dio();
-  
+
   Future<ProductDetailModel> fetchProductDetails(int productId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+    log("tokenin home : $token");
     try {
-      final response =
-          await _dio.get('${EndUrl.getProductDetailsUrl}$productId');
+      Response? response;
+
+      if (token != null) {
+        response = await _dio.get(
+          '${EndUrl.getProductDetailsUrl}$productId',
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "Application/json"
+            },
+          ),
+        );
+      } else {
+        response = await _dio.get('${EndUrl.getProductDetailsUrl}$productId');
+      }
 
       if (response.statusCode == 200) {
         log("Product details response: ${response.data}");
@@ -33,6 +49,9 @@ class ProductDetailsRepository {
       int? litreId,
       int? colorId,
       int? weightId}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+    log("tokenin home : $token");
     try {
       final queryParams = {
         if (sizeId != null) 'size_id': sizeId.toString(),
@@ -46,10 +65,25 @@ class ProductDetailsRepository {
       log("Filter params: $queryParams");
       log("Product id: $productId");
 
-      final response = await _dio.get(
-        '${EndUrl.filterProductUrl}$productId',
-        queryParameters: queryParams,
-      );
+      Response? response;
+
+      if (token != null) {
+        response = await _dio.get(
+          '${EndUrl.filterProductUrl}$productId',
+          queryParameters: queryParams,
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "Application/json"
+            },
+          ),
+        );
+      } else {
+        response = await _dio.get(
+          '${EndUrl.filterProductUrl}$productId',
+          queryParameters: queryParams,
+        );
+      }
 
       if (response.statusCode == 200) {
         log("Filter response: ${response.data}");

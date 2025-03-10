@@ -100,7 +100,7 @@ class _CartScreenState extends State<CartScreen> {
                                 item.id, newQuantity);
                           },
                           onDelete: () async {
-                            await cartProvider.deleteCartItem(item.id);
+                            await cartProvider.deleteCartItem(item.id,context);
                           },
                         );
                       },

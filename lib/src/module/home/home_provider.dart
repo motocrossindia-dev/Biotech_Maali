@@ -1,10 +1,13 @@
 import 'dart:developer';
 import 'dart:ui';
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/cart/cart_repository.dart';
 import 'package:biotech_maali/src/module/home/home_repository.dart';
 import 'package:biotech_maali/src/module/home/model/banner_model.dart';
 import 'package:biotech_maali/src/module/home/model/category_model.dart';
 import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_repository.dart';
+import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -15,15 +18,24 @@ class HomeProvider extends ChangeNotifier {
     refreshAll();
   }
   final HomeRepository _repository = HomeRepository();
+  final CartRepository _cartRepository = CartRepository();
   final WishlistRepository _wishlistRepository = WishlistRepository();
 
   bool _isLoading = false;
+  final Set<int> _loadingProductIds = {};
+  Set<int> get loadingProductIds => _loadingProductIds;
+  bool isProductLoading(int productId) =>
+      _loadingProductIds.contains(productId);
+
+  bool _isCartLoading = false;
   String? _error;
   List<HomeProductModel> _allProducts = [];
   List<MainCategoryModel> _mainCategories = [];
 
   // Getters
   bool get isLoading => _isLoading;
+
+  bool get isCartLoading => _isCartLoading;
   String? get error => _error;
   List<HomeProductModel> get allProducts => _allProducts;
   List<MainCategoryModel> get maincategories => _mainCategories;
@@ -75,26 +87,21 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future addToWishlist(
+  Future addOrRemoveToWishlist(
       int productId, bool isWishlist, BuildContext context) async {
-    bool updatedIsWhishlist = false;
-    if (isWishlist) {
-      updatedIsWhishlist = false;
-    } else if (!isWishlist) {
-      updatedIsWhishlist = true;
-    }
+    log("iswishList : $isWishlist");
+    _loadingProductIds.add(productId);
+
     try {
       bool result =
           await _wishlistRepository.addOrRemoveWishListMainProduct(productId);
       if (result) {
-        // Find the product with the matching ID and update its wishlist status
-
         final productIndex =
             _allProducts.indexWhere((product) => product.id == productId);
         if (productIndex != -1) {
-          _allProducts[productIndex].isWishlist =
-              updatedIsWhishlist; // Set to true
+          _allProducts[productIndex].isWishlist = !isWishlist;
 
+          _loadingProductIds.remove(productId);
           notifyListeners(); // Notify listeners about the update
         }
         if (isWishlist) {
@@ -105,6 +112,49 @@ class HomeProvider extends ChangeNotifier {
       }
     } catch (e) {
       _error = e.toString();
+      _loadingProductIds.remove(productId);
+      notifyListeners();
+    }
+  }
+
+  Future<bool> addToCartMainProduct(
+      int productId, bool isCart, BuildContext context) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final success = await _cartRepository.addToCartForMainProduct(productId);
+      log("Success : ${success.toString()}");
+
+      if (success) {
+        final cartProvider = context.read<CartProvider>();
+        await cartProvider
+            .fetchCartItems(); // Refresh cart items after successful addition
+
+        final productIndex =
+            _allProducts.indexWhere((product) => product.id == productId);
+        if (productIndex != -1) {
+          _allProducts[productIndex].isCart = !isCart;
+
+          notifyListeners(); // Notify listeners about the update
+        }
+        if (isCart) {
+          showCartMessage(context, false);
+        } else if (!isCart) {
+          showCartMessage(context, true);
+        }
+      }
+      return success;
+    } catch (e) {
+      _error = e.toString();
+      Fluttertoast.showToast(
+        msg: "Error adding item to cart",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return false;
+    } finally {
+      _isLoading = false;
       notifyListeners();
     }
   }

@@ -81,7 +81,10 @@ class ProductData {
 
 class Product {
   final int id;
+  final double mrp;
   final double price;
+  final bool isCart;
+  final bool isWishlist;
   final List<ProductImage> images;
   final String shortDescription;
   final String mainProductName;
@@ -93,10 +96,14 @@ class Product {
   final int? colorId;
   final String? whatsIncluded;
   final String? videoLink;
+  final bool isPurchased;
 
   Product({
     required this.id,
+    required this.mrp,
     required this.price,
+    required this.isCart,
+    required this.isWishlist,
     required this.images,
     required this.shortDescription,
     required this.mainProductName,
@@ -108,12 +115,16 @@ class Product {
     this.colorId,
     this.whatsIncluded,
     this.videoLink,
+    required this.isPurchased,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: _parseId(json['id']),
+      mrp: _parseDouble(json['mrp']),
       price: _parseDouble(json['price']),
+      isCart: json['is_cart'] ?? false,
+      isWishlist: json['is_wishlist'] ?? false,
       images: (json['images'] as List? ?? [])
           .map((e) => ProductImage.fromJson(e))
           .toList(),
@@ -127,6 +138,53 @@ class Product {
       colorId: _parseNullableId(json['color_id']),
       whatsIncluded: json['whats_included'],
       videoLink: json['vedio_link'], // API uses 'vedio_link'
+      isPurchased: json['is_purchased'] ?? false,
+    );
+  }
+
+  // Creating a copy with updated wishlist status
+  Product copyWithWishlistStatus(bool isWishlist) {
+    return Product(
+      id: id,
+      mrp: mrp,
+      price: price,
+      isCart: isCart,
+      isWishlist: isWishlist,
+      images: images,
+      shortDescription: shortDescription,
+      mainProductName: mainProductName,
+      sizeId: sizeId,
+      planterSizeId: planterSizeId,
+      planterId: planterId,
+      weightId: weightId,
+      litreId: litreId,
+      colorId: colorId,
+      whatsIncluded: whatsIncluded,
+      videoLink: videoLink,
+      isPurchased: isPurchased,
+    );
+  }
+
+  // Creating a copy with updated cart status
+  Product copyWithCartStatus(bool isCart) {
+    return Product(
+      id: id,
+      mrp: mrp,
+      price: price,
+      isCart: isCart,
+      isWishlist: isWishlist,
+      images: images,
+      shortDescription: shortDescription,
+      mainProductName: mainProductName,
+      sizeId: sizeId,
+      planterSizeId: planterSizeId,
+      planterId: planterId,
+      weightId: weightId,
+      litreId: litreId,
+      colorId: colorId,
+      whatsIncluded: whatsIncluded,
+      videoLink: videoLink,
+      isPurchased: isPurchased,
     );
   }
 
@@ -410,16 +468,19 @@ class ProductAddOn {
   final double price;
   final String image;
   final ProductRating productRating;
+   bool isCart;
+   bool isWishlist;
 
-  ProductAddOn({
-    required this.id,
-    required this.name,
-    required this.productId,
-    required this.mrp,
-    required this.price,
-    required this.image,
-    required this.productRating,
-  });
+  ProductAddOn(
+      {required this.id,
+      required this.name,
+      required this.productId,
+      required this.mrp,
+      required this.price,
+      required this.image,
+      required this.productRating,
+      required this.isCart,
+      required this.isWishlist});
 
   factory ProductAddOn.fromJson(Map<String, dynamic> json) {
     return ProductAddOn(
@@ -430,6 +491,8 @@ class ProductAddOn {
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       image: json['image'] ?? '',
       productRating: ProductRating.fromJson(json['product_rating'] ?? {}),
+      isCart: json['is_cart'] ?? '',
+      isWishlist: json['is_wishlist'],
     );
   }
 }

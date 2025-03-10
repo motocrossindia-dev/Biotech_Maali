@@ -77,7 +77,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteCartItem(int cartId) async {
+  Future<bool> deleteCartItem(int cartId, BuildContext context) async {
     try {
       _deleteLoadingStates[cartId] = true;
       notifyListeners();
@@ -86,6 +86,7 @@ class CartProvider extends ChangeNotifier {
 
       if (success) {
         _cartItems.removeWhere((item) => item.id == cartId);
+
         Fluttertoast.showToast(
           msg: "Item removed from cart",
           backgroundColor: Colors.green,

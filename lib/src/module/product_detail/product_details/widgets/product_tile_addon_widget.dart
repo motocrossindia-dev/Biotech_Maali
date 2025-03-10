@@ -1,5 +1,7 @@
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import '../../../../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -37,7 +39,7 @@ class ProductTileAddonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wishListProviderWatch = context.watch<WishlistProvider>();
+    final wishListProviderWatch = context.watch<HomeProvider>();
     const baseUrl = BaseUrl.baseUrlForImages;
 
     return Container(
@@ -136,14 +138,34 @@ class ProductTileAddonWidget extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(left: 1.0, right: 1),
                   child: BorderColoredButton(
-                    title: 'Add To Cart',
+                    title: isAddToCart ? 'Go To Cart' : 'Add To Cart',
                     height: 38,
-                    event: addToCartEvent ??
-                        () {
-                          context
-                              .read<CartProvider>()
-                              .addToCartMainProduct(mainProdId!, context);
-                        },
+                    event: isAddToCart
+                        ? () {
+                            context.read<BottomNavProvider>().updateIndex(3);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BottomNavWidget(),
+                              ),
+                              (route) => false,
+                            );
+                          }
+                        : () async {
+                            final settingsProvider =
+                                context.read<SettingsProvider>();
+                            bool isAuth = await settingsProvider
+                                .checkAccessTokenValidity(context);
+
+                            if (!isAuth) {
+                              _showLoginDialog(context);
+                              return;
+                            }
+                            context
+                                .read<ProductDetailsProvider>()
+                                .addToCartMainProduct(
+                                    mainProdId!, isAddToCart, context);
+                          },
                   ),
                 )
               : sizedBoxHeight0
@@ -179,6 +201,15 @@ class ProductTileAddonWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
+      },
     );
   }
 }
