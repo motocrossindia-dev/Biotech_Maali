@@ -413,7 +413,7 @@ class AccountScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const FranchiseScreen(),
+                        builder: (context) =>  FranchiseScreen(),
                       ),
                     );
                   },

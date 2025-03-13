@@ -1,149 +1,139 @@
+import 'dart:developer';
+
+import 'package:biotech_maali/src/module/product_list/product_list/model/product_list_model.dart';
+
 import '../../../import.dart';
+import 'model/filter_response_model.dart';
+import 'filters_repository.dart';
 
 class FiltersProvider extends ChangeNotifier {
+  final FiltersRepository _repository = FiltersRepository();
+  FilterResponseModel? filterResponse;
+  Map<String, List<String>> selectedFilters = {};
+  bool isLoading = false;
   String selectedCategory = "Type of Plants";
-
   RangeValues _currentRangeValues = const RangeValues(0, 9999);
   RangeValues get currentRangeValues => _currentRangeValues;
 
-  //TYPE OF PLNTS
-  final List<Map<String, dynamic>> plantFilters = [
-    {
-      "id": "air-plant",
-      "name": "Air Plant",
-      "count": 15,
-      "isSelected": true,
-    },
-    {
-      "id": "flowering-plants",
-      "name": "Flowering Plants",
-      "count": 15,
-      "isSelected": false,
-    },
-    {
-      "id": "focal-plants",
-      "name": "Focal Plants",
-      "count": 5,
-      "isSelected": false,
-    },
-    {
-      "id": "ground-covers",
-      "name": "Ground Covers",
-      "count": 43,
-      "isSelected": false,
-    },
-    {
-      "id": "hedge-plants",
-      "name": "Hedge Plants",
-      "count": 23,
-      "isSelected": false,
-    },
-    {
-      "id": "screen-plants",
-      "name": "Screen Plants",
-      "count": 3,
-      "isSelected": false,
-    },
-    {
-      "id": "shrub-plants",
-      "name": "Shrub Plants",
-      "count": 42,
-      "isSelected": false,
+  Future<void> loadFilters(String type) async {
+    String category = "";
+    if (type == "POTS") {
+      category = "pot";
+    } else if (type == "SEEDS") {
+      category = "seed";
+    } else if (type == "PLANTS") {
+      category = "plant";
+    } else if (type == "TOOLS") {
+      category = "tool";
     }
-  ];
+    try {
+      isLoading = true;
+      notifyListeners();
 
-  //IDEAL PLANT LOCATION
-  final List<Map<String, dynamic>> plantLocationFilters = [
-    {
-      "id": "office-desk",
-      "label": "Office Desk Plants",
-      "count": 15,
-      "isChecked": false
-    },
-    {
-      "id": "office-premises",
-      "label": "Office Premises Plants",
-      "count": 15,
-      "isChecked": false
-    },
-    {
-      "id": "living-room",
-      "label": "Plants For Living Room Tables",
-      "count": 5,
-      "isChecked": false
-    },
-    {
-      "id": "balcony",
-      "label": "Plants For Balconies",
-      "count": 43,
-      "isChecked": false
-    },
-    {"id": "window", "label": "Window plants", "count": 23, "isChecked": false},
-  ];
+      filterResponse = await _repository.getFilters(category);
 
-  final List<Map<String, dynamic>> indoorOutdoor = [
-    {"id": "indoor001", "label": "Indoor", "count": 30, "isSelected": false},
-    {"id": "outdoor001", "label": "Outdoor", "count": 15, "isSelected": false},
-  ];
+      // Initialize range values after getting filter response
+      if (filterResponse != null) {
+        final priceRange = filterResponse!.priceRange;
+        _currentRangeValues = RangeValues(priceRange.min, priceRange.max);
+      }
 
-  final List<Map<String, dynamic>> potSize = [
-    {"id": "indoor001", "label": "Small", "count": 30, "isSelected": false},
-    {"id": "outdoor001", "label": "Medium", "count": 15, "isSelected": false},
-    {"id": "outdoor001", "label": "Large", "count": 15, "isSelected": false},
-  ];
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      throw Exception('Failed to load filters');
+    }
+  }
 
-  setSelectedCategory(String category) {
+  void toggleFilter(String category, String value) {
+    if (!selectedFilters.containsKey(category)) {
+      selectedFilters[category] = [];
+    }
+
+    if (selectedFilters[category]!.contains(value)) {
+      selectedFilters[category]!.remove(value);
+    } else {
+      selectedFilters[category]!.add(value);
+    }
+
+    if (selectedFilters[category]!.isEmpty) {
+      selectedFilters.remove(category);
+    }
+
+    notifyListeners();
+  }
+
+  String getFilterQueryString() {
+    return selectedFilters.entries
+        .map((e) => '${e.key}=${e.value.join(",")}')
+        .join('&');
+  }
+
+  void setSelectedCategory(String category) {
     selectedCategory = category;
     notifyListeners();
   }
 
-  setTypeOfPlants(bool value, int index) {
-    plantFilters[index]["isSelected"] = value;
+  void setPriceRange(RangeValues values) {
+    // Ensure values are within bounds
+    final min = filterResponse?.priceRange.min ?? 0;
+    final max = filterResponse?.priceRange.max ?? 9999;
+
+    _currentRangeValues = RangeValues(
+      values.start.clamp(min, max),
+      values.end.clamp(min, max),
+    );
     notifyListeners();
   }
 
-  setCurrentRangeValues(RangeValues values) {
-    _currentRangeValues = values;
+  void resetAllFilters() {
+    selectedFilters.clear();
+    // Reset price range to initial filter values
+    if (filterResponse != null) {
+      final priceRange = filterResponse!.priceRange;
+      _currentRangeValues = RangeValues(priceRange.min, priceRange.max);
+    }
     notifyListeners();
   }
 
-  setIdealPlantLocation(bool value, int index) {
-    plantLocationFilters[index]["isChecked"] = value;
-    notifyListeners();
-  }
+  Map<String, dynamic> getFilterParams() {
+    final Map<String, dynamic> params = {};
 
-  setIndoorOutdoor(bool value, int index) {
-    indoorOutdoor[index]["isSelected"] = value;
-    notifyListeners();
-  }
-
-   setPotSize(bool value, int index) {
-    potSize[index]["isSelected"] = value;
-    notifyListeners();
-  }
-
-   void resetAllFilters() {
-    // Reset plant filters
-    for (var filter in plantFilters) {
-      filter['isSelected'] = false;
+    // Add selected filters
+    for (var entry in selectedFilters.entries) {
+      params[entry.key] = entry.value.join(',');
     }
 
-    // Reset plant location filters
-    for (var filter in plantLocationFilters) {
-      filter['isChecked'] = false;
+    // Add price range if changed from default
+    if (_currentRangeValues.start > 0 || _currentRangeValues.end < 9999) {
+      params['price_min'] = _currentRangeValues.start.round().toString();
+      params['price_max'] = _currentRangeValues.end.round().toString();
     }
 
-    // Reset indoor/outdoor filters
-    for (var filter in indoorOutdoor) {
-      filter['isSelected'] = false;
-    }
+    return params;
+  }
 
-    // Reset pot size filters
-    for (var filter in potSize) {
-      filter['isSelected'] = false;
-    }
+  Future<List<Product>> applyFilters(String type, BuildContext context) async {
+    try {
+      isLoading = true;
+      notifyListeners();
 
-    // Notify listeners to rebuild the UI
-    notifyListeners();
+      final params = getFilterParams();
+      final result = await _repository.applyFilters(type, params);
+
+      log("result . lenght : ${result.length}");
+
+      context.read<ProductListProdvider>().setFilteredProducts(result);
+      isLoading = false;
+      notifyListeners();
+
+      return result;
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      throw Exception('Failed to apply filters');
+    }
   }
 }

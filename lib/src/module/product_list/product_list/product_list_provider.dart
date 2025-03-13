@@ -15,6 +15,11 @@ class ProductListProdvider extends ChangeNotifier {
 
   List<Product> get allProducts => _allProducts;
 
+  setFilteredProducts(List<Product> products) async {
+    _allProducts = products;
+    notifyListeners();
+  }
+
   Future<void> getCategoryProductList({String? categoryId}) async {
     try {
       final result =

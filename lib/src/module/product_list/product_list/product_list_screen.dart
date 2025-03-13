@@ -228,10 +228,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
                           log('message');
-                          Navigator.push(
+                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const FilterScreen(),
+                              builder: (context) =>  FilterScreen(type: widget.title),
                             ),
                           );
                         },

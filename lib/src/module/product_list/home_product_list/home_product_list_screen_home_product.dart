@@ -35,6 +35,7 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
 
   @override
   void initState() {
+    
     super.initState();
 
     _loadData();
@@ -95,7 +96,6 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                               itemBuilder: (context, index) {
                                 HomeProductModel productDetails =
                                     widget.products[index];
-                         
 
                                 return InkWell(
                                   onTap: () {
@@ -142,7 +142,6 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                                           productDetails.id,
                                           productDetails.isWishlist,
                                           context);
-                                        
                                     },
                                   ),
                                 );
@@ -214,7 +213,8 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const FilterScreen(),
+                              builder: (context) =>
+                                  FilterScreen(type: widget.title),
                             ),
                           );
                         },

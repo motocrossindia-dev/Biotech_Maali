@@ -2,7 +2,7 @@ import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enqu
 import '../../../import.dart';
 
 class FranchiseScreen extends StatelessWidget {
-  const FranchiseScreen({super.key});
+  FranchiseScreen({super.key});
 
   // Form validation helper methods
   String? validateName(String? value) {
@@ -62,6 +62,8 @@ class FranchiseScreen extends StatelessWidget {
     return null;
   }
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,142 +79,108 @@ class FranchiseScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Plant Store Image
-            Image.network(
-              'https://picsum.photos/400/200',
+            Image.asset(
+              'assets/png/images/franchise_pic_1.png',
               height: 200,
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 20),
 
             const Center(
-              child: Text(
-                'Get A Franchise',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: CommonTextWidget(
+                title: 'Get A Franchise',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
             ),
 
-            Image.network(
-              'https://picsum.photos/400/100',
-              height: 100,
+            Image.asset(
+              'assets/png/images/franchise_pic_2.png',
+              height: 200,
               fit: BoxFit.cover,
             ),
 
             // Franchise Form
-            Form(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    _buildTextField(
-                      context,
-                      'Name',
-                      validator: validateName,
-                      keyboardType: TextInputType.name,
+            Consumer<FranchiseProvider>(
+              builder: (context, provider, child) {
+                return Form(
+                  key: formKey, // Add form key here
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        _buildTextField(
+                          context,
+                          'Name',
+                          provider.name,
+                          validator: validateName,
+                          keyboardType: TextInputType.name,
+                        ),
+                        _buildTextField(
+                            context, 'Contact Number', provider.contact,
+                            validator: validateContact,
+                            keyboardType: TextInputType.phone,
+                            maxLength: 10),
+                        _buildTextField(
+                          context,
+                          'Your Email',
+                          provider.email,
+                          validator: validateEmail,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        _buildTextField(
+                          context,
+                          'Area In Which You Want To Open The Biotech Maali Outlet',
+                          provider.area,
+                          validator: validateArea,
+                        ),
+                        _buildTextField(
+                          context,
+                          'Address',
+                          provider.address,
+                          validator: validateAddress,
+                          keyboardType: TextInputType.streetAddress,
+                        ),
+                        _buildTextField(
+                          context,
+                          'Message',
+                          provider.message,
+                          maxLines: 3,
+                          validator: validateMessage,
+                        ),
+                        const SizedBox(height: 20),
+                        Consumer<FranchiseProvider>(
+                          builder: (context, provider, _) {
+                            return Column(
+                              children: [
+                                if (provider.error != null) ...[
+                                  CommonTextWidget(
+                                    title: provider.error!,
+                                    color: Colors.red[700],
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
+                                CommonButtonWidget(
+                                  event: () {
+                                    if (formKey.currentState!.validate()) {
+                                      // Add validation check
+                                      provider.submitForm(context);
+                                    }
+                                  },
+                                  title: provider.isLoading
+                                      ? 'SENDING...'
+                                      : 'SEND MESSAGE',
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    _buildTextField(
-                      context,
-                      'Contact Number',
-                      validator: validateContact,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    _buildTextField(
-                      context,
-                      'Your Email',
-                      validator: validateEmail,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    _buildTextField(
-                      context,
-                      'Area In Which You Want To Open The Biotech Maali Outlet',
-                      validator: validateArea,
-                    ),
-                    _buildTextField(
-                      context,
-                      'Address',
-                      validator: validateAddress,
-                      keyboardType: TextInputType.streetAddress,
-                    ),
-                    _buildTextField(
-                      context,
-                      'Message',
-                      maxLines: 3,
-                      validator: validateMessage,
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Consumer<FranchiseProvider>(
-                      builder: (context, provider, _) {
-                        return Column(
-                          children: [
-                            if (provider.error != null) ...[
-                              Text(
-                                provider.error!,
-                                style: TextStyle(color: Colors.red[700]),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 16),
-                            ],
-                            CommonButtonWidget(
-                              event: provider.isLoading
-                                  ? null
-                                  : () async {
-                                      // Validate all fields before submission
-                                      bool isValid = true;
-                                      final fields = {
-                                        'name': provider.name,
-                                        'contact': provider.contact,
-                                        'email': provider.email,
-                                        'area': provider.area,
-                                        'address': provider.address,
-                                        'message': provider.message,
-                                      };
-
-                                      fields.forEach((key, value) {
-                                        String? error;
-                                        switch (key) {
-                                          case 'name':
-                                            error = validateName(value);
-                                            break;
-                                          case 'contact':
-                                            error = validateContact(value);
-                                            break;
-                                          case 'email':
-                                            error = validateEmail(value);
-                                            break;
-                                          case 'area':
-                                            error = validateArea(value);
-                                            break;
-                                          case 'address':
-                                            error = validateAddress(value);
-                                            break;
-                                          case 'message':
-                                            error = validateMessage(value);
-                                            break;
-                                        }
-                                        if (error != null) {
-                                          provider.setError(error);
-                                          isValid = false;
-                                        }
-                                      });
-
-                                      if (isValid) {
-                                        await provider.submitForm();
-                                      }
-                                    },
-                              title:
-                                  provider.isLoading ? 'SENDING...' : 'SEND MESSAGE',
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
 
             // Rest of the sections remain the same
@@ -224,7 +192,8 @@ class FranchiseScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: CommonButtonWidget(event: () {}, title: 'VIEW ALL'),
             ),
 
@@ -237,8 +206,10 @@ class FranchiseScreen extends StatelessWidget {
 
   Widget _buildTextField(
     BuildContext context,
-    String label, {
+    String label,
+    TextEditingController controller, {
     int maxLines = 1,
+    int? maxLength,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
   }) {
@@ -248,7 +219,9 @@ class FranchiseScreen extends StatelessWidget {
         builder: (context, provider, _) {
           return TextFormField(
             maxLines: maxLines,
+            maxLength: maxLength,
             keyboardType: keyboardType,
+            controller: controller,
             decoration: InputDecoration(
               labelText: label,
               border: OutlineInputBorder(
@@ -270,32 +243,6 @@ class FranchiseScreen extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
             validator: validator,
-            onChanged: (value) {
-              switch (label) {
-                case 'Name':
-                  provider.setName(value);
-                  break;
-                case 'Contact Number':
-                  provider.setContact(value);
-                  break;
-                case 'Your Email':
-                  provider.setEmail(value);
-                  break;
-                case 'Area In Which You Want To Open The Biotech Maali Outlet':
-                  provider.setArea(value);
-                  break;
-                case 'Address':
-                  provider.setAddress(value);
-                  break;
-                case 'Message':
-                  provider.setMessage(value);
-                  break;
-              }
-              // Clear error when user starts typing
-              if (provider.error != null) {
-                provider.setError(null);
-              }
-            },
           );
         },
       ),
@@ -308,23 +255,21 @@ class FranchiseScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Why We Rock?',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          const CommonTextWidget(
+            title: 'Why We Rock?',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Take the first step and become a part of the family that is ever-growing. Partner with the Most Trusted Plant Nursery in the market. The vision of Biotech Maali franchise is to deliver our unique cultural blend and values to each corner of this world.',
-            style: TextStyle(fontSize: 16),
-          ),
+          const CommonTextWidget(
+              title:
+                  'Take the first step and become a part of the family that is ever-growing. Partner with the Most Trusted Plant Nursery in the market. The vision of Biotech Maali franchise is to deliver our unique cultural blend and values to each corner of this world.',
+              fontSize: 16),
           const SizedBox(height: 16),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              'https://picsum.photos/400/200',
+            child: Image.asset(
+              'assets/png/images/franchise_pic_3.png',
               width: double.infinity,
               height: 150,
               fit: BoxFit.cover,
@@ -338,12 +283,10 @@ class FranchiseScreen extends StatelessWidget {
   Widget _buildStoreLocationsSection() {
     return const Padding(
       padding: EdgeInsets.all(16.0),
-      child: Text(
-        'Check Out Our Stores',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
+      child: CommonTextWidget(
+        title: 'Check Out Our Stores',
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -379,7 +322,8 @@ class FranchiseScreen extends StatelessWidget {
     return features
         .map(
           (feature) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(color: Colors.grey.shade200),
@@ -405,12 +349,10 @@ class FranchiseScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        feature['title'] as String,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      CommonTextWidget(
+                        title: feature['title'] as String,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -460,7 +402,8 @@ class FranchiseScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Icon(Icons.location_on_outlined, color: Color(0xFF8BC34A)),
+                const Icon(Icons.location_on_outlined,
+                    color: Color(0xFF8BC34A)),
               ],
             ),
             const SizedBox(height: 8),

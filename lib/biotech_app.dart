@@ -69,6 +69,7 @@ class BiotechApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: orderSummaryBackground),
+          primaryColor: cButtonGreen,
           useMaterial3: true,
         ),
         navigatorKey: navigatorKey,

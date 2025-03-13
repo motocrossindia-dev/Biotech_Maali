@@ -25,7 +25,7 @@ class EndUrl {
   static String serviceEnquiryUrl = "${baseUrl}services/service_enquiry/";
   static String getStoreList = "${baseUrl}store/store_list";
   static String addContactUs = "${baseUrl}promotion/contactUs/";
-  static String addFranchiseEnquiryUrl = "${baseUrl}franchise/";
+  static String addFranchiseEnquiryUrl = "${baseUrl}franchise/add_franchise/";
   static String accountRegister = "${baseUrl}account/register/";
   static String getWhishListIdUrl =
       "${baseUrl}order/wishlist/?main_product_id_list=true";

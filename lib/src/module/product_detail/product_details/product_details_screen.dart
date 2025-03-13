@@ -492,7 +492,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                             sizedBoxHeight20,
                             provider.productAddOn.isNotEmpty
-                                ? ProductListAddonWidget(title: 'Add On')
+                                ? const ProductListAddonWidget(title: 'Add On')
                                 : sizedBoxHeight40,
                             ProductDescription(provider: provider),
                             sizedBoxHeight20,

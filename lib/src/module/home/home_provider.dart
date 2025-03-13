@@ -118,7 +118,8 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<bool> addToCartMainProduct(
-      int productId, bool isCart, BuildContext context) async {
+    int productId, bool isCart, BuildContext context) async {
+    
     try {
       _isLoading = true;
       notifyListeners();
@@ -240,32 +241,4 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  // Future<void> fetchWishlistProductId() async {
-  //   try {
-  //     _isLoading = true;
-  //     _error = null;
-  //     notifyListeners();
-
-  //     List<dynamic> result = await _repository.getWhishlistId();
-  //     // Convert the dynamic list to List<int>
-  //     _mainWishlistProductId = result.map((e) => e as int).toList();
-
-  //     log("minProductId list : $_mainWishlistProductId");
-
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   } catch (e) {
-  //     log("Error in provider : ${e.toString()}");
-  //     _isLoading = false;
-  //     _error = e.toString();
-  //     notifyListeners();
-  //   }
-  // }
-
-  // refreshAll() {
-  //   fetchBanners();
-  //   fetchHomeProducts();
-  //   fetchMainCategories();
-  //   fetchWishlistProductId();
-  // }
 }

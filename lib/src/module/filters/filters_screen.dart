@@ -1,198 +1,342 @@
-import 'package:biotech_maali/src/module/filters/widgets/plant_location_filter_widget.dart';
-
 import '../../../import.dart';
 
 class FilterScreen extends StatefulWidget {
-  const FilterScreen({super.key});
+  final String type;
+  const FilterScreen({required this.type, super.key});
 
   @override
-  _FilterScreenState createState() => _FilterScreenState();
+  State<FilterScreen> createState() => _FilterScreenState();
 }
 
 class _FilterScreenState extends State<FilterScreen> {
-  // String selectedCategory = "Type of Plants";
-  // Map<String, int> itemCounts = {
-  //   "Air Plant": 15,
-  //   "Flowering Plants": 15,
-  //   "Focal Plants": 5,
-  //   "Ground Covers": 43,
-  //   "Hedge Plants": 23,
-  //   "Screen Plants": 3,
-  //   "Shrub Plants": 42,
-  // };
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FiltersProvider>().loadFilters(widget.type);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filtersProviderWatch = context.watch<FiltersProvider>();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Filters (16960 Products)",
-          style: TextStyle(color: Colors.black, fontSize: 18),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 1,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left side filter categories
-          Consumer<FiltersProvider>(
-            builder: (context, provider, child) {
-              return Container(
-                width:
-                    MediaQuery.of(context).size.width * 0.35, // Reduced width
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: ListView(
-                  children: [
-                    FilterCategoryItem(
-                      title: "Type of Plants",
-                      isSelected: provider.selectedCategory == "Type of Plants",
-                      onTap: () {
-                        provider.setSelectedCategory('Type of Plants');
-                      },
-                    ),
-                    FilterCategoryItem(
-                      title: "Price",
-                      isSelected: provider.selectedCategory == "Price",
-                      onTap: () {
-                        provider.setSelectedCategory('Price');
-                      },
-                    ),
-                    FilterCategoryItem(
-                      title: "Ideal Plants\nLocation", // Added line break
-                      isSelected:
-                          provider.selectedCategory == "Ideal Plants Location",
-                      onTap: () {
-                        provider.setSelectedCategory('Ideal Plants Location');
-                      },
-                    ),
-                    FilterCategoryItem(
-                      title: "Indoor/Outdoor",
-                      isSelected: provider.selectedCategory == "Indoor/Outdoor",
-                      onTap: () {
-                        provider.setSelectedCategory('Indoor/Outdoor');
-                      },
-                    ),
-                    FilterCategoryItem(
-                      title: "Pot Size",
-                      isSelected: provider.selectedCategory == "Pot Size",
-                      onTap: () {
-                        provider.setSelectedCategory('Pot Size');
-                      },
-                    ),
-                    FilterCategoryItem(
-                      title: "Color",
-                      isSelected: provider.selectedCategory == "Color",
-                      onTap: () {
-                        provider.setSelectedCategory('Color');
-                      },
-                    ),
-                    FilterCategoryItem(
-                      title: "Size",
-                      isSelected: provider.selectedCategory == "Size",
-                      onTap: () {
-                        provider.setSelectedCategory('Size');
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
+    return Consumer<FiltersProvider>(
+      builder: (context, provider, _) {
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Filters'),
+            actions: [
+              TextButton(
+                onPressed: provider.resetAllFilters,
+                child: const Text('Clear'),
+              ),
+            ],
           ),
-          // Vertical Divider
-          Container(
-            width: 1,
-            color: Colors.grey[300],
+          body: Row(
+            children: [
+              // Left Categories Panel
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.35,
+                child: _buildCategoriesList(provider),
+              ),
+              // Right Content Panel
+              Expanded(
+                child: _buildFilterContent(provider),
+              ),
+            ],
           ),
-          // Right side filter content
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: filtersProviderWatch.selectedCategory == "Type of Plants"
-                  ? const TypeOfPlantsWidget()
-                  : filtersProviderWatch.selectedCategory == "Price"
-                      ? const PriceWidget()
-                      : filtersProviderWatch.selectedCategory ==
-                              "Ideal Plants Location"
-                          ? const PlantLocationFilter()
-                          : filtersProviderWatch.selectedCategory ==
-                                  "Indoor/Outdoor"
-                              ? const IndoorOutdoorWidget()
-                              : filtersProviderWatch.selectedCategory ==
-                                  "Pot Size"?
-                                  const PotSizeWidget()
-                              : const Center(
-                                  child:
-                                      Text("Select a filter to view options")),
+          bottomNavigationBar: _buildBottomBar(provider),
+        );
+      },
+    );
+  }
+
+  Widget _buildCategoriesList(FiltersProvider provider) {
+    List<Map<String, String>> categories = [];
+
+    switch (widget.type) {
+      case "PLANTS":
+        categories = [
+          {"id": "subcategories", "title": "Type of Plants"},
+          {"id": "price", "title": "Price"},
+          {"id": "size", "title": "Size"},
+          {"id": "planter_size", "title": "Planter Size"},
+          {"id": "planter", "title": "Planter"},
+          {"id": "color", "title": "Color"},
+        ];
+        break;
+
+      case "POTS":
+        categories = [
+          {"id": "subcategories", "title": "Type of Pots"},
+          {"id": "price", "title": "Price"},
+          {"id": "planter_size", "title": "Pot Size"},
+          {"id": "litre_size", "title": "Litre Size"},
+          {"id": "color", "title": "Color"},
+        ];
+        break;
+
+      case "SEEDS":
+        categories = [
+          {"id": "subcategories", "title": "Type of Seeds"},
+          {"id": "price", "title": "Price"},
+          {"id": "weights", "title": "Weights"},
+        ];
+        break;
+
+      case "TOOLS":
+        categories = [
+          {"id": "subcategories", "title": "Type of Tools"},
+          {"id": "price", "title": "Price"},
+          {"id": "size", "title": "Size"},
+          {"id": "color", "title": "Color"},
+        ];
+        break;
+    }
+
+    return ListView.builder(
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        final category = categories[index];
+        return ListTile(
+          title: Text(
+            category["title"]!,
+            style: TextStyle(
+              fontWeight: provider.selectedCategory == category["title"]
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+              color: provider.selectedCategory == category["title"]
+                  ? Theme.of(context).primaryColor
+                  : Colors.black,
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.grey[300]!, width: 1),
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () {
-                  context.read<FiltersProvider>().resetAllFilters();
-                  
-                  // Clear filter action
-                },
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: cButtonGreen),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+          tileColor: provider.selectedCategory == category["title"]
+              ? Colors.grey[100]
+              : null,
+          onTap: () => provider.setSelectedCategory(category["title"]!),
+        );
+      },
+    );
+  }
+
+  Widget _buildFilterContent(FiltersProvider provider) {
+    final response = provider.filterResponse;
+    if (response == null) return const SizedBox();
+
+    switch (provider.selectedCategory) {
+      case "Type of Plants":
+      case "Type of Pots":
+      case "Type of Seeds":
+      case "Type of Tools":
+        return _buildFilterSection(
+          provider.selectedCategory,
+          response.subcategories ?? [],
+          "subcategories",
+        );
+
+      case "Size":
+        return _buildFilterSection(
+          "Size",
+          response.sizes ?? [],
+          "size",
+        );
+
+      case "Planter Size":
+      case "Pot Size":
+        return _buildFilterSection(
+          "Size",
+          response.planterSizes ?? [],
+          "planter_size",
+        );
+
+      case "Planter":
+        return _buildFilterSection(
+          "Planter",
+          response.planters ?? [],
+          "planter",
+        );
+
+      case "Color":
+        return _buildFilterSection(
+          "Color",
+          response.colors ?? [],
+          "color",
+        );
+
+      case "Weights":
+        return _buildFilterSection(
+          "Weights",
+          response.weights ?? [],
+          "weights",
+        );
+
+      case "Litre Size":
+        return _buildFilterSection(
+          "Litre Size",
+          response.litreSizes ?? [],
+          "litre_size",
+        );
+
+      case "Price":
+        return _buildPriceFilter(provider);
+
+      default:
+        return const Center(child: Text("Select a category"));
+    }
+  }
+
+  Widget _buildFilterSection(
+      String title, List<String> values, String category) {
+    return Consumer<FiltersProvider>(
+      builder: (context, provider, _) {
+        final selectedValues = provider.selectedFilters[category] ?? [];
+
+        return Container(
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey[300]!),
                   ),
                 ),
                 child: Text(
-                  "CLEAR",
-                  style: TextStyle(
-                    color: cButtonGreen,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Apply filter action
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: cButtonGreen,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                child: const Text(
-                  "APPLY",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: values.length,
+                  itemBuilder: (context, index) {
+                    final value = values[index];
+                    return CheckboxListTile(
+                      title: Text(value),
+                      value: selectedValues.contains(value),
+                      activeColor: Theme.of(context).primaryColor,
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16),
+                      onChanged: (bool? checked) {
+                        if (checked != null) {
+                          provider.toggleFilter(category, value);
+                        }
+                      },
+                    );
+                  },
                 ),
               ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPriceFilter(FiltersProvider provider) {
+    final min = provider.filterResponse?.priceRange.min ?? 0;
+    final max = provider.filterResponse?.priceRange.max ?? 9999;
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Price Range", style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 16),
+          RangeSlider(
+            values: provider.currentRangeValues,
+            min: min,
+            max: max,
+            divisions:
+                ((max - min) / 100).ceil(), // Dynamic divisions based on range
+            labels: RangeLabels(
+              "₹${provider.currentRangeValues.start.round()}",
+              "₹${provider.currentRangeValues.end.round()}",
             ),
-          ],
-        ),
+            onChanged: provider.setPriceRange,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("₹${provider.currentRangeValues.start.round()}"),
+              Text("₹${provider.currentRangeValues.end.round()}"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomBar(FiltersProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey[300]!,
+            blurRadius: 4,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: provider.resetAllFilters,
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                side: BorderSide(color: Theme.of(context).primaryColor),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Clear All',
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () async {
+                try {
+                  final result = await provider.applyFilters(widget.type,context);
+                  if (mounted) {
+                    Navigator.pop(context, result);
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Failed to apply filters')),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Apply',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -6,8 +6,6 @@ import 'package:biotech_maali/src/other_modules/franchise_enquiry/model/franchis
 class FranchiseRepository {
   final Dio _dio = Dio();
 
-
-
   Future<bool> submitFranchiseInquiry(FranchiseModel franchise) async {
     log("add Franchise : ${franchise.toJson()}");
     try {
