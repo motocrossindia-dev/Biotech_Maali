@@ -1,7 +1,9 @@
 class ProductSearchModel {
   final int id;
   final String name;
-  final double defaultSalePrice;
+  final bool isCart;
+  final bool isWishlist;
+  final double mrp;
   final double price;
   final String image;
   final ProductRating productRating;
@@ -9,7 +11,9 @@ class ProductSearchModel {
   ProductSearchModel({
     required this.id,
     required this.name,
-    required this.defaultSalePrice,
+    required this.isCart,
+    required this.isWishlist,
+    required this.mrp,
     required this.price,
     required this.image,
     required this.productRating,
@@ -17,12 +21,14 @@ class ProductSearchModel {
 
   factory ProductSearchModel.fromJson(Map<String, dynamic> json) {
     return ProductSearchModel(
-      id: json['id'],
-      name: json['name'],
-      defaultSalePrice: json['default_sale_price'].toDouble(),
-      price: json['price'].toDouble(),
-      image: json['image'],
-      productRating: ProductRating.fromJson(json['product_rating']),
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      isCart: json['is_cart'] ?? false,
+      isWishlist: json['is_wishlist'] ?? false,
+      mrp: (json['mrp'] as num?)?.toDouble() ?? 0.0,
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      image: json['image'] ?? '',
+      productRating: ProductRating.fromJson(json['product_rating'] ?? {}),
     );
   }
 }
@@ -30,19 +36,16 @@ class ProductSearchModel {
 class ProductRating {
   final double avgRating;
   final int numRatings;
-  final List<dynamic> starsGiven;
 
   ProductRating({
     required this.avgRating,
     required this.numRatings,
-    required this.starsGiven,
   });
 
   factory ProductRating.fromJson(Map<String, dynamic> json) {
     return ProductRating(
-      avgRating: json['avg_rating'].toDouble(),
-      numRatings: json['num_ratings'],
-      starsGiven: json['stars_given'],
+      avgRating: (json['avg_rating'] as num?)?.toDouble() ?? 0.0,
+      numRatings: json['num_ratings'] ?? 0,
     );
   }
 }

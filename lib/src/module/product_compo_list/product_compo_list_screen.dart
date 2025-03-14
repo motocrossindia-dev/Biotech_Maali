@@ -1,7 +1,7 @@
-import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
+import 'package:biotech_maali/src/module/product_compo_list/model/product_compo_model.dart';
+import 'package:biotech_maali/src/module/product_compo_list/product_compo_list_provider.dart';
 import 'package:biotech_maali/src/module/product_compo_list/widget/product_compo_widget.dart';
-import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
@@ -19,32 +19,10 @@ class ProductCompoListScreen extends StatefulWidget {
 }
 
 class _ProductCompoListScreenState extends State<ProductCompoListScreen> {
-  bool _isLoading = true;
-
-  // final List<String> _sortOptions = [
-  //   'Default',
-  //   'Relevance',
-  //   'Just Launched',
-  //   'Best Selling',
-  //   'Price High To Low',
-  //   'Price Low To High',
-  //   'Alphabetically A-Z',
-  //   'Alphabetically Z-A',
-  // ];
-
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    context.read<ProductCompoListProvider>().fetchComboOffers();
   }
 
   @override
@@ -67,244 +45,74 @@ class _ProductCompoListScreenState extends State<ProductCompoListScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          _isLoading
-              ? const ProductListShimmer()
-              : SingleChildScrollView(
-                  child: Consumer<HomeProvider>(
-                    builder: (context, provider, child) {
-                      return Column(
-                        children: [
-                          const CustomBannerWidget(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 5,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {},
-                                  child: const ProductCompoWidget(),
-                                );
-                              },
-                            ),
-                          ),
-                          sizedBoxHeight70,
-                        ],
-                      );
-                    },
-                  ),
-                ),
-          // Positioned(
-          //   bottom: 0,
-          //   left: 0,
-          //   right: 0,
-          //   child: Container(
-          //     width: double.infinity,
-          //     height: 60,
-          //     color: cWhiteColor,
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //       children: [
-          //         Material(
-          //           color: Colors.transparent,
-          //           child: SizedBox(
-          //             height: 55,
-          //             child: InkWell(
-          //               borderRadius: BorderRadius.circular(
-          //                   8), // Round corners for the ripple effect
-          //               splashColor: cButtonGreen
-          //                   .withOpacity(0.3), // Color of the ripple effect
-          //               highlightColor: cButtonGreen.withOpacity(0.1),
-          //               onTap: () {
-          //                 log('message');
-          //                 // _showFilterDropdown(context);
-          //                 _showSortByOverlay(context);
-          //               },
+      body: Consumer<ProductCompoListProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const ProductListShimmer();
+          }
 
-          //               child: Padding(
-          //                 padding: const EdgeInsets.only(left: 8.0, right: 8),
-          //                 child: Row(
-          //                   children: [
-          //                     SvgPicture.asset(
-          //                         'assets/svg/icons/sort_icon.svg'),
-          //                     sizedBoxWidth10,
-          //                     const CommonTextWidget(
-          //                       title: 'SORT BY',
-          //                       fontSize: 18,
-          //                       fontWeight: FontWeight.w400,
-          //                     )
-          //                   ],
-          //                 ),
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //         Material(
-          //           color: Colors.transparent,
-          //           child: SizedBox(
-          //             height: 55,
-          //             child: InkWell(
-          //               borderRadius: BorderRadius.circular(
-          //                   8), // Round corners for the ripple effect
-          //               splashColor: cButtonGreen.withOpacity(0.3),
-          //               highlightColor: cButtonGreen.withOpacity(0.1),
-          //               onTap: () {
-          //                 log('message');
-          //                 Navigator.push(
-          //                   context,
-          //                   MaterialPageRoute(
-          //                     builder: (context) => const FilterScreen(),
-          //                   ),
-          //                 );
-          //               },
+          if (provider.error != null) {
+            return Center(
+              child: Text(provider.error!),
+            );
+          }
 
-          //               child: Padding(
-          //                 padding: const EdgeInsets.only(left: 8.0, right: 8),
-          //                 child: Row(
-          //                   children: [
-          //                     SvgPicture.asset(
-          //                         'assets/svg/icons/filter_icon.svg'),
-          //                     sizedBoxWidth10,
-          //                     const CommonTextWidget(
-          //                       title: 'FILTER',
-          //                       fontSize: 18,
-          //                       fontWeight: FontWeight.w400,
-          //                     )
-          //                   ],
-          //                 ),
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
-
-  // void _showSortByOverlay(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     backgroundColor: Colors.transparent,
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //         builder: (BuildContext context, StateSetter setState) {
-  //           return GestureDetector(
-  //             onTap: () => Navigator.of(context).pop(),
-  //             child: Container(
-  //               decoration: const BoxDecoration(
-  //                 color: Colors.white,
-  //                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //               ),
-  //               child: Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   Padding(
-  //                     padding: const EdgeInsets.symmetric(vertical: 16.0),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                       children: [
-  //                         const SizedBox.shrink(), // Empty space for left side
-  //                         const CommonTextWidget(
-  //                           title: 'Sort By',
-  //                           fontSize: 20,
-  //                           fontWeight: FontWeight.bold,
-  //                           color: Colors.black,
-  //                         ),
-  //                         IconButton(
-  //                           icon: const Icon(Icons.close),
-  //                           onPressed: () => Navigator.of(context).pop(),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                   ListView.builder(
-  //                     shrinkWrap: true,
-  //                     physics: const NeverScrollableScrollPhysics(),
-  //                     itemCount: _sortOptions.length,
-  //                     itemBuilder: (context, index) {
-  //                       return RadioListTile(
-  //                         title: Text(
-  //                           _sortOptions[index],
-  //                           style: TextStyle(
-  //                             color: _selectedOption == _sortOptions[index]
-  //                                 ? Colors.blue
-  //                                 : Colors.black,
-  //                           ),
-  //                         ),
-  //                         value: _sortOptions[index],
-  //                         groupValue: _selectedOption,
-  //                         onChanged: (value) {
-  //                           setState(() {
-  //                             _selectedOption = value!;
-  //                           });
-  //                           Navigator.of(context).pop();
-  //                         },
-  //                       );
-  //                     },
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
-  void showWishlistMessage(BuildContext context, bool isAdded) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(
-              isAdded ? Icons.favorite : Icons.favorite_border,
-              color: Colors.white,
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomBannerWidget(),
+                _buildSection('Combo Offers', provider.comboOffers),
+                _buildSection('Shop The Look', provider.shopTheLook),
+                sizedBoxHeight70,
+              ],
             ),
-            const SizedBox(width: 8),
-            Text(isAdded
-                ? 'Item added to wishlist successfully'
-                : 'Item removed from wishlist'),
-          ],
-        ),
-        action: isAdded
-            ? SnackBarAction(
-                label: 'View Wishlist',
-                onPressed: () {
-                  // Navigate to wishlist
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const WishlistScreen()),
-                  );
-                },
-              )
-            : null,
-        duration: const Duration(seconds: 2),
-        behavior:
-            SnackBarBehavior.floating, // Makes it float above bottom nav bar
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        backgroundColor: isAdded ? Colors.green : Colors.grey[800],
+          );
+        },
       ),
     );
   }
 
-  void _showLoginDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const LoginPromptDialog();
-      },
+  Widget _buildSection(String title, List<ComboOffer> offers) {
+    if (offers.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: offers.length,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemBuilder: (context, index) {
+            final offer = offers[index];
+            return ProductCompoWidget(
+              title: offer.title,
+              description: offer.description ?? '',
+              totalPrice: offer.totalPrice,
+              discount: offer.discount,
+              finalPrice: offer.finalPrice,
+              products: offer.products,
+              image: offer.image,
+              onTap: () {
+                context
+                    .read<ProductDetailsProvider>()
+                    .placeOrder(offer.id, context);
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 }

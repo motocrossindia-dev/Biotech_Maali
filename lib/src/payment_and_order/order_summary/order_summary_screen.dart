@@ -116,14 +116,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           child: DeliveryOptionsWidget(),
                         ),
                       ),
-                      const Card(
+                       Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: CouponWidget(),
+                          child: CouponWidget(cartValue: orderDetails.grandTotal,),
                         ),
                       ),
                       sizedBoxHeight20,

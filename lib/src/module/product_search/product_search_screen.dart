@@ -56,7 +56,7 @@ class ProductSearchView extends StatelessWidget {
                       tempImage: "",
                       productTitle: product.name,
                       productImage: product.image,
-                      actualAmount: product.defaultSalePrice.toString(),
+                      actualAmount: product.mrp.toString(),
                       home: true,
                       isWishlist: false,
                       isCart: false,

@@ -7,8 +7,6 @@ class FiltersRepository {
   final Dio _dio = Dio();
   final String baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
 
-  
-
   Future<FilterResponseModel> getFilters(String type) async {
     log("type : $type");
     try {
@@ -33,7 +31,7 @@ class FiltersRepository {
       log("Filter query params: $queryParams");
 
       final response = await _dio.get(
-        '$baseUrl/filters/productsFitler/',
+        '$baseUrl/filters/productsFilter/',
         queryParameters: queryParams,
       );
 

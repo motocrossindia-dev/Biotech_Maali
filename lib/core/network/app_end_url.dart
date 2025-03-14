@@ -42,4 +42,6 @@ class EndUrl {
   static String categoryProductUrl = "${baseUrl}product/category-products/";
   static String subCategoryProductUrl =
       "${baseUrl}product/subcategory-products/";
+  static String getCouponsUrl = "${baseUrl}coupon/coupons/";
+  static String comboOffersUrl = "${baseUrl}combo/combo-offers/";
 }

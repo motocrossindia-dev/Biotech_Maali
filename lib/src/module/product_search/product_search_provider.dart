@@ -1,6 +1,6 @@
+import 'package:biotech_maali/src/module/product_search/model/product_search_model.dart';
+import 'package:biotech_maali/src/module/product_search/product_search_repository.dart';
 import 'package:flutter/material.dart';
-import 'model/product_search_model.dart';
-import 'product_search_repository.dart';
 
 class ProductSearchProvider extends ChangeNotifier {
   final ProductSearchRepository _repository = ProductSearchRepository();
