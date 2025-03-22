@@ -389,7 +389,7 @@ class ProductDetailsProvider extends ChangeNotifier {
       Fluttertoast.showToast(msg: _error!);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+        MaterialPageRoute(builder: (context) => const EditProfileScreen(isPlaceOrder: true,)),
       );
     } on AddressNotUpdatedException {
       _error = 'Please add delivery address';

@@ -192,6 +192,9 @@ class ProductDetailsRepository {
             'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
           },
+          validateStatus: (status) {
+            return status! < 500; // Accept all status codes below 500
+          },
         ),
       );
 
@@ -199,20 +202,22 @@ class ProductDetailsRepository {
         log('Order response: ${response.data}');
         return OrderResponseModel.fromJson(response.data);
       } else if (response.statusCode == 400) {
-        throw Exception(response.data['message']);
+        final responseData = response.data;
+        if (responseData['profile_status'] == false) {
+          throw ProfileNotUpdatedException();
+        } else if (responseData['address_status'] == false) {
+          throw AddressNotUpdatedException();
+        }
+        throw Exception(responseData['message']);
       }
 
       throw Exception('Failed to place order');
     } catch (e) {
-      if (e.toString().contains('User profile is not updated')) {
-        log("Error : ${e.toString()}");
-        throw ProfileNotUpdatedException();
-      } else if (e.toString().contains('User address is not updated')) {
-        log("Error : ${e.toString()}");
-        throw AddressNotUpdatedException();
+      log("Place order error: ${e.toString()}");
+      if (e is ProfileNotUpdatedException || e is AddressNotUpdatedException) {
+        rethrow;
       }
-      log("Error : ${e.toString()}");
-      throw Exception('Error placing order: ${e.toString()}');
+      throw Exception('Failed to place order: $e');
     }
   }
 

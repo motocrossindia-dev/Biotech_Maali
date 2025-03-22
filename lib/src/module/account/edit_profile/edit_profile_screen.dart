@@ -4,7 +4,8 @@ import '../../../../../import.dart';
 import 'package:intl/intl.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+  final bool? isPlaceOrder;
+  const EditProfileScreen({this.isPlaceOrder, super.key});
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -191,7 +192,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 title: 'SAVE',
                                 event: () async {
                                   final success =
-                                      await editProfileProvider.updateProfile();
+                                      await editProfileProvider.updateProfile(
+                                          widget.isPlaceOrder, context);
                                   if (success) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(

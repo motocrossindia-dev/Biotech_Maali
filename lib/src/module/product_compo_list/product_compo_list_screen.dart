@@ -38,10 +38,15 @@ class _ProductCompoListScreenState extends State<ProductCompoListScreen> {
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 40.0),
-            child: Icon(Icons.search, size: 30),
+        actions: [
+          InkWell(
+            onTap: () {
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => const ,))
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: 40.0),
+              child: Icon(Icons.search, size: 30),
+            ),
           ),
         ],
       ),
@@ -52,8 +57,11 @@ class _ProductCompoListScreenState extends State<ProductCompoListScreen> {
           }
 
           if (provider.error != null) {
-            return Center(
-              child: Text(provider.error!),
+            return Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Center(
+                child: Text(provider.error!),
+              ),
             );
           }
 
@@ -106,8 +114,8 @@ class _ProductCompoListScreenState extends State<ProductCompoListScreen> {
               image: offer.image,
               onTap: () {
                 context
-                    .read<ProductDetailsProvider>()
-                    .placeOrder(offer.id, context);
+                    .read<ProductCompoListProvider>()
+                    .placeOrderCompo(offer.id, context);
               },
             );
           },

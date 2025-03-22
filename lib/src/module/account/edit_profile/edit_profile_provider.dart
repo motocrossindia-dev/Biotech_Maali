@@ -64,7 +64,7 @@ class EditProfileProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateProfile() async {
+  Future<bool> updateProfile(bool? isplaceOrder, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
 
@@ -80,7 +80,19 @@ class EditProfileProvider extends ChangeNotifier {
 
       if (success) {
         _isEditing = false;
-        
+        if (isplaceOrder == true) {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddEditAddressScreen(
+                isAddAddress: true,
+                isFromAccount: true,
+              ),
+            ),
+          );
+          // return false;
+        }
       }
       return success;
     } catch (e) {

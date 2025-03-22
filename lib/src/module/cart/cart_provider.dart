@@ -203,7 +203,7 @@ class CartProvider extends ChangeNotifier {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const EditProfileScreen(),
+          builder: (context) => const EditProfileScreen(isPlaceOrder: true),
         ),
       );
       Fluttertoast.showToast(

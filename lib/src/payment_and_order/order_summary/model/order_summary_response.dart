@@ -119,7 +119,7 @@ class OrderItem {
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
       id: json['id'] ?? 0,
-      sku: json['sku'] ?? 0,
+      sku: (json['sku'] ?? 0).toString(), // Convert int to String
       image: json['image'] ?? '',
       quantity: json['quantity'] ?? 0,
       price: (json['price'] ?? 0.0).toDouble(),
@@ -129,7 +129,8 @@ class OrderItem {
       hsnCode: json['hsn_code'],
       orderId: json['order_id'] ?? 0,
       productId: json['product_id'] ?? 0,
-      comboOffer: json['combo_offer'],
+      comboOffer:
+          (json['combo_offer'] ?? '').toString(), // Convert int to String
       productName: json['product_name'] ?? '',
     );
   }

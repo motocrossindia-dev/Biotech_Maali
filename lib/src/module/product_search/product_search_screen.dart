@@ -52,33 +52,48 @@ class ProductSearchView extends StatelessWidget {
                     //     .watch<HomeProvider>()
                     //     .mainWishlistProductId
                     //     .contains(product.id);
-                    return ProductTileWidget(
-                      tempImage: "",
-                      productTitle: product.name,
-                      productImage: product.image,
-                      actualAmount: product.mrp.toString(),
-                      home: true,
-                      isWishlist: false,
-                      isCart: false,
-                      mainProdId: product.id,
-                      discountAmount: product.price.toString(),
-                      rating: product.productRating.avgRating,
-                      addToFavouriteEvent: () async {
-                        final settingsProvider =
-                            context.read<SettingsProvider>();
-                        bool isAuth = await settingsProvider
-                            .checkAccessTokenValidity(context);
-
-                        if (!isAuth) {
-                          _showLoginDialog(context);
-                          return;
-                        }
-                        final wishlistProvider =
-                            context.read<WishlistProvider>();
-                        wishlistProvider.addOrRemoveWhishlistMainProduct(
-                            product.id, context);
+                    return InkWell(
+                      onTap: () {
+                        context
+                            .read<ProductDetailsProvider>()
+                            .fetchProductDetails(product.id);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailsScreen(
+                              productId: product.id,
+                            ),
+                          ),
+                        );
                       },
-                      // addToCartEvent: () {},
+                      child: ProductTileWidget(
+                        tempImage: "",
+                        productTitle: product.name,
+                        productImage: product.image,
+                        actualAmount: product.mrp.toString(),
+                        home: true,
+                        isWishlist: false,
+                        isCart: false,
+                        mainProdId: product.id,
+                        discountAmount: product.price.toString(),
+                        rating: product.productRating.avgRating,
+                        addToFavouriteEvent: () async {
+                          final settingsProvider =
+                              context.read<SettingsProvider>();
+                          bool isAuth = await settingsProvider
+                              .checkAccessTokenValidity(context);
+
+                          if (!isAuth) {
+                            _showLoginDialog(context);
+                            return;
+                          }
+                          final wishlistProvider =
+                              context.read<WishlistProvider>();
+                          wishlistProvider.addOrRemoveWhishlistMainProduct(
+                              product.id, context);
+                        },
+                        // addToCartEvent: () {},
+                      ),
                     );
                   },
                 );

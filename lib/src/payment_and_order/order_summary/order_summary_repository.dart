@@ -67,10 +67,8 @@ class OrderSummaryRepository {
         ),
       );
 
-      log("Response status: ${response.statusCode}");
-      log("Response data: ${response.data}");
-
       if (response.statusCode == 200) {
+        log("Response data: ${response.data}");
         return OrderSummaryResponse.fromJson(response.data);
       } else if (response.statusCode == 403) {
         // Check if token is expired and needs refresh

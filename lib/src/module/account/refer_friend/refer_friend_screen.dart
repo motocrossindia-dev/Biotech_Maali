@@ -3,8 +3,19 @@ import 'package:biotech_maali/src/module/account/refer_friend/widgets/refer_frie
 
 import '../../../../import.dart';
 
-class ReferFriendScreen extends StatelessWidget {
+class ReferFriendScreen extends StatefulWidget {
   const ReferFriendScreen({super.key});
+
+  @override
+  State<ReferFriendScreen> createState() => _ReferFriendScreenState();
+}
+
+class _ReferFriendScreenState extends State<ReferFriendScreen> {
+  @override
+  void initState() {
+    context.read<ReferFriendProvider>().getReferralDetails();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,25 +35,25 @@ class ReferFriendScreen extends StatelessWidget {
           fontSize: 18,
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: SizedBox(
-                height: 280,
-                width: double.infinity,
-                child: SvgPicture.asset(
-                  'assets/svg/referral.svg',
-                  fit: BoxFit.fill,
+      body: Consumer<ReferFriendProvider>(
+        builder: (context, provider, child) {
+          return Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: SizedBox(
+                    height: 280,
+                    width: double.infinity,
+                    child: SvgPicture.asset(
+                      'assets/svg/referral.svg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Consumer<ReferFriendProvider>(
-              builder: (context, provider, child) {
-                return Column(
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
                   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -53,32 +64,47 @@ class ReferFriendScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Padding(
-                                padding: EdgeInsets.only(left: 16.0),
-                                child: ReferFriendTextformfield(
-                                    // title: "title",
-                                    hint: "Enter referral code",
-                                    controller: provider.referralCode)),
-                          ),
-                          Container(
-                            color: cButtonGreen,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16.0,
-                              horizontal: 24.0,
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: ReferFriendTextformfield(
+                                hint: "Enter referral code",
+                                controller: provider.referralCode,
+                              ),
                             ),
-                            child: const Row(
-                              children: [
-                                Icon(
-                                  Icons.share,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                SizedBox(width: 8),
-                                CommonTextWidget(
-                                  title: 'Share',
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ],
+                          ),
+                          GestureDetector(
+                            onTap: provider.isLoading
+                                ? null
+                                : () => provider.shareReferralCode(),
+                            child: Container(
+                              color: cButtonGreen,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 16.0,
+                                horizontal: 24.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  provider.isLoading
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Icon(
+                                          Icons.share,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                  const SizedBox(width: 8),
+                                  const CommonTextWidget(
+                                    title: 'Share',
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -94,7 +120,7 @@ class ReferFriendScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          'Total Referrals: 0',
+                          'Total Referrals: ${provider.totlaReferral ?? 0}',
                           style: TextStyle(
                             color: cButtonGreen,
                             fontWeight: FontWeight.w500,
@@ -102,13 +128,34 @@ class ReferFriendScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (provider.totalcoins != null && provider.totalcoins! > 0)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.amber.shade700),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Total Coins Earned: ${provider.totalcoins}',
+                              style: TextStyle(
+                                color: Colors.amber.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 16),
                   ],
-                );
-              },
-            ),
-          ),
-        ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

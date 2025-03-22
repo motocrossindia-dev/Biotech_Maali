@@ -21,99 +21,113 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: const Text(
-          'My Orders',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        context.read<BottomNavProvider>().updateIndex(0);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BottomNavWidget(),
           ),
+          (route) => false,
+        );
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          title: const Text(
+            'My Orders',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          iconTheme: const IconThemeData(color: Colors.black87),
         ),
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
-      body: Consumer<OrderHistoryProvider>(
-        builder: (context, provider, child) {
-          if (provider.isLoading) {
-            return const Center(child: OrderHistoryShimmer());
-          }
+        body: Consumer<OrderHistoryProvider>(
+          builder: (context, provider, child) {
+            if (provider.isLoading) {
+              return const Center(child: OrderHistoryShimmer());
+            }
 
-          if (provider.error != null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.grey),
-                  const SizedBox(height: 16),
-                  Text(
-                    provider.error!,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => provider.fetchOrderHistory(),
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          final orders = provider.orderHistory?.data.orders ?? [];
-          if (orders.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/png/images/no_order_history.jpg', // Add this image
-                    height: 220,
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'No orders yet',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
+            if (provider.error != null) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline,
+                        size: 48, color: Colors.grey),
+                    const SizedBox(height: 16),
+                    Text(
+                      provider.error!,
+                      style: const TextStyle(color: Colors.grey),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Start shopping to see your orders here',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<BottomNavProvider>().updateIndex(0);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BottomNavWidget(),
-                        ),
-                      );
-                    },
-                    child: const Text('Start Shopping'),
-                  ),
-                ],
-              ),
-            );
-          }
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => provider.fetchOrderHistory(),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              );
+            }
 
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            itemCount: orders.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final order = orders[index];
-              return OrderHistoryCard(order: order);
-            },
-          );
-        },
+            final orders = provider.orderHistory?.data.orders ?? [];
+            if (orders.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/png/images/no_order_history.jpg', // Add this image
+                      height: 220,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'No orders yet',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Start shopping to see your orders here',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<BottomNavProvider>().updateIndex(0);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomNavWidget(),
+                          ),
+                        );
+                      },
+                      child: const Text('Start Shopping'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: orders.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final order = orders[index];
+                return OrderHistoryCard(order: order);
+              },
+            );
+          },
+        ),
       ),
     );
   }
