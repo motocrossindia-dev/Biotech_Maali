@@ -1,6 +1,7 @@
 import 'dart:developer';
-import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/product_details_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/recently_viewed_model.dart';
 
 import '../../../../import.dart';
 
@@ -31,6 +32,39 @@ class ProductDetailsRepository {
       if (response.statusCode == 200) {
         log("Product details response: ${response.data}");
         return ProductDetailModel.fromJson(response.data);
+      } else {
+        log('Failed to get product details: ${response.statusMessage}');
+        throw Exception('Failed to load product details');
+      }
+    } catch (e) {
+      log("Error fetching product details: $e");
+      throw Exception('Error fetching product details: $e');
+    }
+  }
+
+  Future<RecentlyViewedResponse> fetchRecentlyViewedProduts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+    log("tokenin home : $token");
+    try {
+      Response? response;
+
+      if (token != null) {
+        response = await _dio.get(
+          EndUrl.recentlyViewedProductUrl,
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "Application/json"
+            },
+          ),
+        );
+      } else {
+        response = await _dio.get(EndUrl.recentlyViewedProductUrl);
+      }
+      if (response.statusCode == 200) {
+        log("Product details response: ${response.data}");
+        return RecentlyViewedResponse.fromJson(response.data);
       } else {
         log('Failed to get product details: ${response.statusMessage}');
         throw Exception('Failed to load product details');

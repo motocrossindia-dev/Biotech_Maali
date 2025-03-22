@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_repository.dart';
-import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/recently_viewed_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
@@ -20,6 +21,7 @@ class ProductDetailsProvider extends ChangeNotifier {
 
   ProductDetailsProvider() {
     updateQuantity();
+    fetchRecentlyViewed();
   }
 
   bool _isLoading = false;
@@ -30,10 +32,10 @@ class ProductDetailsProvider extends ChangeNotifier {
   bool _isLoadingWishList = false;
   OrderResponseModel? _orderResponse;
   ProductDetailModel? _productDetails;
-
   List<String> _carouselProductImageList = [];
-
   List<ProductAddOn> _productAddOn = [];
+  List<RecentlyViewedProduct> _recentlyViewedProductList = [];
+
   String? _productVideo = "";
   String? _whatsIncluded = "";
 
@@ -59,6 +61,8 @@ class ProductDetailsProvider extends ChangeNotifier {
   ProductDetailModel? get productDetails => _productDetails;
   List<String> get carouselProductImageList => _carouselProductImageList;
   List<ProductAddOn> get productAddOn => _productAddOn;
+  List<RecentlyViewedProduct> get recentlyViewedProductList =>
+      _recentlyViewedProductList;
   String? get productVideo => _productVideo;
   String? get whatsIncluded => _whatsIncluded;
 
@@ -109,6 +113,18 @@ class ProductDetailsProvider extends ChangeNotifier {
       _error = e.toString();
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> fetchRecentlyViewed() async {
+    try {
+      final result =
+          await productDetailsRepository.fetchRecentlyViewedProduts();
+
+      _recentlyViewedProductList = result.data.products;
+      notifyListeners();
+    } catch (e) {
+      log("Error : ${e.toString()} ");
     }
   }
 
@@ -356,11 +372,14 @@ class ProductDetailsProvider extends ChangeNotifier {
 
       _isLoading = false;
       Fluttertoast.showToast(msg: "Order initiated successfully");
+      context
+          .read<OrderSummaryProvider>()
+          .setOrderSummaryData(orderResponse!.data);
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => OrderSummaryScreen(
-            orderData: _orderResponse!.data,
+          builder: (context) => const OrderSummaryScreen(
+            // orderData: _orderResponse!.data,
             isSingleProduct: true,
           ),
         ),

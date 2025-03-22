@@ -1,16 +1,18 @@
 import 'dart:developer';
-
-import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/widgets/pick_store_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../import.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
-  final OrderData orderData;
-  final bool isSingleProduct;
+  // final OrderData orderData;
+  final bool? isSingleProduct;
 
   const OrderSummaryScreen(
-      {required this.orderData, required this.isSingleProduct, super.key});
+      {
+      // required this.orderData,
+      this.isSingleProduct,
+      super.key});
 
   @override
   State<OrderSummaryScreen> createState() => _OrderSummaryScreenState();
@@ -19,8 +21,8 @@ class OrderSummaryScreen extends StatefulWidget {
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   @override
   Widget build(BuildContext context) {
-    final orderDetails = widget.orderData.order;
-    final orderItems = widget.orderData.orderItems;
+    // final orderDetails = widget.orderData.order;
+    // final orderItems = widget.orderData.orderItems;
 
     return Scaffold(
       backgroundColor: orderSummaryBackground,
@@ -77,13 +79,15 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: orderItems.length,
+                                itemCount:
+                                    provider.orderData!.orderItems.length,
                                 itemBuilder: (context, index) {
-                                  final item = orderItems[index];
+                                  final item =
+                                      provider.orderData!.orderItems[index];
                                   return OrderItemCard(item: item);
                                 },
                               ),
-                              if (!widget.isSingleProduct) ...[
+                              if (widget.isSingleProduct == false) ...[
                                 sizedBoxHeight05,
                                 ElevatedButton(
                                   onPressed: () => Navigator.pop(context),
@@ -116,14 +120,17 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           child: DeliveryOptionsWidget(),
                         ),
                       ),
-                       Card(
+                      Card(
                         color: Colors.white,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
                         child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CouponWidget(cartValue: orderDetails.grandTotal,),
+                          padding: const EdgeInsets.all(8.0),
+                          child: CouponWidget(
+                            cartValue: provider.orderData!.order.grandTotal,
+                            orderId: provider.orderData!.order.id.toString(),
+                          ),
                         ),
                       ),
                       sizedBoxHeight20,
@@ -135,7 +142,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: PriceDetailsWidget(
-                            orderData: widget.orderData,
+                            orderData: provider.orderData!,
                           ),
                         ),
                       ),
@@ -164,12 +171,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CommonTextWidget(
-                                title: '₹${orderDetails.totalPrice}',
+                                title:
+                                    '₹${provider.orderData!.order.totalPrice}',
                                 lineThrough: TextDecoration.lineThrough,
                                 fontSize: 12,
                               ),
                               CommonTextWidget(
-                                title: '₹${orderDetails.grandTotal}',
+                                title:
+                                    '₹${provider.orderData!.order.grandTotal}',
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               )
@@ -196,7 +205,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                   // final success =
                                   await provider.updateOrderSummary(
                                     context: context,
-                                    orderId: orderDetails.id,
+                                    orderId: provider.orderData!.order.id,
                                     addressId: provider.selectedAddressId!,
                                   );
 
@@ -248,7 +257,7 @@ class OrderItemCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                '₹${item.price}',
+                '₹${item.total}',
                 style: const TextStyle(
                   decoration: TextDecoration.lineThrough,
                   fontSize: 12,
@@ -256,7 +265,7 @@ class OrderItemCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                '₹${item.salePrice}',
+                '₹${(item.price) * item.quantity}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),

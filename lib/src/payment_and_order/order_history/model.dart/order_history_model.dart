@@ -9,8 +9,8 @@ class OrderHistoryResponse {
 
   factory OrderHistoryResponse.fromJson(Map<String, dynamic> json) {
     return OrderHistoryResponse(
-      message: json['message'],
-      data: OrderHistoryData.fromJson(json['data']),
+      message: json['message'] ?? '',
+      data: OrderHistoryData.fromJson(json['data'] ?? {}),
     );
   }
 }
@@ -22,7 +22,7 @@ class OrderHistoryData {
 
   factory OrderHistoryData.fromJson(Map<String, dynamic> json) {
     return OrderHistoryData(
-      orders: (json['orders'] as List)
+      orders: ((json['orders'] as List?) ?? [])
           .map((order) => OrderHistory.fromJson(order))
           .toList(),
     );
@@ -35,7 +35,7 @@ class OrderHistory {
   final String date;
   final double totalPrice;
   final double totalDiscount;
-  final String trackingId;
+  final String? trackingId;
   final double grandTotal;
   final String? paymentMethod;
   final String customerName;
@@ -43,6 +43,7 @@ class OrderHistory {
   final String status;
   final String? razorpayOrderId;
   final DeliveryAddress? deliveryAddress;
+  final ProductDetails? productDetails;
 
   OrderHistory({
     required this.id,
@@ -50,7 +51,7 @@ class OrderHistory {
     required this.date,
     required this.totalPrice,
     required this.totalDiscount,
-    required this.trackingId,
+    this.trackingId,
     required this.grandTotal,
     this.paymentMethod,
     required this.customerName,
@@ -58,24 +59,28 @@ class OrderHistory {
     required this.status,
     this.razorpayOrderId,
     this.deliveryAddress,
+    this.productDetails,
   });
 
   factory OrderHistory.fromJson(Map<String, dynamic> json) {
     return OrderHistory(
-      id: json['id'],
-      orderId: json['order_id'],
-      date: json['date'],
-      totalPrice: json['total_price'].toDouble(),
-      totalDiscount: json['total_discount'].toDouble(),
-      trackingId: json['tracking_id'],
-      grandTotal: json['grand_total'].toDouble(),
+      id: json['id'] ?? 0,
+      orderId: json['order_id'] ?? '',
+      date: json['date'] ?? '',
+      totalPrice: (json['total_price'] as num?)?.toDouble() ?? 0.0,
+      totalDiscount: (json['total_discount'] as num?)?.toDouble() ?? 0.0,
+      trackingId: json['tracking_id']?.toString(),
+      grandTotal: (json['grand_total'] as num?)?.toDouble() ?? 0.0,
       paymentMethod: json['payment_method'],
-      customerName: json['customer_name'],
-      deliveryOption: json['delivery_option'],
-      status: json['status'],
+      customerName: json['customer_name'] ?? '',
+      deliveryOption: json['delivery_option'] ?? '',
+      status: json['status'] ?? '',
       razorpayOrderId: json['razorpay_order_id'],
       deliveryAddress: json['delivery_address'] != null
           ? DeliveryAddress.fromJson(json['delivery_address'])
+          : null,
+      productDetails: json['product_details'] != null
+          ? ProductDetails.fromJson(json['product_details'])
           : null,
     );
   }
@@ -102,13 +107,30 @@ class DeliveryAddress {
 
   factory DeliveryAddress.fromJson(Map<String, dynamic> json) {
     return DeliveryAddress(
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      address: json['address'],
-      state: json['state'],
-      city: json['city'],
-      pincode: json['pincode'],
-      addressType: json['address_type'],
+      firstName: json['first_name'] ?? '',
+      lastName: json['last_name'] ?? '',
+      address: json['address'] ?? '',
+      state: json['state'] ?? '',
+      city: json['city'] ?? '',
+      pincode: json['pincode'] ?? 0,
+      addressType: json['address_type'] ?? '',
+    );
+  }
+}
+
+class ProductDetails {
+  final String productName;
+  final String productImage;
+
+  ProductDetails({
+    required this.productName,
+    required this.productImage,
+  });
+
+  factory ProductDetails.fromJson(Map<String, dynamic> json) {
+    return ProductDetails(
+      productName: json['product_name'] ?? '',
+      productImage: json['product_image'] ?? '',
     );
   }
 }

@@ -86,6 +86,9 @@ class HomeProductsTileWidget extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
+                            context
+                                .read<ProductDetailsProvider>()
+                                .fetchProductDetails(productDetails.id);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -99,28 +102,28 @@ class HomeProductsTileWidget extends StatelessWidget {
                             productTitle: productDetails.name,
                             productImage: productDetails.image,
                             tempImage: 'assets/png/products/sample_product.png',
-                            discountAmount: productDetails.price.toString(),
-                            actualAmount: productDetails.price.toString(),
-                            rating: 4.5,
+                            discountAmount:
+                                productDetails.sellingPrice.toString(),
+                            actualAmount: productDetails.mrp.toString(),
+                            rating: productDetails.productRating.avgRating,
                             home:
                                 false, // Changed to true to show the heart icon
                             isWishlist: productDetails.isWishlist,
                             isCart: productDetails.isCart,
                             addToFavouriteEvent: () async {
                               final settingsProvider =
-                                          context.read<SettingsProvider>();
-                                      bool isAuth = await settingsProvider
-                                          .checkAccessTokenValidity(context);
+                                  context.read<SettingsProvider>();
+                              bool isAuth = await settingsProvider
+                                  .checkAccessTokenValidity(context);
 
-                                      if (!isAuth) {
-                                        _showLoginDialog(context);
-                                        return;
-                                      }
-                                      final wishlistProvider =
-                                          context.read<WishlistProvider>();
-                                      wishlistProvider
-                                          .addOrRemoveWhishlistMainProduct(
-                                              productDetails.id, context);
+                              if (!isAuth) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+                              final wishlistProvider =
+                                  context.read<WishlistProvider>();
+                              wishlistProvider.addOrRemoveWhishlistMainProduct(
+                                  productDetails.id, context);
                             },
                             mainProdId: productDetails.id,
                           ),
@@ -137,6 +140,7 @@ class HomeProductsTileWidget extends StatelessWidget {
       ),
     );
   }
+
   void _showLoginDialog(BuildContext context) {
     showDialog(
       context: context,

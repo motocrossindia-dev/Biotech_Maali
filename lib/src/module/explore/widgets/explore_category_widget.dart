@@ -29,7 +29,7 @@ class ExploreCategoryWidget extends StatelessWidget {
               final category = mainCategories[index];
               return InkWell(
                 onTap: () {
-                  exploreProvider.setSelectedCategory(index, category.id);
+                  exploreProvider.setSelectedCategory(index, category.id,category.name);
                   log('Selected category: ${category.name}');
                 },
                 child: Container(

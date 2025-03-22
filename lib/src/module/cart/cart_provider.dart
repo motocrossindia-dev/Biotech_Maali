@@ -183,12 +183,16 @@ class CartProvider extends ChangeNotifier {
 
       _isPlacingOrder = false;
       Fluttertoast.showToast(msg: "Order initiated successfully");
+
+      context
+          .read<OrderSummaryProvider>()
+          .setOrderSummaryData(orderResponse.data);
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => OrderSummaryScreen(
+          builder: (context) => const OrderSummaryScreen(
             isSingleProduct: false,
-            orderData: orderResponse.data,
+            // orderData: orderResponse.data,
           ),
         ),
       );

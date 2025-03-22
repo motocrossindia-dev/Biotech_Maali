@@ -57,14 +57,6 @@ class WalletScreen extends StatelessWidget {
                 // Amount Input Field
                 TextFormField(
                   controller: walletProvider.amountController,
-
-                  // TextEditingController(
-
-                  //   text: walletProvider.selectedAmount > 0
-                  //       ? '₹${walletProvider.selectedAmount}'
-                  //       : '',
-                  // ),
-
                   onChanged: (value) {
                     log("value: $value");
                     if (value == "") {
@@ -147,9 +139,17 @@ class WalletScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                sizedBoxHeight20,
 
                 // Recent Transactions
-                ..._buildRecentTransactions(walletProvider),
+                _buildRecentTransactions(
+                    title: "Wallet, Refund & Gift Credits",
+                    subTitle: "100% Utilization",
+                    totalAmount: "₹0"),
+                _buildRecentTransactions(
+                    title: "Biotech Maali Rewards",
+                    subTitle: "25% Utilization On Cart Value",
+                    totalAmount: "₹1500"),
               ],
             ),
           ),
@@ -173,25 +173,25 @@ class WalletScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildRecentTransactions(WalletProvider provider) {
-    return [
-      const SizedBox(height: 24),
-      ...provider.recentTransactions.map(
-        (transaction) => Card(
-          child: ListTile(
-            title: Text(transaction.title),
-            subtitle: const Text('25% Utilization On Cart Value'),
-            trailing: Text(
-              '₹${transaction.amount}',
-              style: TextStyle(
-                color: transaction.isCredit ? Colors.green : Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+  Widget _buildRecentTransactions({
+    required String title,
+    required String subTitle,
+    required String totalAmount,
+  }) {
+    return Card(
+      child: ListTile(
+        title: Text(title),
+        subtitle: Text(subTitle),
+        trailing: Text(
+          totalAmount,
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.green,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
-    ];
+    );
   }
 
   void _proceedToPayment(BuildContext context) {

@@ -4,7 +4,9 @@ import '../../../../import.dart';
 
 class CouponWidget extends StatelessWidget {
   final double cartValue;
-  const CouponWidget({required this.cartValue, super.key});
+  final String orderId;
+  const CouponWidget(
+      {required this.cartValue, required this.orderId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,10 @@ class CouponWidget extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ApplyCouponScreen(cartValue: cartValue),
+                builder: (context) => ApplyCouponScreen(
+                  cartValue: cartValue,
+                  orderId: orderId,
+                ),
               ),
             );
           },

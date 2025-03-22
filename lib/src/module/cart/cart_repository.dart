@@ -2,7 +2,7 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/network/app_end_url.dart';
 import 'package:biotech_maali/src/module/cart/model/cart_item_model.dart';
-import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -223,6 +223,8 @@ class CartRepository {
       log("Response data : ${response.data.toString()}");
 
       if (response.statusCode == 200) {
+        log("success");
+
         return OrderResponseModel.fromJson(response.data);
       } else if (response.statusCode == 400) {
         final responseData = response.data;

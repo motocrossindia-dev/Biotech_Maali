@@ -9,6 +9,7 @@ class ChoosePaymentRepository {
     required int orderId,
     required String paymentMethod,
   }) async {
+    log("Order id in repository: $orderId");
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('access_token');
@@ -28,20 +29,24 @@ class ChoosePaymentRepository {
       );
 
       if (response.statusCode == 200) {
+        log("response in repository : ${response.data.toString()}");
         return response.data;
+      } else if (response.statusCode == 400) {
+        log("Error : ${response.data.toString()}");
       }
       throw Exception(response.data['message']);
     } catch (e) {
+      log("Exception : ${e.toString()}");
       throw Exception('Error proceeding to payment: $e');
     }
   }
 
   Future<void> verifyPayment({
-    required String razorpayPaymentId,
-    required String razorpayOrderId,
-    required String razorpaySignature,
-    required String orderId,
-    required String paymentMethod,
+    required String? razorpayPaymentId,
+    required String? razorpayOrderId,
+    required String? razorpaySignature,
+    required int? orderId,
+    required String? paymentMethod,
   }) async {
     log("razorepay payment id: $razorpayOrderId \n, orderId : $razorpayOrderId,\n Signature : $razorpaySignature,\n OrderId : $orderId ,\n Payment method: $paymentMethod");
     try {

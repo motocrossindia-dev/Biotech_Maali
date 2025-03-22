@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
-import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
@@ -35,7 +34,6 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
 
   @override
   void initState() {
-    
     super.initState();
 
     _loadData();
@@ -119,10 +117,10 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                                     tempImage:
                                         'assets/png/products/sample_product.png',
                                     discountAmount:
-                                        productDetails.price.toString(),
-                                    actualAmount:
-                                        productDetails.price.toString(),
-                                    rating: 4.5,
+                                        productDetails.sellingPrice.toString(),
+                                    actualAmount: productDetails.mrp.toString(),
+                                    rating:
+                                        productDetails.productRating.avgRating,
                                     home: true,
                                     isWishlist: productDetails.isWishlist,
                                     isCart: productDetails.isCart,
@@ -139,9 +137,10 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                                       final wishlistProvider =
                                           context.read<HomeProvider>();
                                       wishlistProvider.addOrRemoveToWishlist(
-                                          productDetails.id,
-                                          productDetails.isWishlist,
-                                          context);
+                                        productDetails.id,
+                                        productDetails.isWishlist,
+                                        context,
+                                      );
                                     },
                                   ),
                                 );

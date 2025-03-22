@@ -114,11 +114,18 @@ class _OtpScreenContent extends StatelessWidget {
                     color: cBorderGrey,
                   ),
                   sizedBoxWidth10,
-                  CommonTextWidget(
-                    title: 'RESEND OTP',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: cCustomRed,
+                  InkWell(
+                    onTap: () {
+                      context
+                          .read<MobileNumberProvider>()
+                          .registerMobile(context);
+                    },
+                    child: CommonTextWidget(
+                      title: 'RESEND OTP',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: cCustomRed,
+                    ),
                   ),
                 ],
               ),

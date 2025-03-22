@@ -6,7 +6,6 @@ class OtpRepository {
 
   Future<void> validateOtp(
       String mobile, String otp, BuildContext context) async {
-   
     try {
       final response = await _dio.post(
         '${BaseUrl.baseUrl}account/validateOtp/',
@@ -51,14 +50,15 @@ class OtpRepository {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) =>  BottomNavWidget(),
+              builder: (context) => BottomNavWidget(),
             ),
             (route) => false,
           );
         }
       }
     } on DioException catch (e) {
-      log('OTP Validation Error: ${e.message}');
+      log('OTP Validation Error: ${e.response?.data['message'] ?? "Something went wrong"}');
+      throw Exception(e.response?.data['message'] ?? "Something went wrong");
     }
   }
 }

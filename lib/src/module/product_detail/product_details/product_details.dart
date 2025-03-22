@@ -6,6 +6,5 @@ export 'widgets/product_size_widget.dart';
 export 'widgets/planter_widget.dart';
 export 'widgets/color_container_widget.dart';
 export 'widgets/product_description.dart';
-export 'widgets/product_list_widget.dart';
 export '/src/module/product_detail/rating_and_review/rating_and_review.dart';
 export '/src/module/product_detail/product_rating/product_rating.dart';

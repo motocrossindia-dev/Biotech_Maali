@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_repository.dart';
 
@@ -25,6 +27,7 @@ class OrderHistoryProvider extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       _error = e.toString();
+      log("Error in provider ${e.toString()}");
       notifyListeners();
     }
   }

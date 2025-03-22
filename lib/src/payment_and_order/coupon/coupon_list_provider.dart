@@ -1,41 +1,47 @@
-// lib/providers/coupon_provider.dart
+import 'dart:developer';
+
 import 'package:biotech_maali/src/payment_and_order/coupon/coupon_list_repository.dart';
 import 'package:biotech_maali/src/payment_and_order/coupon/model/coupon_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
+import '../../../import.dart';
 
 class CouponProvider extends ChangeNotifier {
   final CouponRepository _repository = CouponRepository();
-  
-  List<Coupon> _coupons = [];
+
+  List _coupons = [];
   bool _isLoading = false;
   String? _error;
   String? _appliedCouponCode;
   double _cartValue = 0.0;
   double _discountAmount = 0.0;
+  bool _isCouponApplied = false; // New flag to track coupon application status
 
-
-
-  List<Coupon> get coupons => _coupons;
+  List get coupons => _coupons;
   bool get isLoading => _isLoading;
   String? get error => _error;
   String? get appliedCouponCode => _appliedCouponCode;
   double get cartValue => _cartValue;
   double get discountAmount => _discountAmount;
   double get finalAmount => _cartValue - _discountAmount;
+  bool get isCouponApplied => _isCouponApplied; // Getter for the new flag
 
   void setCartValue(double value) {
     _cartValue = value;
     notifyListeners();
   }
 
-  Future<void> fetchCoupons() async {
+  Future fetchCoupons(String orderId) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
+    log("orderid : $orderId");
 
     try {
-      _coupons = await _repository.getCoupons();
+      _coupons = await _repository.getCoupons(orderId);
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -44,77 +50,50 @@ class CouponProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> applyCoupon(String code) async {
+  Future<OrderData ?> applyCoupon(String couponId, String orderId, String couponCode,
+      BuildContext context) async {
     _isLoading = true;
     _error = null;
+    _isCouponApplied = false; // Reset the flag at the start
     notifyListeners();
 
     try {
-      final success = await _repository.applyCoupon(code: code, cartValue: _cartValue);
-      
-      if (success) {
-        _appliedCouponCode = code;
-        _calculateDiscount();
+      final result =
+          await _repository.applyCoupon(couponId: couponId, orderId: orderId);
+
+      if (result != null && result.success == true) {
+        _appliedCouponCode = couponCode;
+        _isCouponApplied = true; // Set flag to true on success
+        _discountAmount = result.discountAmount!;
+        
+        Fluttertoast.showToast(msg: "Coupon applied successfully");
+        _isLoading = false;
+        notifyListeners();
+        return result;
+      } else {
+        // This might not be reached since repository throws exceptions on failure
+        _appliedCouponCode = null;
+        _discountAmount = 0;
+        _isLoading = false;
+        notifyListeners();
+        return null;
       }
     } catch (e) {
-      _error = e.toString();
+      log("Coupon application error: ${e.toString()}");
+      Fluttertoast.showToast(msg: e.toString());
       _appliedCouponCode = null;
       _discountAmount = 0;
-    } finally {
       _isLoading = false;
       notifyListeners();
+      return null;
     }
   }
 
   void removeCoupon() {
     _appliedCouponCode = null;
     _discountAmount = 0;
+    _isCouponApplied = false; // Reset flag when coupon is removed
     notifyListeners();
   }
 
-  void _calculateDiscount() {
-    if (_appliedCouponCode == null) {
-      _discountAmount = 0;
-      return;
-    }
-
-    final appliedCoupon = _coupons.firstWhere(
-      (coupon) => coupon.code == _appliedCouponCode,
-      orElse: () => throw Exception('Coupon not found'),
-    );
-
-    if (_cartValue < double.parse(appliedCoupon.minimumOrderValue)) {
-      _discountAmount = 0;
-      _appliedCouponCode = null;
-      _error = 'Cart value too low for this coupon';
-      return;
-    }
-
-    if (appliedCoupon.discountType == 'PERCENTAGE') {
-      _discountAmount = _cartValue * double.parse(appliedCoupon.discountValue) / 100;
-      
-      if (appliedCoupon.maxDiscountValue != null) {
-        final maxDiscount = double.parse(appliedCoupon.maxDiscountValue!);
-        if (_discountAmount > maxDiscount) {
-          _discountAmount = maxDiscount;
-        }
-      }
-    } else {
-      // FLAT discount
-      _discountAmount = double.parse(appliedCoupon.discountValue);
-    }
-  }
-
-  List<Coupon> getApplicableCoupons() {
-    return _coupons.where((coupon) {
-      final minOrderValue = double.parse(coupon.minimumOrderValue);
-      return minOrderValue <= _cartValue && coupon.isValid();
-    }).toList();
-  }
-
-  double getRemainingAmountForCoupon(Coupon coupon) {
-    final minOrderValue = double.parse(coupon.minimumOrderValue);
-    if (_cartValue >= minOrderValue) return 0;
-    return minOrderValue - _cartValue;
-  }
 }

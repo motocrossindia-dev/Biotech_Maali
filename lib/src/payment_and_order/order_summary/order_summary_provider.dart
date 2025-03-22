@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:biotech_maali/src/payment_and_order/change_address/model/address_model.dart';
 import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_screen.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_summary_response.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,6 +12,7 @@ class OrderSummaryProvider extends ChangeNotifier {
     fetchAllAddress();
   }
   final OrderSummaryRepository _repository = OrderSummaryRepository();
+
   int? selectedAddressIndex;
   final List<AddressModel> addresses = [];
   bool isAddressLoading = false;
@@ -19,7 +21,9 @@ class OrderSummaryProvider extends ChangeNotifier {
   int? _selectedAddressId;
   String selectedDeliveryOption = 'Standard';
   bool isAddressSelected = false;
+  OrderData? _orderData;
 
+  OrderData? get orderData => _orderData;
   bool get isLoading => _isLoading;
   String get error => _error;
   int? get selectedAddressId => _selectedAddressId;
@@ -35,7 +39,13 @@ class OrderSummaryProvider extends ChangeNotifier {
       user: 0,
       isDefault: true);
 
-  void setAddressSelection(bool value){
+  void setOrderSummaryData(OrderData orderSummaryData) {
+    _orderData = orderSummaryData;
+    log("order summary data : ${orderSummaryData.newTotal}");
+    notifyListeners();
+  }
+
+  void setAddressSelection(bool value) {
     isAddressLoading = value;
     notifyListeners();
   }
@@ -97,6 +107,8 @@ class OrderSummaryProvider extends ChangeNotifier {
         addressId: addressId,
         deliveryOption: selectedDeliveryOption,
       );
+
+      log("orderSummary Response: ${orderSummaryResponse.data.order.orderId}");
 
       Navigator.push(
         context,

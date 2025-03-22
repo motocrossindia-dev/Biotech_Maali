@@ -14,7 +14,7 @@ class LoginRepository {
 
       final response = await _dio.post(
         accountRegisterUrl,
-        data: {'mobile': mobileNumber, "name": name, "refal_code": referral},
+        data: {'mobile': mobileNumber, "name": name, "referral_code": referral},
       );
 
       log("Status code: ${response.statusCode}");
@@ -55,7 +55,8 @@ class LoginRepository {
         log("Error response data: ${e.response?.data}");
         log("Error response status code: ${e.response?.statusCode}");
       }
-      return false;
+      log('OTP Validation Error: ${e.response?.data['message'] ?? "Something went wrong"}');
+      throw Exception(e.response?.data['message'] ?? "Something went wrong");
     } catch (e) {
       log("Unexpected error occurred: $e");
       return false;

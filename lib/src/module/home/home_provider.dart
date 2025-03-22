@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:ui';
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_repository.dart';
 import 'package:biotech_maali/src/module/home/home_repository.dart';
@@ -9,6 +9,7 @@ import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_repository.dart';
 import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../import.dart';
@@ -39,10 +40,7 @@ class HomeProvider extends ChangeNotifier {
   String? get error => _error;
   List<HomeProductModel> get allProducts => _allProducts;
   List<MainCategoryModel> get maincategories => _mainCategories;
-  // List<int> _mainWishlistProductId = [];
-  // List<int> get mainWishlistProductId => _mainWishlistProductId;
 
-  // Filtered getters
   List<HomeProductModel> get featuredProducts =>
       _allProducts.where((product) => product.isFeatured).toList();
 
@@ -87,6 +85,24 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> validateToken(BuildContext context) async {
+    final settingsProvider = context.read<SettingsProvider>();
+    bool isAuth = await settingsProvider.checkAccessTokenValidity(context);
+
+    if (!isAuth) {
+      void showLoginDialog(BuildContext context) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const LoginPromptDialog();
+          },
+        );
+      }
+
+      return;
+    }
+  }
+
   Future addOrRemoveToWishlist(
       int productId, bool isWishlist, BuildContext context) async {
     log("iswishList : $isWishlist");
@@ -118,8 +134,7 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<bool> addToCartMainProduct(
-    int productId, bool isCart, BuildContext context) async {
-    
+      int productId, bool isCart, BuildContext context) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -240,5 +255,4 @@ class HomeProvider extends ChangeNotifier {
       log("Error fetching categories: $e");
     }
   }
-
 }

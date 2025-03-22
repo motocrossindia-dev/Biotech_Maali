@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:biotech_maali/import.dart';
-import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import 'package:biotech_maali/src/module/product_list/product_list/model/product_list_model.dart';
 import 'package:biotech_maali/src/module/product_list/product_list/product_list_repository.dart';
 

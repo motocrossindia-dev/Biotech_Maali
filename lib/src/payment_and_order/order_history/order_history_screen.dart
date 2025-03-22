@@ -1,5 +1,6 @@
 import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/order_history_shimmer.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_screen.dart';
 
 import '../../../import.dart';
@@ -21,7 +22,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
@@ -38,7 +39,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       body: Consumer<OrderHistoryProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: OrderHistoryShimmer());
           }
 
           if (provider.error != null) {
@@ -92,7 +93,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  BottomNavWidget(),
+                          builder: (context) => BottomNavWidget(),
                         ),
                       );
                     },
@@ -120,7 +121,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
 
 class OrderHistoryCard extends StatelessWidget {
   final OrderHistory order;
-  final Color borderColor = const Color(0xFFE0E0E0);
+  final Color borderColor = const Color.fromARGB(255, 49, 42, 42);
 
   const OrderHistoryCard({required this.order, super.key});
 

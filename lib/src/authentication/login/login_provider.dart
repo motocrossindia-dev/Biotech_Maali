@@ -13,16 +13,17 @@ class LoginProvider extends ChangeNotifier {
   TextEditingController get referralCode => _referralCode;
   TextEditingController get emailId => _emailId;
 
-  Future<void> accountRegister(BuildContext context, String mobileNumber) async {
+  Future<void> accountRegister(
+      BuildContext context, String mobileNumber) async {
     try {
       final result = await loginRepository.accountRegister(
-          mobileNumber, name.text, referralCode.text);
+          mobileNumber, _name.text, _referralCode.text);
       // _isLoading = false;
       if (result) {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) =>  BottomNavWidget(),
+            builder: (context) => BottomNavWidget(),
           ),
           (route) => false,
         );
@@ -34,7 +35,12 @@ class LoginProvider extends ChangeNotifier {
       log("Error : $e");
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: $e')),
+        SnackBar(
+          content: Text(
+            '$e',
+          ),
+          backgroundColor: cDarkerRed,
+        ),
       );
     }
   }

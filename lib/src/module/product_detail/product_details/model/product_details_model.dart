@@ -82,7 +82,7 @@ class ProductData {
 class Product {
   final int id;
   final double mrp;
-  final double price;
+  final double sellingPrice;
   final bool isCart;
   final bool isWishlist;
   final List<ProductImage> images;
@@ -101,7 +101,7 @@ class Product {
   Product({
     required this.id,
     required this.mrp,
-    required this.price,
+    required this.sellingPrice,
     required this.isCart,
     required this.isWishlist,
     required this.images,
@@ -122,7 +122,7 @@ class Product {
     return Product(
       id: _parseId(json['id']),
       mrp: _parseDouble(json['mrp']),
-      price: _parseDouble(json['price']),
+      sellingPrice: _parseDouble(json['selling_price']),
       isCart: json['is_cart'] ?? false,
       isWishlist: json['is_wishlist'] ?? false,
       images: (json['images'] as List? ?? [])
@@ -147,7 +147,7 @@ class Product {
     return Product(
       id: id,
       mrp: mrp,
-      price: price,
+      sellingPrice: sellingPrice,
       isCart: isCart,
       isWishlist: isWishlist,
       images: images,
@@ -170,7 +170,7 @@ class Product {
     return Product(
       id: id,
       mrp: mrp,
-      price: price,
+      sellingPrice: sellingPrice,
       isCart: isCart,
       isWishlist: isWishlist,
       images: images,
@@ -465,18 +465,18 @@ class ProductAddOn {
   final String name;
   final int productId;
   final double mrp;
-  final double price;
+  final double sellingPrice;
   final String image;
   final ProductRating productRating;
-   bool isCart;
-   bool isWishlist;
+  bool isCart;
+  bool isWishlist;
 
   ProductAddOn(
       {required this.id,
       required this.name,
       required this.productId,
       required this.mrp,
-      required this.price,
+      required this.sellingPrice,
       required this.image,
       required this.productRating,
       required this.isCart,
@@ -488,7 +488,7 @@ class ProductAddOn {
       name: json['name'] ?? '',
       productId: json['product_id'] ?? 0,
       mrp: (json['mrp'] as num?)?.toDouble() ?? 0.0,
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      sellingPrice: (json['selling_price'] as num?)?.toDouble() ?? 0.0,
       image: json['image'] ?? '',
       productRating: ProductRating.fromJson(json['product_rating'] ?? {}),
       isCart: json['is_cart'] ?? '',

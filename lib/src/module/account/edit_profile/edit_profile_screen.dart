@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/account/edit_profile/edit_profile_shimmer.dart';
+
 import '../../../../../import.dart';
 import 'package:intl/intl.dart';
 
@@ -45,7 +47,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ],
       ),
       body: editProfileProvider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: EditProfileShimmer())
           : SingleChildScrollView(
               child: Column(
                 children: [

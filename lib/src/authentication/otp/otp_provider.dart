@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/src/authentication/otp/otp_repository.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../import.dart';
 
@@ -25,7 +26,7 @@ class OtpProvider extends ChangeNotifier {
       log("Otp : $_otp");
       _errorMessage = 'Please enter a valid OTP';
       notifyListeners();
-      return ;
+      return;
     }
 
     _isLoading = true;
@@ -35,14 +36,17 @@ class OtpProvider extends ChangeNotifier {
     try {
       await _repository.validateOtp(mobile, _otp!, context);
       _isLoading = false;
-     
+
       notifyListeners();
-      
     } catch (e) {
       _isLoading = false;
-      _errorMessage = 'Failed to validate OTP. Please try again.';
+      Fluttertoast.showToast(
+          msg: "${e.toString()}",
+          backgroundColor: cDarkerRed,
+          textColor: Colors.white);
+      log("message:${e}");
+      // _errorMessage = "${e}";
       notifyListeners();
-      
     }
   }
 }

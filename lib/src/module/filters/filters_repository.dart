@@ -14,6 +14,7 @@ class FiltersRepository {
         '$baseUrl/filters/filters/',
         queryParameters: {'type': type},
       );
+      log("Response data : ${response.data.toString()}");
       return FilterResponseModel.fromJson(response.data);
     } catch (e) {
       log("Error fetching filters: $e");
@@ -28,6 +29,7 @@ class FiltersRepository {
         'type': type.toLowerCase(),
         ...filters,
       };
+
       log("Filter query params: $queryParams");
 
       final response = await _dio.get(

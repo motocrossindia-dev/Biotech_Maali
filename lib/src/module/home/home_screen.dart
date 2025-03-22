@@ -1,5 +1,7 @@
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/home/home_shimmer.dart';
 import 'package:biotech_maali/src/module/home/widget/promotional_banner.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../import.dart';
 import 'dart:math' as math;
@@ -20,12 +22,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    final homeProvider = context.read<HomeProvider>();
+
     _initializeWidgets();
     _setupScrollController();
     // Fetch data when screen initializes
-    context.read<HomeProvider>().fetchHomeProducts();
-    context.read<HomeProvider>().fetchMainCategories();
-    context.read<HomeProvider>().fetchBanners();
+    homeProvider.fetchHomeProducts();
+    homeProvider.fetchMainCategories();
+    homeProvider.fetchBanners();
+    homeProvider.validateToken(context);
   }
 
   void _initializeWidgets() {

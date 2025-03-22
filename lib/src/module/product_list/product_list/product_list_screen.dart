@@ -13,11 +13,13 @@ class ProductListScreen extends StatefulWidget {
   final bool isCategory;
   final String title;
   final String id;
+  final String? categoryName;
   // final List<HomeProductModel> products;
   const ProductListScreen(
       {required this.isCategory,
       required this.title,
       required this.id,
+      this.categoryName,
       super.key});
 
   @override
@@ -139,7 +141,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                     productImage: product.image,
                                     tempImage:
                                         'assets/png/products/sample_product.png',
-                                    discountAmount: product.price.toString(),
+                                    discountAmount:
+                                        product.sellingPrice.toString(),
                                     actualAmount: product.mrp.toString(),
                                     rating: product.productRating.avgRating,
                                     home: true,
@@ -228,10 +231,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
                           log('message');
-                           Navigator.push(
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>  FilterScreen(type: widget.title),
+                              builder: (context) => FilterScreen(
+                                  type: widget.isCategory == false
+                                      ? widget.categoryName!
+                                      : widget.title),
                             ),
                           );
                         },

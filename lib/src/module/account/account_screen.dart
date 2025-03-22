@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/account/account_provider.dart';
+import 'package:biotech_maali/src/module/account/coin/coin_screen.dart';
 import 'package:biotech_maali/src/module/account/gift_card/gift_card_screen.dart';
 import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_screen.dart';
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
@@ -315,6 +316,39 @@ class AccountScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              sizedBoxHeight20,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const CoinScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        sizedBoxWidth25,
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'Coin',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    CommonTextWidget(
+                                      title: '₹0',
+                                      color: Colors.green,
+                                      fontSize: 16,
+                                    ),
+                                  ],
+                                ),
+                              ),
                               sizedBoxHeight35,
                               Row(
                                 children: [
@@ -413,7 +447,7 @@ class AccountScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>  FranchiseScreen(),
+                        builder: (context) => FranchiseScreen(),
                       ),
                     );
                   },

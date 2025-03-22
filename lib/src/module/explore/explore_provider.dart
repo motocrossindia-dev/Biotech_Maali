@@ -15,11 +15,13 @@ class ExploreProvider extends ChangeNotifier {
   String? _error;
   int _selectedCategoryIndex = 0;
   int? _selectedCategoryId;
+  String? _selectedCategoryName = "PLANTS";
 
   int get selectedCategoryIndex => _selectedCategoryIndex;
   bool get isLoading => _isLoading;
   String? get error => _error;
   int? get selectedCategoryId => _selectedCategoryId;
+  String? get selectedCategoryName => _selectedCategoryName;
 
   List<Subcategory> _subcategories = [];
   List<MainCategoryModel> _mainCategories = [];
@@ -27,9 +29,10 @@ class ExploreProvider extends ChangeNotifier {
   List<Subcategory> get subcategories => _subcategories;
   List<MainCategoryModel> get maincategories => _mainCategories;
 
-  void setSelectedCategory(int index, int categoryId) {
+  void setSelectedCategory(int index, int categoryId, String categoryName) {
     _selectedCategoryIndex = index;
     _selectedCategoryId = categoryId;
+    _selectedCategoryName = categoryName;
     fetchSubcategory(categoryId);
     notifyListeners();
   }
@@ -81,6 +84,4 @@ class ExploreProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  
 }

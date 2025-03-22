@@ -1,4 +1,4 @@
-import 'package:biotech_maali/src/module/product_detail/product_details/model/order_response_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 
 import '../../../../import.dart';
 
@@ -21,6 +21,8 @@ class PriceDetailsWidget extends StatelessWidget {
             _buildPriceRow('Price (${orderData.orderItems.length} items)',
                 '₹${orderData.order.totalPrice}'),
             _buildPriceRow('Discount', '-₹${orderData.order.totalDiscount}',
+                isGreen: true),
+            _buildPriceRow('Coupon Discount', '-₹${orderData.discountAmount}',
                 isGreen: true),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,8 +51,8 @@ class PriceDetailsWidget extends StatelessWidget {
             _buildPriceRow('Total Amount', '₹${orderData.order.grandTotal}',
                 isBold: true),
             const SizedBox(height: 8),
-            const Text(
-              'You will save ₹0 on this order',
+            Text(
+              'You will save ₹${orderData.order.totalPrice - orderData.order.grandTotal} on this order',
               style: TextStyle(color: Colors.green),
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:biotech_maali/core/network/app_base_url.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'order_history_detail_provider.dart';
@@ -56,14 +57,14 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
         // actions: [
         //   IconButton(
         //     icon: const Icon(Icons.file_download),
-        //     onPressed: () {}, 
+        //     onPressed: () {},
         //   ),
         // ],
       ),
       body: Consumer<OrderHistoryDetailProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: OrderHistoryDetailShimmer());
           }
           if (provider.error != null) {
             return Center(
@@ -175,8 +176,7 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
                   width: 80,
                   height: 80,
                   color: Colors.grey[300],
-                  child: const Icon(
-                    Icons.image_not_supported),
+                  child: const Icon(Icons.image_not_supported),
                 ),
               ),
             ),

@@ -72,6 +72,7 @@ class SubCategories extends StatelessWidget {
                             id: subcategory.id.toString(),
                             isCategory: false,
                             title: subcategory.name,
+                            categoryName: provider.selectedCategoryName,
                           ),
                         ),
                       );

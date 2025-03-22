@@ -17,6 +17,7 @@ class ChoosePaymentProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String get error => _error;
   BuildContext context;
+  int? orderId;
 
   ChoosePaymentProvider(this.context) {
     _razorpay = Razorpay();
@@ -45,22 +46,27 @@ class ChoosePaymentProvider extends ChangeNotifier {
       }
 
       final response = await _repository.proceedToPayment(
-        orderId: _orderSummaryResponse!.data.orders.id,
+        orderId: _orderSummaryResponse!.data.order.id,
         paymentMethod: 'UPI',
       );
 
+      log(response["order_id"].toString());
+      log(response["razorpay_order"]['id'].toString());
+
+      orderId = response["order_id"];
+
       final options = {
         "key": "rzp_test_zu1D9WznwNYRVG",
-        "amount": (_orderSummaryResponse!.data.orders.grandTotal * 100).toInt(),
+        "amount": (_orderSummaryResponse!.data.order.grandTotal * 100).toInt(),
         "name": "Biotech Maali",
-        "description": "Order #${_orderSummaryResponse!.data.orders.id}",
-        "order_id": response['id'],
+        "description": "Order #${_orderSummaryResponse!.data.order.orderId}",
+        "order_id": response["razorpay_order"]['id'],
         "prefill": {
           "contact": "8907444333",
           "email": "customer@email.com",
         },
         "notes": {
-          "order_id": _orderSummaryResponse!.data.orders.id.toString(),
+          "order_id": _orderSummaryResponse!.data.order.orderId.toString(),
         },
         "theme": {"color": "#4CAF50"}
       };
@@ -80,13 +86,11 @@ class ChoosePaymentProvider extends ChangeNotifier {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     try {
-
-      
       await _repository.verifyPayment(
-        razorpayPaymentId: response.paymentId!,
-        razorpayOrderId: response.orderId!,
-        razorpaySignature: response.signature!,
-        orderId: response.orderId!,
+        razorpayPaymentId: response.paymentId,
+        razorpayOrderId: response.orderId,
+        razorpaySignature: response.signature,
+        orderId: orderId,
         paymentMethod: 'UPI',
       );
 

@@ -50,7 +50,7 @@ class ProductListAddonWidget extends StatelessWidget {
                           productTitle: product.name,
                           productImage: product.image,
                           tempImage: 'assets/png/products/sample_product.png',
-                          discountAmount: product.price.toString(),
+                          discountAmount: product.sellingPrice.toString(),
                           actualAmount: product.mrp.toString(),
                           rating: product.productRating.avgRating,
                           mainProdId: product.id,

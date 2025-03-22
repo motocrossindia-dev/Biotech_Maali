@@ -6,6 +6,7 @@ import 'package:biotech_maali/src/module/product_detail/product_details/product_
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/planter_size_widget.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/pot_litre_widget.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/product_list_addon_widget.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/widgets/product_list_recently_viewed_widget.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/seed_weight_widget.dart';
 import '../../../../import.dart';
 
@@ -140,7 +141,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   // mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     CommonTextWidget(
-                                      title: '₹${productDetail.product.price}',
+                                      title:
+                                          '₹${productDetail.product.sellingPrice}',
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
                                       color: cProductRate,
@@ -161,7 +163,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         color: cOffer,
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      child: Center(
+                                      child: const Center(
                                         child: CommonTextWidget(
                                           title: '% OFF',
                                           // ${(100 - (productDetail.product.price / productDetail.product.mrp * 100)).toInt()}
@@ -495,11 +497,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ? const ProductListAddonWidget(title: 'Add On')
                                 : sizedBoxHeight40,
                             ProductDescription(provider: provider),
+                            // sizedBoxHeight20,
+                            // const ProductListWidget(
+                            //     title: 'Customers Also Bought'),
                             sizedBoxHeight20,
-                            const ProductListWidget(
-                                title: 'Customers Also Bought'),
-                            sizedBoxHeight20,
-                            const ProductListWidget(title: 'Recently Viewed'),
+                            const ProductListRecentlyViewedWidget(
+                                title: 'Recently Viewed'),
                             sizedBoxHeight70,
                           ],
                         ),

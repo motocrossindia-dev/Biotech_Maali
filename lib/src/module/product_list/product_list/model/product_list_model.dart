@@ -28,7 +28,7 @@ class Product {
   final int id;
   final String name;
   final double mrp;
-  final double price;
+  final double sellingPrice;
   final String image;
   final ProductRating productRating;
 
@@ -36,7 +36,7 @@ class Product {
     required this.id,
     required this.name,
     required this.mrp,
-    required this.price,
+    required this.sellingPrice,
     required this.image,
     required this.productRating,
   });
@@ -46,7 +46,7 @@ class Product {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       mrp: (json['mrp'] ?? 0.0).toDouble(),
-      price: (json['price'] ?? 0.0).toDouble(),
+      sellingPrice: (json['selling_price'] ?? 0.0).toDouble(),
       image: json['image'] ?? '',
       productRating: ProductRating.fromJson(json['product_rating'] ?? {}),
     );
@@ -57,7 +57,7 @@ class Product {
       'id': id,
       'name': name,
       'mrp': mrp,
-      'price': price,
+      'selling_price': sellingPrice,
       'image': image,
       'product_rating': productRating.toJson(),
     };

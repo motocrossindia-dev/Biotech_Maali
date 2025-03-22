@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
+
 import '../../../import.dart';
 
 class FilterScreen extends StatefulWidget {
@@ -13,6 +17,7 @@ class _FilterScreenState extends State<FilterScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      log("category name : ${widget.type}");
       context.read<FiltersProvider>().loadFilters(widget.type);
     });
   }
@@ -22,7 +27,7 @@ class _FilterScreenState extends State<FilterScreen> {
     return Consumer<FiltersProvider>(
       builder: (context, provider, _) {
         if (provider.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: ProductListShimmer());
         }
 
         return Scaffold(
@@ -311,7 +316,8 @@ class _FilterScreenState extends State<FilterScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 try {
-                  final result = await provider.applyFilters(widget.type,context);
+                  final result =
+                      await provider.applyFilters(widget.type, context);
                   if (mounted) {
                     Navigator.pop(context, result);
                   }
