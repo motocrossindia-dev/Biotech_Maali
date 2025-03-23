@@ -2,8 +2,6 @@ import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import 'package:biotech_maali/src/module/product_compo_list/model/product_compo_model.dart';
 import 'package:biotech_maali/src/module/product_compo_list/product_compo_list_provider.dart';
 import 'package:biotech_maali/src/module/product_compo_list/widget/product_compo_widget.dart';
-import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
-import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
 
 import '../../../import.dart';

@@ -84,7 +84,7 @@ class Product {
   final double mrp;
   final double sellingPrice;
   final bool isCart;
-  final bool isWishlist;
+   bool isWishlist;
   final List<ProductImage> images;
   final String shortDescription;
   final String mainProductName;

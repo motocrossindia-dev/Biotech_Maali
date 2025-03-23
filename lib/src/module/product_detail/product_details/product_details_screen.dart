@@ -24,6 +24,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final provider = context.read<ProductDetailsProvider>();
     // provider.fetchProductDetails(widget.productId);
     provider.updateQuantity();
+    provider.fetchRecentlyViewed();
     super.initState();
   }
 
@@ -106,9 +107,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     : IconButton(
                                         icon: SvgPicture.asset(
                                           'assets/svg/icons/heart_unselected.svg',
-                                          color: provider.isWishlist
-                                              ? Colors.red
-                                              : Colors.black,
+                                          color:
+                                              productDetail.product.isWishlist
+                                                  ? Colors.red
+                                                  : Colors.black,
                                           height: 24,
                                           width: 24,
                                         ),
@@ -116,6 +118,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           provider
                                               .addOrRemoveWhishlistCompinationProduct(
                                                   productDetail.product.id,
+                                                  productDetail
+                                                      .product.isWishlist,
                                                   context);
                                         },
                                       ),

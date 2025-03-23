@@ -1,6 +1,4 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
-import 'package:biotech_maali/src/module/cart/cart_provider.dart';
-import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import '../../../../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -47,40 +45,24 @@ class ProductTileAddonWidget extends StatelessWidget {
       decoration: BoxDecoration(color: cAppBackround),
       child: Column(
         children: [
-          isFavorite
+          isWishlist
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, top: 8),
-                      child: wishListProviderWatch.isProductLoading(mainProdId ??
-                              0) // Check loading state for this specific product
-                          ? Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: SizedBox(
-                                    height: 26,
-                                    width: 26,
-                                    child: CircularProgressIndicator(
-                                      backgroundColor: cButtonGreen,
-                                      color: cButtonRed,
-                                    ),
-                                  ),
-                                ),
-                                sizedBoxHeight15
-                              ],
-                            )
-                          : InkWell(
-                              onTap: addToFavouriteEvent,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: SvgPicture.asset(
-                                  'assets/svg/icons/add_to_favourite_icon.svg',
-                                  color: isWishlist ? Colors.red : Colors.black,
-                                ),
-                              ),
-                            ),
+                      child:
+                     
+                          InkWell(
+                        onTap: addToFavouriteEvent,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SvgPicture.asset(
+                            'assets/svg/icons/add_to_favourite_icon.svg',
+                            color: isWishlist ? Colors.red : Colors.black,
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 )

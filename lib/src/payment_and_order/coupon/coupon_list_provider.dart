@@ -1,11 +1,8 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/src/payment_and_order/coupon/coupon_list_repository.dart';
-import 'package:biotech_maali/src/payment_and_order/coupon/model/coupon_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 
 import '../../../import.dart';
 

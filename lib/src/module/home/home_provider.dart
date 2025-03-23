@@ -1,12 +1,10 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
-import 'package:biotech_maali/src/module/cart/cart_repository.dart';
 import 'package:biotech_maali/src/module/home/home_repository.dart';
 import 'package:biotech_maali/src/module/home/model/banner_model.dart';
 import 'package:biotech_maali/src/module/home/model/category_model.dart';
 import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
-import 'package:biotech_maali/src/module/wishlist/whishlist_repository.dart';
 import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
@@ -19,16 +17,10 @@ class HomeProvider extends ChangeNotifier {
     refreshAll();
   }
   final HomeRepository _repository = HomeRepository();
-  final CartRepository _cartRepository = CartRepository();
-  final WishlistRepository _wishlistRepository = WishlistRepository();
 
   bool _isLoading = false;
-  final Set<int> _loadingProductIds = {};
-  Set<int> get loadingProductIds => _loadingProductIds;
-  bool isProductLoading(int productId) =>
-      _loadingProductIds.contains(productId);
 
-  bool _isCartLoading = false;
+  final bool _isCartLoading = false;
   String? _error;
   List<HomeProductModel> _allProducts = [];
   List<MainCategoryModel> _mainCategories = [];
@@ -90,14 +82,7 @@ class HomeProvider extends ChangeNotifier {
     bool isAuth = await settingsProvider.checkAccessTokenValidity(context);
 
     if (!isAuth) {
-      void showLoginDialog(BuildContext context) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return const LoginPromptDialog();
-          },
-        );
-      }
+      showLoginDialog(context);
 
       return;
     }
@@ -106,18 +91,15 @@ class HomeProvider extends ChangeNotifier {
   Future addOrRemoveToWishlist(
       int productId, bool isWishlist, BuildContext context) async {
     log("iswishList : $isWishlist");
-    _loadingProductIds.add(productId);
 
     try {
-      bool result =
-          await _wishlistRepository.addOrRemoveWishListMainProduct(productId);
+      bool result = await _repository.addOrRemoveWishListMainProduct(productId);
       if (result) {
         final productIndex =
             _allProducts.indexWhere((product) => product.id == productId);
         if (productIndex != -1) {
           _allProducts[productIndex].isWishlist = !isWishlist;
 
-          _loadingProductIds.remove(productId);
           notifyListeners(); // Notify listeners about the update
         }
         if (isWishlist) {
@@ -128,7 +110,7 @@ class HomeProvider extends ChangeNotifier {
       }
     } catch (e) {
       _error = e.toString();
-      _loadingProductIds.remove(productId);
+      // _loadingProductIds.remove(productId);
       notifyListeners();
     }
   }
@@ -139,7 +121,7 @@ class HomeProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      final success = await _cartRepository.addToCartForMainProduct(productId);
+      final success = await _repository.addToCartForMainProduct(productId);
       log("Success : ${success.toString()}");
 
       if (success) {
@@ -254,5 +236,14 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
       log("Error fetching categories: $e");
     }
+  }
+
+  void showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
+      },
+    );
   }
 }

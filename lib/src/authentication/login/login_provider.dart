@@ -20,6 +20,8 @@ class LoginProvider extends ChangeNotifier {
           mobileNumber, _name.text, _referralCode.text);
       // _isLoading = false;
       if (result) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("userName", "${name.text} ");
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

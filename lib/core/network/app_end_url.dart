@@ -47,4 +47,5 @@ class EndUrl {
   static String comboOffersUrl = "${baseUrl}combo/combo-offers/";
   static String recentlyViewedProductUrl = "${baseUrl}product/recentlyViewed/";
   static String getReferralDetailsUrl = "${baseUrl}btcoins/btcoinswallet/";
+  static String getBtCoinUrl = "${baseUrl}btcoins/btcoinsTransactions/";
 }

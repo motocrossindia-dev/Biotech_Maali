@@ -297,7 +297,7 @@ class OrderItemCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                '₹${item.total}',
+                '₹${item.mrp * item.quantity}',
                 style: const TextStyle(
                   decoration: TextDecoration.lineThrough,
                   fontSize: 12,
@@ -305,7 +305,7 @@ class OrderItemCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                '₹${(item.price) * item.quantity}',
+                '₹${(item.sellingPrice) * item.quantity}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),

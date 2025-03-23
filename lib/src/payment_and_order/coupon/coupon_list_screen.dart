@@ -19,7 +19,6 @@ class ApplyCouponScreen extends StatefulWidget {
 
 class _ApplyCouponScreenState extends State<ApplyCouponScreen> {
   final TextEditingController _couponController = TextEditingController();
-  bool _isLoading = false;
 
   @override
   void initState() {

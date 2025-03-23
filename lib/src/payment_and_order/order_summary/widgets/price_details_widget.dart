@@ -52,8 +52,8 @@ class PriceDetailsWidget extends StatelessWidget {
                 isBold: true),
             const SizedBox(height: 8),
             Text(
-              'You will save ₹${orderData.order.totalPrice - orderData.order.grandTotal} on this order',
-              style: TextStyle(color: Colors.green),
+              'You will save ₹${(orderData.order.totalPrice - orderData.order.grandTotal).toStringAsFixed(2)} on this order',
+              style: const TextStyle(color: Colors.green),
             ),
           ],
         );

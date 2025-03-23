@@ -14,8 +14,19 @@ import 'package:biotech_maali/src/payment_and_order/order_history/order_history_
 
 import '../../../import.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
+
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  @override
+  void initState() {
+    context.read<AccountProvider>().getUserName();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

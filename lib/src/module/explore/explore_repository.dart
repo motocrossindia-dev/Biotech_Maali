@@ -1,9 +1,7 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/import.dart';
-import 'package:biotech_maali/src/module/explore/model/product_list_response.dart';
 import 'package:biotech_maali/src/module/home/model/category_model.dart';
-import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import 'package:biotech_maali/src/module/subcategory_list/model/subcategory_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

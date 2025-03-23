@@ -80,6 +80,8 @@ class EditProfileProvider extends ChangeNotifier {
 
       if (success) {
         _isEditing = false;
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("userName", "${firstName.text} ${lastName.text}");
         if (isplaceOrder == true) {
           Navigator.pop(context);
           Navigator.push(

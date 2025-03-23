@@ -1,4 +1,3 @@
-
 import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_summary_response.dart';
 
@@ -13,10 +12,9 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-
-
   @override
   Widget build(BuildContext context) {
+    final orderDetails = widget.orderSummaryResponse;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -61,22 +59,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       const SizedBox(height: 20),
 
                       // Price Details
-                      _buildPriceRow('Price (3 items)', '₹7899.00'),
-                      _buildPriceRow('Discount', '-₹266.00', isGreen: true),
+                      _buildPriceRow(
+                          'Price (${orderDetails.data.orderItems.length} items)',
+                          '₹${orderDetails.data.order.totalPrice}'),
+                      _buildPriceRow('Discount',
+                          '-₹${orderDetails.data.order.totalDiscount}',
+                          isGreen: true),
+                      _buildPriceRow('Coupon Discount',
+                          '-₹${orderDetails.data.order.couponDiscount}',
+                          isGreen: true),
                       _buildPriceRow('Delivery Charges', 'Free',
-                          originalPrice: '₹80', isGreen: true),
-                      _buildPriceRow('Secured Packaging Fee', '₹198'),
+                          originalPrice: '₹', isGreen: true),
+                      _buildPriceRow('Secured Packaging Fee', '' /*₹198*/),
 
                       const Divider(height: 32),
 
                       // Total
-                      _buildPriceRow('Total Amount', '₹7899.00', isBold: true),
+                      _buildPriceRow('Total Amount',
+                          '₹${orderDetails.data.order.grandTotal}',
+                          isBold: true),
 
                       // Savings
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          'You will save ₹9,811 on this order',
+                          'You will save ₹${orderDetails.data.order.totalDiscount} on this order',
                           style: TextStyle(
                             color: Colors.green[600],
                             fontWeight: FontWeight.w500,

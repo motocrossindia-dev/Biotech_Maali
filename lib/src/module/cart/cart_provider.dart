@@ -25,7 +25,12 @@ class CartProvider extends ChangeNotifier {
 
   double get totalAmount {
     return _cartItems.fold(
-        0, (sum, item) => sum + (double.parse(item.price) * item.quantity));
+        0, (sum, item) => sum + (double.parse(item.mrp) * item.quantity));
+  }
+
+  double get totalDiscount {
+    return _cartItems.fold(
+        0, (sum, itme) => sum + (itme.discount * itme.quantity));
   }
 
   Future<void> fetchCartItems() async {
@@ -145,7 +150,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> addToCartMainProduct(int productId, BuildContext context) async {
+  Future<bool> addToCartMainProduct(int productId,bool isCart, BuildContext context) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -155,11 +160,13 @@ class CartProvider extends ChangeNotifier {
       if (success) {
         await fetchCartItems(); // Refresh cart items after successful addition
         showCartMessage(context, true);
+        return true;
       } else {
         showCartMessage(context, false);
+        return true;
       }
 
-      return success;
+    
     } catch (e) {
       _error = e.toString();
       Fluttertoast.showToast(

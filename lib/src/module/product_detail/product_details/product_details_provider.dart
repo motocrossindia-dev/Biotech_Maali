@@ -21,14 +21,14 @@ class ProductDetailsProvider extends ChangeNotifier {
 
   ProductDetailsProvider() {
     updateQuantity();
-    fetchRecentlyViewed();
+    
   }
 
   bool _isLoading = false;
   String? _error;
   int _carouselIndex = 0;
   int _quantity = 1;
-  bool _isWishlist = false;
+  // bool _isWishlist = false;
   bool _isLoadingWishList = false;
   OrderResponseModel? _orderResponse;
   ProductDetailModel? _productDetails;
@@ -55,7 +55,7 @@ class ProductDetailsProvider extends ChangeNotifier {
   String? get error => _error;
   int get carouselIndex => _carouselIndex;
   int get quantity => _quantity;
-  bool get isWishlist => _isWishlist;
+  // bool get isWishlist => _isWishlist;
   bool get isLoadingWishList => _isLoadingWishList;
   OrderResponseModel? get orderResponse => _orderResponse;
   ProductDetailModel? get productDetails => _productDetails;
@@ -332,7 +332,7 @@ class ProductDetailsProvider extends ChangeNotifier {
   }
 
   Future<void> addOrRemoveWhishlistCompinationProduct(
-      int productId, BuildContext context) async {
+      int productId,bool isWishlist, BuildContext context) async {
     _isLoadingWishList = true;
     notifyListeners();
 
@@ -340,12 +340,18 @@ class ProductDetailsProvider extends ChangeNotifier {
       bool result = await productDetailsRepository
           .addOrRemoveWhishlistCompinationProduct(productId);
       if (result) {
-        _isWishlist = true;
+        _productDetails!.data.product.isWishlist =
+            !_productDetails!.data.product.isWishlist;
 
-        showWishlistMessage(context, true);
-        notifyListeners();
+        notifyListeners(); // Notify listeners about the update
+
+        if (isWishlist) {
+          showWishlistMessage(context, false);
+        } else if (!isWishlist) {
+          showWishlistMessage(context, true);
+        }
       } else {
-        _isWishlist = false;
+        // _isWishlist = false;
         showWishlistMessage(context, false);
         notifyListeners();
       }
@@ -389,7 +395,10 @@ class ProductDetailsProvider extends ChangeNotifier {
       Fluttertoast.showToast(msg: _error!);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const EditProfileScreen(isPlaceOrder: true,)),
+        MaterialPageRoute(
+            builder: (context) => const EditProfileScreen(
+                  isPlaceOrder: true,
+                )),
       );
     } on AddressNotUpdatedException {
       _error = 'Please add delivery address';

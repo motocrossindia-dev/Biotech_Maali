@@ -1,9 +1,8 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'product_search_provider.dart';
 import 'model/product_search_model.dart';
 
@@ -22,7 +21,7 @@ class ProductSearchView extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: SearchBar(
               onChanged: (query) {
-                if (query.length >= 1) {
+                if (query.isNotEmpty) {
                   context.read<ProductSearchProvider>().searchProducts(query);
                 }
               },
@@ -72,10 +71,10 @@ class ProductSearchView extends StatelessWidget {
                         productImage: product.image,
                         actualAmount: product.mrp.toString(),
                         home: true,
-                        isWishlist: false,
-                        isCart: false,
+                        isWishlist: product.isWishlist,
+                        isCart: product.isCart,
                         mainProdId: product.id,
-                        discountAmount: product.price.toString(),
+                        discountAmount: product.sellingPrice.toString(),
                         rating: product.productRating.avgRating,
                         addToFavouriteEvent: () async {
                           final settingsProvider =
@@ -89,10 +88,54 @@ class ProductSearchView extends StatelessWidget {
                           }
                           final wishlistProvider =
                               context.read<WishlistProvider>();
-                          wishlistProvider.addOrRemoveWhishlistMainProduct(
-                              product.id, context);
+                          bool result = await wishlistProvider
+                              .addOrRemoveWhishlistMainProduct(
+                                  product.id, context);
+                          if (result) {
+                            provider.updateWishList(
+                                product.isWishlist, product.id);
+                          } else {
+                            return;
+                          }
                         },
-                        // addToCartEvent: () {},
+                        addToCartEvent: product.isCart
+                            ? () {
+                                context
+                                    .read<BottomNavProvider>()
+                                    .updateIndex(3);
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BottomNavWidget(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
+                            : () async {
+                                final settingsProvider =
+                                    context.read<SettingsProvider>();
+                                bool isAuth = await settingsProvider
+                                    .checkAccessTokenValidity(context);
+                                if (!isAuth) {
+                                  _showLoginDialog(context);
+                                  return;
+                                }
+                                bool result = await context
+                                    .read<CartProvider>()
+                                    .addToCartMainProduct(
+                                      product.id,
+                                      product.isCart,
+                                      context,
+                                    );
+
+                                if (result) {
+                                  provider.updateCart(
+                                    product.isCart,
+                                    product.id,
+                                    context,
+                                  );
+                                }
+                              },
                       ),
                     );
                   },
@@ -106,71 +149,7 @@ class ProductSearchView extends StatelessWidget {
   }
 }
 
-class SearchBar extends StatelessWidget {
-  final Function(String) onChanged;
-
-  const SearchBar({Key? key, required this.onChanged}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Search products...',
-        prefixIcon: const Icon(Icons.search),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      onChanged: onChanged,
-    );
-  }
-}
-
-class ProductCard extends StatelessWidget {
-  final ProductSearchModel product;
-
-  const ProductCard({super.key, required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Image.network(
-              '${BaseUrl.baseUrlForImages}${product.image}',
-              fit: BoxFit.cover,
-              width: double.infinity,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '₹${product.price}',
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//
 
 void _showLoginDialog(BuildContext context) {
   showDialog(

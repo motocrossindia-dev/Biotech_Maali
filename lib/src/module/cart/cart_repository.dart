@@ -114,6 +114,7 @@ class CartRepository {
         throw Exception('Failed to load cart items');
       }
     } catch (e) {
+      log("Get cart items error: ${e.toString()}");
       throw Exception('Failed to load cart items: $e');
     }
   }
@@ -193,7 +194,6 @@ class CartRepository {
     } catch (e) {
       log("Add to cart error: ${e.toString()}");
       return false;
-      // throw Exception('Failed to add to cart: $e');
     }
   }
 

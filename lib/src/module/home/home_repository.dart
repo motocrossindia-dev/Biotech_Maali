@@ -113,60 +113,76 @@ class HomeRepository {
     }
   }
 
-  Future<List<dynamic>> getWhishlistId() async {
+  Future<bool> addToCartForMainProduct(int productId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("access_token");
-    log("access token : ${token.toString()}");
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Authentication token is missing');
+    }
 
     try {
-      final response = await dio.get(
-        EndUrl.getWhishListIdUrl,
+      final response = await dio.post(
+        EndUrl.addToCartUrl,
+        data: {
+          'main_prod_id': productId,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        log("response data added to cart : ${response.data.toString()}");
+        return true;
+      } else {
+        log("Response allredy in cart : ${response.data.toString()}");
+        return false;
+      }
+    } catch (e) {
+      log("Add to cart error: ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> addOrRemoveWishListMainProduct(int productId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+
+    log("product id in remove wishist: $productId  Token: $token");
+    try {
+      final response = await dio.post(
+        EndUrl.addOrRemoveWishListUrl,
+        data: {"main_prod_id": productId},
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
           validateStatus: (status) => status! < 500,
         ),
       );
-      log('Category Response: ${response.data}'); // Add this for debugging
 
-      if (response.statusCode == 200 && response.data != null) {
-        // Parse the entire response as CategoryModel
-        List<dynamic> productIdis = await response.data["main_product_ids"];
-        log("product id: ${productIdis.toString()}");
-        return productIdis;
+      log('Remove from Wishlist Response: ${response.data}');
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        dynamic status = response.data["data"]["in_wishlist"];
+        log("Status : $status");
+        return true;
+      } else if (response.statusCode == 401) {
+        throw 'Unauthorized access. Please login again.';
+      } else if (response.statusCode == 403) {
+        throw 'Access forbidden. You don\'t have permission.';
       } else {
-        throw Exception('Failed to load categories: ${response.statusCode}');
+        throw 'Failed to remove from wishlist. Status code: ${response.statusCode}';
       }
-    } catch (e) {
-      if (e is DioException) {
-        log('Dio error: ${e.message}');
-        throw Exception('Network error fetching categories: ${e.message}');
-      }
-      log('General error: $e');
-      throw Exception('Error fetching categories: $e');
-    }
-  }
-
-  Future<CategoryModel> addOrRemoveWishListMainProduct(int productId) async {
-    try {
-      final response = await dio.post(
-        EndUrl.addOrRemoveWilistProduct,
-        data: {"main_prod_id": productId},
-      );
-      log('Category Response: ${response.data}');
-
-      if (response.statusCode == 200 && response.data != null) {
-        // Parse the entire response as CategoryModel
-        return CategoryModel.fromJson(response.data as Map<String, dynamic>);
-      } else {
-        throw Exception('Failed to load categories: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is DioException) {
-        log('Dio error: ${e.message}');
-        throw Exception('Network error fetching categories: ${e.message}');
-      }
-      log('General error: $e');
-      throw Exception('Error fetching categories: $e');
+    } on DioError catch (e) {
+      log('Remove from Wishlist Error: ${e.message}');
+      log('Status code: ${e.response?.statusCode}');
+      throw 'Failed to remove from wishlist: ${e.message}';
     }
   }
 }

@@ -107,7 +107,8 @@ class SubCategoryListScreen extends StatelessWidget {
                               addDeleteEvent: () {
                                 provider.removeFromWishlist(product.id);
                               },
-                              actualAmount: product.price.toString(),
+                              mrp: product.mrp.toString(),
+                              sellingPrice: product.sellingPrice.toString(),
                               home: true,
                             ),
                           ],

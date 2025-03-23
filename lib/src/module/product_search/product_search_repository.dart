@@ -6,11 +6,33 @@ class ProductSearchRepository {
   final Dio _dio = Dio();
 
   Future<List<ProductSearchModel>> searchProducts(String query) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
     try {
-      final response = await _dio.post(
-        EndUrl.searchUrl,
-        data: {'search': query},
-      );
+      Response? response;
+      if (token != null) {
+        response = await _dio.post(
+          EndUrl.searchUrl,
+          data: {'search': query},
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+          ),
+        );
+      } else {
+        response = await _dio.post(
+          EndUrl.searchUrl,
+          data: {'search': query},
+        );
+      }
+      response = await _dio.post(EndUrl.searchUrl,
+          data: {'search': query},
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          }));
 
       log("Response : ${response.statusCode}, data: ${response.data}");
 

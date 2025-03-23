@@ -13,9 +13,53 @@ class CoinHistoryScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Coin History'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              final provider =
+                  Provider.of<CoinProvider>(context, listen: false);
+              provider.refreshTransactions();
+            },
+          ),
+        ],
       ),
       body: Consumer<CoinProvider>(
         builder: (context, provider, _) {
+          if (provider.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (provider.error != null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Error loading transactions',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () => provider.refreshTransactions(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+
           if (provider.coinTransactions.isEmpty) {
             return const Center(
               child: Column(
@@ -38,7 +82,7 @@ class CoinHistoryScreen extends StatelessWidget {
               ),
             );
           }
-          
+
           return Column(
             children: [
               // Summary Card
@@ -71,7 +115,7 @@ class CoinHistoryScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               // Filter Row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -105,57 +149,65 @@ class CoinHistoryScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Transaction List
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: provider.filteredTransactions.length,
-                  itemBuilder: (context, index) {
-                    final transaction = provider.filteredTransactions[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: transaction.isEarned
-                              ? Colors.green.withOpacity(0.2)
-                              : Colors.red.withOpacity(0.2),
-                          child: Icon(
-                            transaction.isEarned
-                                ? Icons.arrow_downward
-                                : Icons.arrow_upward,
-                            color: transaction.isEarned ? Colors.green : Colors.red,
-                          ),
-                        ),
-                        title: Text(transaction.title),
-                        subtitle: Text(
-                          transaction.date,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.monetization_on,
-                              color: Colors.amber[700],
-                              size: 16,
+                child: RefreshIndicator(
+                  onRefresh: () => provider.refreshTransactions(),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: provider.filteredTransactions.length,
+                    itemBuilder: (context, index) {
+                      final transaction = provider.filteredTransactions[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor:
+                                transaction.transactionType == 'EARN'
+                                    ? Colors.green.withOpacity(0.2)
+                                    : Colors.red.withOpacity(0.2),
+                            child: Icon(
+                              transaction.transactionType == 'EARN'
+                                  ? Icons.arrow_downward
+                                  : Icons.arrow_upward,
+                              color: transaction.transactionType == 'EARN'
+                                  ? Colors.green
+                                  : Colors.red,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${transaction.isEarned ? '+' : '-'}${transaction.amount}',
-                              style: TextStyle(
-                                color: transaction.isEarned ? Colors.green : Colors.red,
-                                fontWeight: FontWeight.bold,
+                          ),
+                          title: Text(transaction.reference),
+                          subtitle: Text(
+                            transaction.createdAt.toIso8601String(),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.monetization_on,
+                                color: Colors.amber[700],
+                                size: 16,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 4),
+                              Text(
+                                '${transaction.transactionType == 'EARN' ? '+' : '-'}${transaction.coins}',
+                                style: TextStyle(
+                                  color: transaction.transactionType == 'EARN'
+                                      ? Colors.green
+                                      : Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -164,7 +216,7 @@ class CoinHistoryScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildSummaryItem({
     required IconData icon,
     required Color color,

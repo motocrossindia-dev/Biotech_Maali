@@ -8,8 +8,24 @@ class ProductListRepository {
 
   Future<ProductListModel> getCotegoryProductList(String id) async {
     log("id : $id");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('access_token');
+
     try {
-      final response = await dio.get("${EndUrl.categoryProductUrl}$id");
+      Response? response;
+      if (token != null) {
+        response = await dio.get(
+          "${EndUrl.categoryProductUrl}$id",
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "Application/json"
+            },
+          ),
+        );
+      } else {
+        response = await dio.get("${EndUrl.categoryProductUrl}$id");
+      }
 
       if (response.statusCode == 200) {
         log("data in repository category products : ${response.data.toString()}");
@@ -34,8 +50,23 @@ class ProductListRepository {
 
   Future<ProductListModel> getSubCotegoryProductList(String id) async {
     log("id : $id");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('access_token');
     try {
-      final response = await dio.get("${EndUrl.subCategoryProductUrl}$id");
+      Response? response;
+      if (token != null) {
+        response = await dio.get(
+          "${EndUrl.subCategoryProductUrl}$id",
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "Application/json"
+            },
+          ),
+        );
+      } else {
+        response = await dio.get("${EndUrl.subCategoryProductUrl}$id");
+      }
 
       if (response.statusCode == 200) {
         log("data in repository category products : ${response.data.toString()}");

@@ -92,7 +92,9 @@ class _CartScreenState extends State<CartScreen> {
                           cartId: item.id,
                           productTitle: item.name,
                           productImage: item.image,
-                          price: double.parse(item.price),
+                          sellingPrice:
+                              double.parse(item.sellingPrice.toString()),
+                          mrp: double.parse(item.mrp.toString()),
                           quantity: item.quantity,
                           stockStatus: item.stockStatus,
                           onQuantityChanged: (newQuantity) async {
@@ -100,7 +102,7 @@ class _CartScreenState extends State<CartScreen> {
                                 item.id, newQuantity);
                           },
                           onDelete: () async {
-                            await cartProvider.deleteCartItem(item.id,context);
+                            await cartProvider.deleteCartItem(item.id, context);
                           },
                         );
                       },
@@ -127,23 +129,25 @@ class _CartScreenState extends State<CartScreen> {
                             amount: cartProvider.totalAmount,
                           ),
                           const SizedBox(height: 16),
-                          const PriceDetailRow(
+                          PriceDetailRow(
                             title: 'Discount',
-                            amount: -266.00,
+                            amount: cartProvider.totalDiscount,
                             color: Colors.green,
                           ),
-                          const SizedBox(height: 16),
-                          const DeliveryChargesRow(),
+                          // const SizedBox(height: 16),
+                          // const DeliveryChargesRow(),
                           const SizedBox(height: 16),
                           PriceDetailRow(
                             title: 'Total Amount',
-                            amount: cartProvider.totalAmount - 266.00,
+                            amount: cartProvider.totalAmount -
+                                cartProvider.totalDiscount,
                             isBold: true,
                           ),
                           const SizedBox(height: 16),
-                          const Center(
+                          Center(
                             child: CommonTextWidget(
-                              title: 'You will save ₹266.00 on this order',
+                              title:
+                                  'You will save ₹${(cartProvider.totalDiscount).toStringAsFixed(2)} on this order',
                               color: Colors.green,
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
@@ -194,9 +198,7 @@ class _CartScreenState extends State<CartScreen> {
                       ? const ButtonShimmer() // Use ButtonShimmer instead of CartShimmer
                       : CustomizableButton(
                           title: 'PLACE ORDER',
-                          event: () => 
-                          
-                          provider.placeOrder(context),
+                          event: () => provider.placeOrder(context),
                         ),
                 );
               },

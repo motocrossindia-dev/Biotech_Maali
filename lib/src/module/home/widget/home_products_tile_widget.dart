@@ -106,8 +106,7 @@ class HomeProductsTileWidget extends StatelessWidget {
                                 productDetails.sellingPrice.toString(),
                             actualAmount: productDetails.mrp.toString(),
                             rating: productDetails.productRating.avgRating,
-                            home:
-                                false, // Changed to true to show the heart icon
+                            home: false,
                             isWishlist: productDetails.isWishlist,
                             isCart: productDetails.isCart,
                             addToFavouriteEvent: () async {

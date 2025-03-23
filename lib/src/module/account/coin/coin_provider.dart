@@ -1,192 +1,147 @@
+import 'dart:developer';
+
+import 'package:biotech_maali/src/module/account/coin/model/coin_model.dart';
 import 'package:flutter/material.dart';
-
-class CoinTransaction {
-  final String title;
-  final int amount;
-  final bool isEarned;
-  final String date;
-
-  CoinTransaction({
-    required this.title,
-    required this.amount,
-    required this.isEarned,
-    required this.date,
-  });
-}
+import 'package:biotech_maali/src/module/account/coin/coin_repository.dart';
 
 class CoinProvider extends ChangeNotifier {
   // Singleton pattern
-  static final CoinProvider _instance = CoinProvider._internal();
-  
-  factory CoinProvider() {
-    return _instance;
-  }
-  
-  CoinProvider._internal() {
-    // Initialize with some dummy data for demonstration
-    _generateDummyTransactions();
+
+  CoinProvider() {
+    fetchTransactions();
   }
 
+  final CoinRepository _repository = CoinRepository();
+
   // Coin balance
-  int _coinBalance = 450;
+  int _coinBalance = 0;
   int get coinBalance => _coinBalance;
-  
-  // Redemption rates
+
+  // Redemption rates - these could come from API in the future
   final double _redemptionRate = 5.0; // ₹5 per 100 coins
   double get redemptionRate => _redemptionRate;
-  
+
   // Earn rate
   final int _earnRate = 1; // 1 coin per ₹10 spent
   int get earnRate => _earnRate;
-  
+
   // Transaction history
-  final List<CoinTransaction> _coinTransactions = [];
+  List<CoinTransaction> _coinTransactions = [];
   List<CoinTransaction> get coinTransactions => _coinTransactions;
-  
+
+  // Loading state
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  // Error state
+  String? _error;
+  String? get error => _error;
+
   // Filter
   String _selectedFilter = 'all';
   String get selectedFilter => _selectedFilter;
-  
+
   // Controller for redeeming coins
   final TextEditingController redeemController = TextEditingController();
-  
+
   // Getter for filtered transactions
   List<CoinTransaction> get filteredTransactions {
     if (_selectedFilter == 'all') {
       return _coinTransactions;
     } else if (_selectedFilter == 'earned') {
-      return _coinTransactions.where((t) => t.isEarned).toList();
+      return _coinTransactions
+          .where((t) => t.transactionType == 'EARN')
+          .toList();
     } else {
-      return _coinTransactions.where((t) => !t.isEarned).toList();
+      // ignore: unrelated_type_equality_checks
+      return _coinTransactions
+          .where((t) => t.transactionType == 'SPEND')
+          .toList();
     }
   }
-  
+
   // Getter for total earned coins
   int get totalEarned {
     return _coinTransactions
-        .where((t) => t.isEarned)
-        .fold(0, (sum, t) => sum + t.amount);
+        .where((t) => t.transactionType == 'EARN')
+        .fold(0, (sum, t) => sum + t.coins);
   }
-  
+
   // Getter for total spent coins
   int get totalSpent {
     return _coinTransactions
-        .where((t) => !t.isEarned)
-        .fold(0, (sum, t) => sum + t.amount);
+        .where((t) => t.transactionType == 'SPEND')
+        .fold(0, (sum, t) => sum + t.coins);
   }
-  
+
   // Set filter
   void setFilter(String filter) {
     _selectedFilter = filter;
     notifyListeners();
   }
-  
+
+  // Fetch transactions from API
+  Future<void> fetchTransactions() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      // notifyListeners();
+
+      final transactions = await _repository.fetchCoinTransactions();
+      _coinTransactions = transactions;
+
+      // Calculate current balance
+      _calculateBalance();
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  // Calculate balance based on transactions
+  void _calculateBalance() {
+    int earned = _coinTransactions
+        .where((t) => t.transactionType == 'EARN')
+        .fold(0, (sum, t) => sum + t.coins);
+
+    int spent = _coinTransactions
+        .where((t) => t.transactionType.contains('SPEND'))
+        .fold(0, (sum, t) => sum + t.coins);
+
+    _coinBalance = earned - spent;
+    log("coin balance: $_coinBalance, earned: $earned, spent: $spent");
+    notifyListeners();
+  }
+
+  // Refresh transactions
+  Future<void> refreshTransactions() async {
+    await fetchTransactions();
+  }
+
   // Redeem coins
-  void redeemCoins(int amount) {
+  Future<bool> redeemCoins(int amount) async {
     if (amount <= 0 || amount > _coinBalance) {
-      return;
+      return false;
     }
-    
-    _coinBalance -= amount;
-    
-    _coinTransactions.insert(
-      0,
-      CoinTransaction(
-        title: 'Redeemed for discount',
-        amount: amount,
-        isEarned: false,
-        date: _formatDate(DateTime.now()),
-      ),
-    );
-    
-    notifyListeners();
-  }
-  
-  // Add coins
-  void addCoins(int amount, String reason) {
-    if (amount <= 0) {
-      return;
+
+    try {
+      final success = await _repository.redeemCoins(amount);
+
+      if (success) {
+        // Refresh transactions to get updated balance
+        await refreshTransactions();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
     }
-    
-    _coinBalance += amount;
-    
-    _coinTransactions.insert(
-      0,
-      CoinTransaction(
-        title: reason,
-        amount: amount,
-        isEarned: true,
-        date: _formatDate(DateTime.now()),
-      ),
-    );
-    
-    notifyListeners();
-  }
-  
-  // Helper to format date
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute < 10 ? '0${date.minute}' : date.minute}';
-  }
-  
-  // Generate dummy transaction history for demonstration
-  void _generateDummyTransactions() {
-    final now = DateTime.now();
-    
-    _coinTransactions.addAll([
-      CoinTransaction(
-        title: 'Purchase: Plant Nutrient Kit',
-        amount: 50,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 2))),
-      ),
-      CoinTransaction(
-        title: 'Product Review: Organic Fertilizer',
-        amount: 20,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 5))),
-      ),
-      CoinTransaction(
-        title: 'Referred Friend: Rahul S.',
-        amount: 100,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 7))),
-      ),
-      CoinTransaction(
-        title: 'Purchase: Garden Tools Set',
-        amount: 80,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 10))),
-      ),
-      CoinTransaction(
-        title: 'Redeemed for discount',
-        amount: 200,
-        isEarned: false,
-        date: _formatDate(now.subtract(const Duration(days: 12))),
-      ),
-      CoinTransaction(
-        title: 'Welcome Bonus',
-        amount: 100,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 15))),
-      ),
-      CoinTransaction(
-        title: 'Purchase: Soil Testing Kit',
-        amount: 30,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 18))),
-      ),
-      CoinTransaction(
-        title: 'Purchase: Organic Seeds Pack',
-        amount: 40,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 22))),
-      ),
-      CoinTransaction(
-        title: 'Monthly Reward',
-        amount: 50,
-        isEarned: true,
-        date: _formatDate(now.subtract(const Duration(days: 30))),
-      ),
-    ]);
   }
 }

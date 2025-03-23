@@ -120,11 +120,11 @@ class OrderDetails {
 
 class OrderItem {
   final int id;
-  final dynamic sku; // Changed to dynamic to handle both int and String
+  final dynamic sku; // Handles both int and String
   final String image;
   final int quantity;
-  final double price;
-  final double salePrice;
+  final double mrp; // Changed from price
+  final double sellingPrice; // Changed from salePrice
   final double discount;
   final double total;
   final String? hsnCode;
@@ -138,8 +138,8 @@ class OrderItem {
     required this.sku,
     required this.image,
     required this.quantity,
-    required this.price,
-    required this.salePrice,
+    required this.mrp, // Changed from price
+    required this.sellingPrice, // Changed from salePrice
     required this.discount,
     required this.total,
     this.hsnCode,
@@ -155,14 +155,15 @@ class OrderItem {
       sku: json['sku'] ?? '',
       image: json['image'] ?? '',
       quantity: json['quantity'] ?? 0,
-      price: (json['price'] ?? 0.0).toDouble(),
-      salePrice: (json['sale_price'] ?? 0.0).toDouble(),
+      mrp: (json['mrp'] ?? 0.0).toDouble(), // Changed from price
+      sellingPrice:
+          (json['selling_price'] ?? 0.0).toDouble(), // Changed from sale_price
       discount: (json['discount'] ?? 0.0).toDouble(),
       total: (json['total'] ?? 0.0).toDouble(),
       hsnCode: json['hsn_code']?.toString(),
       orderId: json['order_id'] ?? 0,
       productId: json['product_id'] ?? 0,
-      comboOffer: json['combo_offer']?.toString(),
+      comboOffer: json['combo_offer'],
       productName: json['product_name'] ?? '',
     );
   }

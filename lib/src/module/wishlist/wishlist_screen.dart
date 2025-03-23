@@ -87,7 +87,7 @@ class WishlistScreen extends StatelessWidget {
                         onTap: () {
                           context
                               .read<ProductDetailsProvider>()
-                              .fetchProductDetails(product.id);
+                              .fetchProductDetails(product.mainProductId);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -107,7 +107,8 @@ class WishlistScreen extends StatelessWidget {
                               addDeleteEvent: () {
                                 provider.removeFromWishlist(product.id);
                               },
-                              actualAmount: product.price.toString(),
+                              mrp: product.mrp.toString(),
+                              sellingPrice: product.sellingPrice.toString(),
                               home: true,
                             ),
                           ],

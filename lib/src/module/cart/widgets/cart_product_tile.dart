@@ -8,7 +8,8 @@ class CartProductTile extends StatelessWidget {
   final int cartId;
   final String productTitle;
   final String productImage;
-  final double price;
+  final double sellingPrice;
+  final double mrp;
   final int quantity;
   final String stockStatus;
   final Function(int) onQuantityChanged;
@@ -20,7 +21,8 @@ class CartProductTile extends StatelessWidget {
     required this.cartId,
     required this.productTitle,
     required this.productImage,
-    required this.price,
+    required this.sellingPrice,
+    required this.mrp,
     required this.quantity,
     required this.stockStatus,
     required this.onQuantityChanged,
@@ -71,21 +73,19 @@ class CartProductTile extends StatelessWidget {
                         Row(
                           children: [
                             CommonTextWidget(
-                              title: '₹${price.toStringAsFixed(2)}',
+                              title: '₹${sellingPrice.toStringAsFixed(2)}',
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: cProductRate,
                             ),
                             const SizedBox(width: 8),
-                            if (price < 599.00) ...[
-                              CommonTextWidget(
-                                title: '₹599.00',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: cProductRateCrossed,
-                                lineThrough: TextDecoration.lineThrough,
-                              ),
-                            ],
+                            CommonTextWidget(
+                              title: '₹${mrp.toStringAsFixed(2)}',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: cProductRateCrossed,
+                              lineThrough: TextDecoration.lineThrough,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 12),

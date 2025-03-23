@@ -134,7 +134,7 @@ class WishlistRepository {
       if (response.statusCode == 200 || response.statusCode == 204) {
         dynamic status = response.data["data"]["in_wishlist"];
         log("Status : $status");
-        return true;
+        return status;
       } else if (response.statusCode == 401) {
         throw 'Unauthorized access. Please login again.';
       } else if (response.statusCode == 403) {

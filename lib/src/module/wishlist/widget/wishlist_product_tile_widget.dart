@@ -7,8 +7,8 @@ class WishlistProductTileWidget extends StatelessWidget {
   final String? productImage;
   final String tempImage;
   final double? rating;
-  final String actualAmount;
-  final String? discountAmount;
+  final String mrp;
+  final String? sellingPrice;
   final bool home;
   final VoidCallback? addDeleteEvent;
   final VoidCallback? addToCartEvent;
@@ -17,8 +17,8 @@ class WishlistProductTileWidget extends StatelessWidget {
     required this.productTitle,
     this.productImage,
     required this.tempImage,
-    required this.actualAmount,
-    this.discountAmount,
+    required this.mrp,
+    this.sellingPrice,
     this.rating,
     this.addDeleteEvent,
     this.addToCartEvent,
@@ -76,14 +76,14 @@ class WishlistProductTileWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CommonTextWidget(
-                title: '₹$discountAmount',
+                title: '₹$sellingPrice',
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: cProductRate,
               ),
               sizedBoxWidth5,
               CommonTextWidget(
-                title: '₹$actualAmount',
+                title: '₹$mrp',
                 fontSize: 10,
                 fontWeight: FontWeight.w300,
                 color: cProductRateCrossed,

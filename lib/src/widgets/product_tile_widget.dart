@@ -35,7 +35,6 @@ class ProductTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeProviderWatch = context.watch<HomeProvider>();
     const baseUrl = BaseUrl.baseUrlForImages;
 
     return Container(
@@ -49,34 +48,16 @@ class ProductTileWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, top: 8),
-                      child: homeProviderWatch.isProductLoading(mainProdId ??
-                              0) // Check loading state for this specific product
-                          ? Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: SizedBox(
-                                    height: 26,
-                                    width: 26,
-                                    child: CircularProgressIndicator(
-                                      backgroundColor: cButtonGreen,
-                                      color: cButtonRed,
-                                    ),
-                                  ),
-                                ),
-                                sizedBoxHeight15
-                              ],
-                            )
-                          : InkWell(
-                              onTap: addToFavouriteEvent,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: SvgPicture.asset(
-                                  'assets/svg/icons/add_to_favourite_icon.svg',
-                                  color: isWishlist ? Colors.red : Colors.black,
-                                ),
-                              ),
-                            ),
+                      child: InkWell(
+                        onTap: addToFavouriteEvent,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SvgPicture.asset(
+                            'assets/svg/icons/add_to_favourite_icon.svg',
+                            color: isWishlist ? Colors.red : Colors.black,
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 )
@@ -136,31 +117,31 @@ class ProductTileWidget extends StatelessWidget {
                   child: BorderColoredButton(
                     title: isCart ? "Go To Cart" : 'Add To Cart',
                     height: 38,
-                    event: 
-                    isCart
-                        ? () {
-                            context.read<BottomNavProvider>().updateIndex(3);
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>  BottomNavWidget(),
-                              ),
-                              (route) => false,
-                            );
-                          }
-                        : () async {
-                            final settingsProvider =
-                                context.read<SettingsProvider>();
-                            bool isAuth = await settingsProvider
-                                .checkAccessTokenValidity(context);
+                    event: addToCartEvent,
+                    // isCart
+                    //     ? () {
+                    //         context.read<BottomNavProvider>().updateIndex(3);
+                    //         Navigator.pushAndRemoveUntil(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //             builder: (context) => BottomNavWidget(),
+                    //           ),
+                    //           (route) => false,
+                    //         );
+                    //       }
+                    //     : () async {
+                    //         final settingsProvider =
+                    //             context.read<SettingsProvider>();
+                    //         bool isAuth = await settingsProvider
+                    //             .checkAccessTokenValidity(context);
 
-                            if (!isAuth) {
-                              _showLoginDialog(context);
-                              return;
-                            }
-                            context.read<HomeProvider>().addToCartMainProduct(
-                                mainProdId!, isCart, context);
-                          },
+                    //         if (!isAuth) {
+                    //           _showLoginDialog(context);
+                    //           return;
+                    //         }
+                    //         context.read<HomeProvider>().addToCartMainProduct(
+                    //             mainProdId!, isCart, context);
+                    //       },
                   ),
                 )
               : sizedBoxHeight0

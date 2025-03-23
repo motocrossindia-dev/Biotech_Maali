@@ -142,6 +142,39 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
                                         context,
                                       );
                                     },
+                                    addToCartEvent: productDetails.isCart
+                                        ? () {
+                                            context
+                                                .read<BottomNavProvider>()
+                                                .updateIndex(3);
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BottomNavWidget(),
+                                              ),
+                                              (route) => false,
+                                            );
+                                          }
+                                        : () async {
+                                            final settingsProvider = context
+                                                .read<SettingsProvider>();
+                                            bool isAuth = await settingsProvider
+                                                .checkAccessTokenValidity(
+                                                    context);
+
+                                            if (!isAuth) {
+                                              _showLoginDialog(context);
+                                              return;
+                                            }
+                                            context
+                                                .read<HomeProvider>()
+                                                .addToCartMainProduct(
+                                                  productDetails.id,
+                                                  productDetails.isCart,
+                                                  context,
+                                                );
+                                          },
                                   ),
                                 );
                               },

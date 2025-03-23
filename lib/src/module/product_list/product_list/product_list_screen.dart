@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
-import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_list/product_list/model/product_list_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
@@ -114,12 +114,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                               itemBuilder: (context, index) {
                                 Product product = products[index];
 
-                                final homeProvider =
-                                    context.read<HomeProvider>();
-                                // bool isWishlistId = homeProvider
-                                //     .mainWishlistProductId
-                                //     .contains(product.id);
-
                                 return InkWell(
                                   onTap: () {
                                     context
@@ -146,8 +140,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                     actualAmount: product.mrp.toString(),
                                     rating: product.productRating.avgRating,
                                     home: true,
-                                    isWishlist: false,
-                                    isCart: false,
+                                    isWishlist: product.isWishlist,
+                                    isCart: product.isCart,
                                     addToFavouriteEvent: () async {
                                       final settingsProvider =
                                           context.read<SettingsProvider>();
@@ -160,10 +154,56 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                       }
                                       final wishlistProvider =
                                           context.read<WishlistProvider>();
-                                      wishlistProvider
+                                      bool result = await wishlistProvider
                                           .addOrRemoveWhishlistMainProduct(
                                               product.id, context);
+                                      if (result) {
+                                        provider.updateWishList(
+                                            product.isWishlist, product.id);
+                                      } else {
+                                        return;
+                                      }
                                     },
+                                    addToCartEvent: product.isCart
+                                        ? () {
+                                            context
+                                                .read<BottomNavProvider>()
+                                                .updateIndex(3);
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BottomNavWidget(),
+                                              ),
+                                              (route) => false,
+                                            );
+                                          }
+                                        : () async {
+                                            final settingsProvider = context
+                                                .read<SettingsProvider>();
+                                            bool isAuth = await settingsProvider
+                                                .checkAccessTokenValidity(
+                                                    context);
+                                            if (!isAuth) {
+                                              _showLoginDialog(context);
+                                              return;
+                                            }
+                                            bool result = await context
+                                                .read<CartProvider>()
+                                                .addToCartMainProduct(
+                                                  product.id,
+                                                  product.isCart,
+                                                  context,
+                                                );
+
+                                            if (result) {
+                                              provider.updateCart(
+                                                product.isCart,
+                                                product.id,
+                                                context,
+                                              );
+                                            }
+                                          },
                                   ),
                                 );
                               },

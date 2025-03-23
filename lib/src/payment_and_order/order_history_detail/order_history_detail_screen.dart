@@ -188,7 +188,7 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
                   Text('SKU: ${item.sku}',
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                   Text('Quantity: ${item.quantity}'),
-                  Text('Price: ₹${item.price}'),
+                  Text('Price: ₹${item.mrp}'),
                   if (item.discount > 0)
                     Text('Discount: ₹${item.discount}',
                         style: const TextStyle(color: Colors.green)),

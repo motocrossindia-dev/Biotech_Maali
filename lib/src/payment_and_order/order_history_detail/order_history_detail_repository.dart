@@ -26,6 +26,7 @@ class OrderHistoryDetailRepository {
       log('Order details response: ${response.data}');
 
       if (response.statusCode == 200) {
+        log("order history details: ${response.data.toString()}");
         return OrderHistoryDetailResponse.fromJson(response.data);
       }
       throw Exception('Failed to load order details');

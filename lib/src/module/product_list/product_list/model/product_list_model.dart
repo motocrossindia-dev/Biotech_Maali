@@ -27,6 +27,8 @@ class ProductListModel {
 class Product {
   final int id;
   final String name;
+   bool isCart;
+   bool isWishlist;
   final double mrp;
   final double sellingPrice;
   final String image;
@@ -35,6 +37,8 @@ class Product {
   Product({
     required this.id,
     required this.name,
+    required this.isCart,
+    required this.isWishlist,
     required this.mrp,
     required this.sellingPrice,
     required this.image,
@@ -45,6 +49,8 @@ class Product {
     return Product(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
+      isCart: json['is_cart'] ?? false,
+      isWishlist: json['is_wishlist'] ?? false,
       mrp: (json['mrp'] ?? 0.0).toDouble(),
       sellingPrice: (json['selling_price'] ?? 0.0).toDouble(),
       image: json['image'] ?? '',
@@ -56,6 +62,8 @@ class Product {
     return {
       'id': id,
       'name': name,
+      'is_cart': isCart,
+      'is_wishlist': isWishlist,
       'mrp': mrp,
       'selling_price': sellingPrice,
       'image': image,
@@ -66,7 +74,7 @@ class Product {
 
 class ProductRating {
   final double avgRating;
-  final int numRatings; // Changed from double to int
+  final int numRatings;
 
   ProductRating({
     required this.avgRating,
@@ -75,9 +83,8 @@ class ProductRating {
 
   factory ProductRating.fromJson(Map<String, dynamic> json) {
     return ProductRating(
-      avgRating:
-          (json['avg_rating'] ?? 0).toDouble(), // Ensure conversion to double
-      numRatings: json['num_ratings'] ?? 0, // No conversion needed for int
+      avgRating: (json['avg_rating'] ?? 0).toDouble(),
+      numRatings: json['num_ratings'] ?? 0,
     );
   }
 

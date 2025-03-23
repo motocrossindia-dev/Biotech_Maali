@@ -41,10 +41,10 @@ class OtpProvider extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       Fluttertoast.showToast(
-          msg: "${e.toString()}",
+          msg: e.toString(),
           backgroundColor: cDarkerRed,
           textColor: Colors.white);
-      log("message:${e}");
+      log("message:$e");
       // _errorMessage = "${e}";
       notifyListeners();
     }

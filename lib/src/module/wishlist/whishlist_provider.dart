@@ -19,7 +19,7 @@ class WishlistProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get error => _error;
-  
+
   Future<void> fetchWishlist() async {
     try {
       _isLoading = true;
@@ -65,30 +65,31 @@ class WishlistProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addOrRemoveWhishlistMainProduct(
+  Future<bool> addOrRemoveWhishlistMainProduct(
       int productId, BuildContext context) async {
     // Add productId to loading set
-    
+
     notifyListeners();
 
     try {
       bool result =
           await _wishlistRepository.addOrRemoveWishListMainProduct(productId);
       if (result) {
-        // context.read<HomeProvider>().fetchWishlistProductId();
+        await fetchWishlist();
         showWishlistMessage(context, true);
-        // Fluttertoast.showToast(msg: "Item added to the wishlist");
+
+        return true;
       } else {
-        // context.read<HomeProvider>().fetchWishlistProductId();
         showWishlistMessage(context, false);
+        return true;
       }
-      await fetchWishlist();
     } catch (e) {
       _error = e.toString();
       notifyListeners();
+      return false;
     } finally {
       // Remove productId from loading set
-     
+
       notifyListeners();
     }
   }
