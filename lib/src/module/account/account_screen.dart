@@ -1,6 +1,5 @@
 import 'package:biotech_maali/src/module/account/account_provider.dart';
 import 'package:biotech_maali/src/module/account/coin/coin_screen.dart';
-import 'package:biotech_maali/src/module/account/gift_card/gift_card_screen.dart';
 import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_screen.dart';
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';

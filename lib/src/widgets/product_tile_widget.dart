@@ -1,4 +1,3 @@
-import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import '../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -180,7 +179,7 @@ class ProductTileWidget extends StatelessWidget {
     );
   }
 
-  void _showLoginDialog(BuildContext context) {
+  void showLoginDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

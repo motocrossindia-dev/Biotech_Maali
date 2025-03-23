@@ -37,7 +37,7 @@ class ProductTileAddonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wishListProviderWatch = context.watch<HomeProvider>();
+    context.watch<HomeProvider>();
     const baseUrl = BaseUrl.baseUrlForImages;
 
     return Container(

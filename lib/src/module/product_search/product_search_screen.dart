@@ -4,7 +4,6 @@ import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'product_search_provider.dart';
-import 'model/product_search_model.dart';
 
 class ProductSearchView extends StatelessWidget {
   const ProductSearchView({super.key});

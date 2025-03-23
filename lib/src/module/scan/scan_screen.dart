@@ -116,6 +116,7 @@ class _ScanScreenState extends State<ScanScreen> {
     // Simulate fetching product details from an API or Firebase
     final productDetails = await fetchProductDetails(productId);
 
+    // ignore: unnecessary_null_comparison
     if (productDetails != null) {
       // Navigate to the ProductScreen and pass the fetched details
       // Navigator.push(

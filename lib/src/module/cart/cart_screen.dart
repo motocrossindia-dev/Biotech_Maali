@@ -1,7 +1,6 @@
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_shimmer.dart';
 import 'package:biotech_maali/src/module/cart/widgets/cart_product_tile.dart';
-import 'package:biotech_maali/src/module/cart/widgets/delivery_changesrow.dart';
 import 'package:biotech_maali/src/module/cart/widgets/price_detailrow.dart';
 
 import '../../../import.dart';

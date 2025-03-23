@@ -170,7 +170,7 @@ class _AddressFormWidgetState extends State<AddressFormWidget> {
     );
   }
 
-  void _resetForm() {
+  void resetForm() {
     if (_formKey.currentState != null) {
       _formKey.currentState!.reset();
       _nameController.clear();

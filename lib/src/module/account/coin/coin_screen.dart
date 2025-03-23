@@ -215,9 +215,9 @@ class _CoinScreenState extends State<CoinScreen> {
             color: Colors.red,
           ),
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'Failed to load coin data',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               color: Colors.red,
             ),
@@ -380,7 +380,7 @@ class _CoinScreenState extends State<CoinScreen> {
     );
   }
 
-  void _showRedemptionSuccess(
+  void showRedemptionSuccess(
       BuildContext context, CoinProvider provider, int redeemAmount) {
     double discountValue = (redeemAmount / 100) * provider.redemptionRate;
 

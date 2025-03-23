@@ -97,7 +97,7 @@ class CouponWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildOfferItem() {
+  Widget buildOfferItem() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
