@@ -412,39 +412,39 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                               ),
                               sizedBoxHeight10,
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const GiftCardScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Row(
-                                      children: [
-                                        sizedBoxWidth25,
-                                        sizedBoxWidth20,
-                                        CommonTextWidget(
-                                          title: 'My Gift Card',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ],
-                                    ),
-                                    Icon(
-                                      Icons.chevron_right,
-                                      size: 30,
-                                      color: cAccountText,
-                                    )
-                                  ],
-                                ),
-                              ),
+                              // InkWell(
+                              //   onTap: () {
+                              //     Navigator.push(
+                              //       context,
+                              //       MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             const GiftCardScreen(),
+                              //       ),
+                              //     );
+                              //   },
+                              //   child: Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceBetween,
+                              //     children: [
+                              //       const Row(
+                              //         children: [
+                              //           sizedBoxWidth25,
+                              //           sizedBoxWidth20,
+                              //           CommonTextWidget(
+                              //             title: 'My Gift Card',
+                              //             fontSize: 14,
+                              //             fontWeight: FontWeight.w500,
+                              //           ),
+                              //         ],
+                              //       ),
+                              //       Icon(
+                              //         Icons.chevron_right,
+                              //         size: 30,
+                              //         color: cAccountText,
+                              //       )
+                              //     ],
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),

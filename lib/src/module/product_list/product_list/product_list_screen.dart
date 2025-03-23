@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_list/product_list/model/product_list_model.dart';
+import 'package:biotech_maali/src/module/product_search/product_search_screen.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
@@ -28,13 +29,9 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   String _selectedOption = 'Default';
-  bool _isLoading = true;
 
   final List<String> _sortOptions = [
     'Default',
-    'Relevance',
-    'Just Launched',
-    'Best Selling',
     'Price High To Low',
     'Price Low To High',
     'Alphabetically A-Z',
@@ -55,16 +52,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
           .getSubCategoryProductList(subCategoryId: widget.id);
     }
 
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    // Set local _selectedOption to match provider's current sort option
+    _selectedOption = context.read<ProductListProdvider>().currentSortOption;
   }
 
   @override
@@ -80,16 +69,26 @@ class _ProductListScreenState extends State<ProductListScreen> {
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 40.0),
-            child: Icon(Icons.search, size: 30),
+        actions: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductSearchView(),
+                ),
+              );
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: 40.0),
+              child: Icon(Icons.search, size: 30),
+            ),
           ),
         ],
       ),
       body: Stack(
         children: [
-          _isLoading
+          context.watch<ProductListProdvider>().isLoading
               ? const ProductListShimmer()
               : SingleChildScrollView(
                   child: Consumer<ProductListProdvider>(
@@ -237,11 +236,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             .withOpacity(0.3), // Color of the ripple effect
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
-                          log('message');
-                          // _showFilterDropdown(context);
+                          log('Sort button tapped');
                           _showSortByOverlay(context);
                         },
-
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: Row(
@@ -270,7 +267,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         splashColor: cButtonGreen.withOpacity(0.3),
                         highlightColor: cButtonGreen.withOpacity(0.1),
                         onTap: () {
-                          log('message');
+                          log('Filter button tapped');
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -281,7 +278,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             ),
                           );
                         },
-
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: Row(
@@ -363,9 +359,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           value: _sortOptions[index],
                           groupValue: _selectedOption,
                           onChanged: (value) {
+                            final sortOption = value!;
                             setState(() {
-                              _selectedOption = value!;
+                              _selectedOption = sortOption;
                             });
+                            // Call the sorting method in the provider
+                            context
+                                .read<ProductListProdvider>()
+                                .sortProducts(sortOption);
                             Navigator.of(context).pop();
                           },
                         );
@@ -378,7 +379,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
           },
         );
       },
-    );
+    ).then((_) {
+      // Update the local selected option when the bottom sheet is closed
+      if (mounted) {
+        setState(() {
+          _selectedOption =
+              context.read<ProductListProdvider>().currentSortOption;
+        });
+      }
+    });
   }
 
   void showWishlistMessage(BuildContext context, bool isAdded) {

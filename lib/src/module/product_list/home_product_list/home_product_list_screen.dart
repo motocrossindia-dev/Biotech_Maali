@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
+import 'package:biotech_maali/src/module/product_search/product_search_screen.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
@@ -61,10 +62,20 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 40.0),
-            child: Icon(Icons.search, size: 30),
+        actions: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductSearchView(),
+                ),
+              );
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: 40.0),
+              child: Icon(Icons.search, size: 30),
+            ),
           ),
         ],
       ),
