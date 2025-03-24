@@ -34,8 +34,8 @@ class RecentlyViewedData {
 class RecentlyViewedProduct {
   final int id;
   final String name;
-  final bool isCart;
-  final bool isWishlist;
+  bool isCart;
+  bool isWishlist;
   final double mrp;
   final double price;
   final String image;

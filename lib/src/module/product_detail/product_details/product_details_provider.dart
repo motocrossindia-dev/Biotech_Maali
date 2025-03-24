@@ -21,7 +21,6 @@ class ProductDetailsProvider extends ChangeNotifier {
 
   ProductDetailsProvider() {
     updateQuantity();
-    
   }
 
   bool _isLoading = false;
@@ -84,6 +83,44 @@ class ProductDetailsProvider extends ChangeNotifier {
   void setSelectedTab(int index) {
     _selectedTab = index;
     notifyListeners();
+  }
+
+  void updateWishList(bool isWishlist, int productId) {
+    final productIndex = _recentlyViewedProductList
+        .indexWhere((product) => product.id == productId);
+    if (productIndex != -1) {
+      _recentlyViewedProductList[productIndex].isWishlist = !isWishlist;
+
+      // Also update in original list
+      final originalIndex = _recentlyViewedProductList
+          .indexWhere((product) => product.id == productId);
+      if (originalIndex != -1) {
+        _recentlyViewedProductList[originalIndex].isWishlist = !isWishlist;
+      }
+
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateCart(
+      bool isCart, int productId, BuildContext context) async {
+    final cartProvider = context.read<CartProvider>();
+    await cartProvider.fetchCartItems();
+
+    final productIndex = _recentlyViewedProductList
+        .indexWhere((product) => product.id == productId);
+    if (productIndex != -1) {
+      _recentlyViewedProductList[productIndex].isCart = !isCart;
+
+      // Also update in original list
+      final originalIndex = _recentlyViewedProductList
+          .indexWhere((product) => product.id == productId);
+      if (originalIndex != -1) {
+        _recentlyViewedProductList[originalIndex].isCart = !isCart;
+      }
+
+      notifyListeners();
+    }
   }
 
   Future<void> fetchProductDetails(int productId) async {
@@ -332,7 +369,7 @@ class ProductDetailsProvider extends ChangeNotifier {
   }
 
   Future<void> addOrRemoveWhishlistCompinationProduct(
-      int productId,bool isWishlist, BuildContext context) async {
+      int productId, bool isWishlist, BuildContext context) async {
     _isLoadingWishList = true;
     notifyListeners();
 

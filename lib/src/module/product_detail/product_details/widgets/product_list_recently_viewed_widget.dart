@@ -1,4 +1,8 @@
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/recently_viewed_model.dart';
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
 import '../../../../../import.dart';
 
@@ -65,6 +69,66 @@ class ProductListRecentlyViewedWidget extends StatelessWidget {
                             home: true,
                             isWishlist: productData.isWishlist,
                             isCart: productData.isCart,
+                            addToFavouriteEvent: () async {
+                              final settingsProvider =
+                                  context.read<SettingsProvider>();
+                              bool isAuth = await settingsProvider
+                                  .checkAccessTokenValidity(context);
+
+                              if (!isAuth) {
+                                _showLoginDialog(context);
+                                return;
+                              }
+                              final wishlistProvider =
+                                  context.read<WishlistProvider>();
+                              bool result = await wishlistProvider
+                                  .addOrRemoveWhishlistMainProduct(
+                                      productData.id, context);
+                              if (result) {
+                                provider.updateWishList(
+                                    productData.isWishlist, productData.id);
+                              } else {
+                                return;
+                              }
+                            },
+                            addToCartEvent: productData.isCart
+                                ? () {
+                                    context
+                                        .read<BottomNavProvider>()
+                                        .updateIndex(3);
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BottomNavWidget(),
+                                      ),
+                                      (route) => false,
+                                    );
+                                  }
+                                : () async {
+                                    final settingsProvider =
+                                        context.read<SettingsProvider>();
+                                    bool isAuth = await settingsProvider
+                                        .checkAccessTokenValidity(context);
+                                    if (!isAuth) {
+                                      _showLoginDialog(context);
+                                      return;
+                                    }
+                                    bool result = await context
+                                        .read<CartProvider>()
+                                        .addToCartMainProduct(
+                                          productData.id,
+                                          productData.isCart,
+                                          context,
+                                        );
+
+                                    if (result) {
+                                      provider.updateCart(
+                                        productData.isCart,
+                                        productData.id,
+                                        context,
+                                      );
+                                    }
+                                  },
                           ),
                         ),
                         sizedBoxWidth15
@@ -76,6 +140,15 @@ class ProductListRecentlyViewedWidget extends StatelessWidget {
             ],
           ),
         );
+      },
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
       },
     );
   }
