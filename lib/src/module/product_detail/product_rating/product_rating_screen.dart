@@ -1,10 +1,21 @@
 import '../../../../import.dart';
 
 class ProductRatingScreen extends StatelessWidget {
-  const ProductRatingScreen({super.key});
+  final int productId;
+
+  const ProductRatingScreen({
+    super.key,
+    required this.productId,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Set the product ID when the screen is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProductRatingProvider>(context, listen: false)
+          .setProductId(productId);
+    });
+
     return Scaffold(
       appBar: AppBar(
         elevation: 4,
@@ -24,6 +35,24 @@ class ProductRatingScreen extends StatelessWidget {
               padding: const EdgeInsets.all(15.0),
               child: Consumer<ProductRatingProvider>(
                 builder: (context, provider, child) {
+                  // Check for auth error and navigate to login if needed
+                  if (provider.isAuthError) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Your session has expired. Please log in again.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      // Navigate to login screen
+                      // Navigator.of(context).pushAndRemoveUntil(
+                      //   MaterialPageRoute(builder: (context) => LoginScreen()),
+                      //   (route) => false,
+                      // );
+                    });
+                  }
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -54,6 +83,7 @@ class ProductRatingScreen extends StatelessWidget {
                       TextField(
                         maxLength: 50,
                         maxLines: 2,
+                        onChanged: provider.setReviewTitle,
                         decoration: InputDecoration(
                           labelStyle: GoogleFonts.poppins(),
                           hintStyle: GoogleFonts.poppins(),
@@ -66,6 +96,7 @@ class ProductRatingScreen extends StatelessWidget {
                       TextField(
                         maxLength: 300,
                         maxLines: 4,
+                        onChanged: provider.setComment,
                         decoration: InputDecoration(
                           labelStyle: GoogleFonts.poppins(),
                           hintStyle: GoogleFonts.poppins(),
@@ -84,7 +115,6 @@ class ProductRatingScreen extends StatelessWidget {
                       Row(
                         children: [
                           Radio<String>(
-                            
                             value: "Yes",
                             groupValue: provider.recommend,
                             activeColor: cButtonGreen,
@@ -98,11 +128,9 @@ class ProductRatingScreen extends StatelessWidget {
                           const CommonTextWidget(title: 'YES'),
                           const SizedBox(width: 20),
                           Radio<String>(
-                            // fillColor: cButtonGreen,
                             value: "No",
                             groupValue: provider.recommend,
                             activeColor: cButtonGreen,
-
                             onChanged: (value) {
                               if (value == null) {
                                 return;
@@ -113,10 +141,21 @@ class ProductRatingScreen extends StatelessWidget {
                           const CommonTextWidget(title: 'NO'),
                         ],
                       ),
+                      if (provider.errorMessage.isNotEmpty &&
+                          !provider.isAuthError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Text(
+                            provider.errorMessage,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       sizedBoxHeight70,
                       sizedBoxHeight70,
                       sizedBoxHeight70,
-                      // const Spacer(),
                     ],
                   );
                 },
@@ -131,31 +170,49 @@ class ProductRatingScreen extends StatelessWidget {
               width: double.infinity,
               height: 60,
               color: cWhiteColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    width: 183,
-                    height: 48,
-                    child: CustomizableBorderColoredButton(
-                        title: 'CANCEL', event: () {}),
-                  ),
-                  SizedBox(
-                    width: 183,
-                    height: 48,
-                    child: CustomizableButton(
-                      title: 'SUBMIT',
-                      event: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => const ProductRatingScreen(),
-                        //     ));
-                      },
+              child: Consumer<ProductRatingProvider>(
+                  builder: (context, provider, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: 183,
+                      height: 48,
+                      child: CustomizableBorderColoredButton(
+                          title: 'CANCEL',
+                          event: () {
+                            provider.resetForm();
+                            Navigator.pop(context);
+                          }),
                     ),
-                  ),
-                ],
-              ),
+                    SizedBox(
+                      width: 183,
+                      height: 48,
+                      child: provider.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : CustomizableButton(
+                              title: 'SUBMIT',
+                              event: () async {
+                                final result =
+                                    await provider.submitRating(context);
+                                if (result) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                          'Rating submitted successfully!'),
+                                      backgroundColor: cButtonGreen,
+                                    ),
+                                  );
+                                  provider.resetForm();
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
         ],

@@ -134,6 +134,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 MaterialPageRoute(
                                   builder: (context) => RatingsAndReviews(
                                     productData: productDetail,
+                                    productId: widget.productId,
                                   ),
                                 ),
                               );
@@ -167,9 +168,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         color: cOffer,
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      child: const Center(
+                                      child: Center(
                                         child: CommonTextWidget(
-                                          title: '% OFF',
+                                          title:
+                                              '${(100 - (productDetail.product.sellingPrice / productDetail.product.mrp * 100)).toInt()}% OFF',
                                           // ${(100 - (productDetail.product.price / productDetail.product.mrp * 100)).toInt()}
                                           fontSize: 12,
                                           fontWeight: FontWeight.w400,
@@ -370,7 +372,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const CommonTextWidget(
-                                        title: 'Select Product Waight'),
+                                        title: 'Select Product Weight'),
                                     sizedBoxHeight05,
                                     SizedBox(
                                       height:

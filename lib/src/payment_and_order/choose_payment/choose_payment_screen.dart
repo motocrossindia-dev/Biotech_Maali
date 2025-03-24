@@ -63,7 +63,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           'Price (${orderDetails.data.orderItems.length} items)',
                           '₹${orderDetails.data.order.totalPrice}'),
                       _buildPriceRow('Discount',
-                          '-₹${orderDetails.data.order.totalDiscount}',
+                          '-₹${(orderDetails.data.order.totalDiscount).toStringAsFixed(1)}',
                           isGreen: true),
                       _buildPriceRow('Coupon Discount',
                           '-₹${orderDetails.data.order.couponDiscount}',
@@ -83,7 +83,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          'You will save ₹${orderDetails.data.order.totalDiscount} on this order',
+                          'You will save ₹${(orderDetails.data.order.totalDiscount + orderDetails.data.order.couponDiscount).toStringAsFixed(1)} on this order',
                           style: TextStyle(
                             color: Colors.green[600],
                             fontWeight: FontWeight.w500,

@@ -2,6 +2,7 @@ import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/ord
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_shimmer.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_screen.dart';
+import 'package:biotech_maali/src/pdf_viewer/pdf_viewer.dart';
 
 import '../../../import.dart';
 
@@ -157,7 +158,7 @@ class OrderHistoryCard extends StatelessWidget {
             const Divider(height: 1),
             _buildBody(),
             const Divider(height: 1),
-            _buildFooter(),
+            _buildFooter(context, order),
           ],
         ),
       ),
@@ -259,7 +260,7 @@ class OrderHistoryCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 13),
               ),
               Text(
-                'Discount: ₹${order.totalDiscount}',
+                'Discount: ₹${order.totalDiscount.toStringAsFixed(2)}',
                 style: const TextStyle(
                   color: Colors.green,
                   fontSize: 13,
@@ -273,7 +274,7 @@ class OrderHistoryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(BuildContext context, OrderHistory order) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
@@ -313,7 +314,17 @@ class OrderHistoryCard extends StatelessWidget {
               ],
               IconButton(
                 icon: const Icon(Icons.file_download_outlined),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PdfViewerScreen(
+                        pdfUrl: "${EndUrl.pdfInvoiceUrl}${order.id}/",
+                        title: order.orderId,
+                      ),
+                    ),
+                  );
+                },
                 tooltip: 'Download Invoice',
                 iconSize: 20,
                 constraints: const BoxConstraints(

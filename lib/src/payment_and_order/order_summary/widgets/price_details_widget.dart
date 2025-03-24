@@ -20,7 +20,8 @@ class PriceDetailsWidget extends StatelessWidget {
             const SizedBox(height: 16),
             _buildPriceRow('Price (${orderData.orderItems.length} items)',
                 '₹${orderData.order.totalPrice}'),
-            _buildPriceRow('Discount', '-₹${orderData.order.totalDiscount}',
+            _buildPriceRow('Discount',
+                '-₹${(orderData.order.totalDiscount).toStringAsFixed(1)}',
                 isGreen: true),
             _buildPriceRow('Coupon Discount', '-₹${orderData.discountAmount}',
                 isGreen: true),
@@ -52,7 +53,7 @@ class PriceDetailsWidget extends StatelessWidget {
                 isBold: true),
             const SizedBox(height: 8),
             Text(
-              'You will save ₹${(orderData.order.totalPrice - orderData.order.grandTotal).toStringAsFixed(2)} on this order',
+              'You will save ₹${(orderData.order.totalDiscount + orderData.order.totalDiscount).toStringAsFixed(2)} on this order',
               style: const TextStyle(color: Colors.green),
             ),
           ],

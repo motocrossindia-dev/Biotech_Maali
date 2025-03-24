@@ -84,7 +84,7 @@ class Product {
   final double mrp;
   final double sellingPrice;
   final bool isCart;
-   bool isWishlist;
+  bool isWishlist;
   final List<ProductImage> images;
   final String shortDescription;
   final String mainProductName;
@@ -447,7 +447,7 @@ class ProductReview {
       userId: _parseId(json['user_id']),
       userName: json['user_name'] ?? '',
       productReview: json['product_review'] ?? '',
-      date: json['date'] ?? '',
+      date: json['date_created'] ?? '',
       latestRating: (json['latest_rating'] as num?)?.toDouble() ?? 0.0,
     );
   }

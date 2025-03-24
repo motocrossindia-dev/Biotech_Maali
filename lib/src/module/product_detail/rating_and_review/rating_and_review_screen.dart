@@ -3,8 +3,10 @@ import 'package:biotech_maali/src/module/product_detail/product_details/model/pr
 
 class RatingsAndReviews extends StatelessWidget {
   final ProductData productData;
+  final int productId;
 
-  const RatingsAndReviews({required this.productData, super.key});
+  const RatingsAndReviews(
+      {required this.productData, required this.productId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +14,19 @@ class RatingsAndReviews extends StatelessWidget {
       create: (_) {
         return RatingAndReviewProvider(productData: productData);
       },
-      child: const RatingsAndReviewsContent(),
+      child: RatingsAndReviewsContent(
+        productData: productData,
+        productId: productId,
+      ),
     );
   }
 }
 
 class RatingsAndReviewsContent extends StatelessWidget {
-  const RatingsAndReviewsContent({super.key});
+  final ProductData productData;
+  final int productId;
+  const RatingsAndReviewsContent(
+      {required this.productData, required this.productId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +41,6 @@ class RatingsAndReviewsContent extends StatelessWidget {
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 40.0),
-            child: Icon(Icons.search, size: 30),
-          ),
-        ],
       ),
       body: Consumer<RatingAndReviewProvider>(
         builder: (context, provider, child) {
@@ -96,7 +98,8 @@ class RatingsAndReviewsContent extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ProductRatingScreen(),
+                            builder: (context) =>
+                                ProductRatingScreen(productId: productId),
                           ),
                         );
                       },
@@ -216,20 +219,16 @@ class RatingsAndReviewsContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Row(
-                      children: [
-                        Row(
-                          children: List.generate(
-                            5,
-                            (index) => Icon(
-                              Icons.star,
-                              size: 16,
-                              color: index < review.latestRating
-                                  ? Colors.amber
-                                  : Colors.grey[300],
-                            ),
-                          ),
+                      children: List.generate(
+                        5,
+                        (index) => Icon(
+                          Icons.star,
+                          size: 16,
+                          color: index < review.latestRating
+                              ? Colors.amber
+                              : Colors.grey[300],
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),

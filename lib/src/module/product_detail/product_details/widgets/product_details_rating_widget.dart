@@ -4,6 +4,7 @@ import '../../../../../import.dart';
 
 class ProductDetailsRatingWidget extends StatelessWidget {
   final ProductRating? productRating;
+
   // final List<ProductReview>? productReviews;
 
   const ProductDetailsRatingWidget({required this.productRating, super.key});
