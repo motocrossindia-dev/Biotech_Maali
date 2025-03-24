@@ -185,7 +185,9 @@ class _CartScreenState extends State<CartScreen> {
               height: 48,
               child: CustomizableBorderColoredButton(
                 title: 'CANCEL',
-                event: () => Navigator.of(context).pop(),
+                event: () {
+                  context.read<BottomNavProvider>().updateIndex(0);
+                },
               ),
             ),
             Consumer<CartProvider>(

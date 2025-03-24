@@ -1,3 +1,4 @@
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
 import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_screen.dart';
 
 import '../../../../import.dart';
@@ -50,7 +51,14 @@ class ReferFriendWidget extends StatelessWidget {
                     width: 147,
                     child: BorderColoredButton(
                       title: 'Learn More',
-                      event: () {},
+                      event: () {
+                        showReferralPopup(
+                            context,
+                            context
+                                .read<ReferFriendProvider>()
+                                .referralCode
+                                .text);
+                      },
                       height: 38,
                     ),
                   ),

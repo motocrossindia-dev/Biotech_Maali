@@ -1,5 +1,7 @@
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
 import 'package:biotech_maali/src/module/home/home_shimmer.dart';
 import 'package:biotech_maali/src/module/home/widget/promotional_banner.dart';
+import 'package:biotech_maali/src/module/home/widget/referral_popup.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../import.dart';
 import 'dart:math' as math;
@@ -30,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     homeProvider.fetchMainCategories();
     homeProvider.fetchBanners();
     homeProvider.validateToken(context);
+    context.read<ReferFriendProvider>().getReferralDetails();
   }
 
   void _initializeWidgets() {
@@ -169,4 +172,18 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+void showReferralPopup(BuildContext context, String referralCode) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return ReferralPopup(
+        referralCode: referralCode,
+        rewardAmount: 50,
+        onClose: () => Navigator.of(context).pop(),
+      );
+    },
+  );
 }
