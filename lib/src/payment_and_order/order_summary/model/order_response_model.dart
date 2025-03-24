@@ -41,8 +41,11 @@ class OrderData {
           .map((item) => OrderItem.fromJson(item))
           .toList(),
       success: json['success'],
-      discountAmount: (json['discount_amount'] ?? 0.0).toDouble(),
-      newTotal: (json['new_total'] ?? 0.0).toDouble(),
+      discountAmount: json['discount_amount'] != null
+          ? (json['discount_amount']).toDouble()
+          : 0.0,
+      newTotal:
+          json['new_total'] != null ? (json['new_total']).toDouble() : 0.0,
       couponCode: json['coupon_code'],
       redemptionMessage: json['redemption_message'],
     );
@@ -68,8 +71,7 @@ class OrderDetails {
   final bool couponApplied;
   final double couponDiscount;
   final int customerId;
-  final dynamic
-      appliedCoupon; // Changed to dynamic to handle both String and int
+  final dynamic appliedCoupon;
 
   OrderDetails({
     required this.id,
@@ -120,11 +122,11 @@ class OrderDetails {
 
 class OrderItem {
   final int id;
-  final dynamic sku; // Handles both int and String
+  final dynamic sku; // Can be int or String
   final String image;
   final int quantity;
-  final double mrp; // Changed from price
-  final double sellingPrice; // Changed from salePrice
+  final double mrp;
+  final double sellingPrice;
   final double discount;
   final double total;
   final String? hsnCode;
@@ -138,8 +140,8 @@ class OrderItem {
     required this.sku,
     required this.image,
     required this.quantity,
-    required this.mrp, // Changed from price
-    required this.sellingPrice, // Changed from salePrice
+    required this.mrp,
+    required this.sellingPrice,
     required this.discount,
     required this.total,
     this.hsnCode,
@@ -152,18 +154,18 @@ class OrderItem {
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
       id: json['id'] ?? 0,
-      sku: json['sku'] ?? '',
+      sku: json['sku'], // Accept it as-is (int or String)
       image: json['image'] ?? '',
       quantity: json['quantity'] ?? 0,
-      mrp: (json['mrp'] ?? 0.0).toDouble(), // Changed from price
-      sellingPrice:
-          (json['selling_price'] ?? 0.0).toDouble(), // Changed from sale_price
+      mrp: (json['mrp'] ?? 0.0).toDouble(),
+      sellingPrice: (json['selling_price'] ?? 0.0).toDouble(),
       discount: (json['discount'] ?? 0.0).toDouble(),
       total: (json['total'] ?? 0.0).toDouble(),
       hsnCode: json['hsn_code']?.toString(),
       orderId: json['order_id'] ?? 0,
       productId: json['product_id'] ?? 0,
-      comboOffer: json['combo_offer'],
+      comboOffer:
+          json['combo_offer']?.toString(), // Convert to String if non-null
       productName: json['product_name'] ?? '',
     );
   }

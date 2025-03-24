@@ -13,7 +13,7 @@ class ExploreOurWorkWidget extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.only(left: 20.0),
           child: CommonTextWidget(
-            title: 'Combo Offers',
+            title: 'Our Work And Service',
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
