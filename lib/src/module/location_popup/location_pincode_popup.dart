@@ -24,7 +24,7 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
   void initState() {
     super.initState();
     final popupProvider = context.read<LocationPincodeProvider>();
-    popupProvider.getCurrentLocation(context);
+    // popupProvider.getCurrentLocation(context);
     popupProvider.checkUserLoginStatus();
   }
 
@@ -148,7 +148,7 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
                       ),
                     ),
                     onPressed: () {
-                      provider.getCurrentLocation(context);
+                      // provider.getCurrentLocation(context);
                     },
                     child: const Text('Use Current Location'),
                   ),

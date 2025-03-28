@@ -17,7 +17,9 @@ class LocationPincodeProvider extends ChangeNotifier {
   GoogleMapController? _mapController;
   bool isLocationEnabled = false;
   bool showAllAddresses = false;
-  bool isLogin = false;
+  bool isLogin  =false;
+
+
 
   Future<void> checkUserLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
