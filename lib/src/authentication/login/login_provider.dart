@@ -15,13 +15,14 @@ class LoginProvider extends ChangeNotifier {
 
   Future<void> accountRegister(
       BuildContext context, String mobileNumber) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       final result = await loginRepository.accountRegister(
           mobileNumber, _name.text, _referralCode.text);
       // _isLoading = false;
       if (result) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("userName", "${name.text} ");
+        prefs.setBool("isLogin", true);
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

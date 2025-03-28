@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/location_popup/location_pincode_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:biotech_maali/src/splash/token_repository.dart';
 
@@ -56,17 +57,23 @@ class SplashProvider extends ChangeNotifier {
     if (!isInternetOn) {
       return;
     }
-    await Future.delayed(const Duration(seconds: 3));
+    await loadData(context);
+    // await Future.delayed(const Duration(seconds: 3));
 
     //for getting user data
     context.read<EditProfileProvider>().fetchProfileData();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) =>  BottomNavWidget(),
+        builder: (context) => BottomNavWidget(),
       ),
       (route) => false,
     );
+  }
+
+  Future<void> loadData(BuildContext context) async {
+    await context.read<LocationPincodeProvider>().getCurrentLocation(context);
+    await context.read<HomeProvider>().refreshAll();
   }
 
   Future<bool> _checkInternetConnection(BuildContext context) async {

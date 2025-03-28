@@ -23,7 +23,7 @@ class OrderHistoryDetailRepository {
         ),
       );
 
-      log('Order details response: ${response.data}');
+      // log('Order details response: ${response.data}');
 
       if (response.statusCode == 200) {
         log("order history details: ${response.data.toString()}");

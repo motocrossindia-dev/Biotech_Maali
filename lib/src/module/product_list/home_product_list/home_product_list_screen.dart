@@ -79,212 +79,197 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          _isLoading
-              ? const ProductListShimmer()
-              : SingleChildScrollView(
-                  child: Consumer<HomeProvider>(
-                    builder: (context, provider, child) {
-                      return Column(
-                        children: [
-                          const CustomBannerWidget(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: widget.products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 15.0,
-                                mainAxisSpacing: 15.0,
-                                childAspectRatio: 0.48,
-                              ),
-                              itemBuilder: (context, index) {
-                                HomeProductModel productDetails =
-                                    widget.products[index];
+      body: _isLoading
+          ? const ProductListShimmer()
+          : SingleChildScrollView(
+              child: Consumer<HomeProvider>(
+                builder: (context, provider, child) {
+                  return Column(
+                    children: [
+                      const CustomBannerWidget(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: widget.products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 15.0,
+                            mainAxisSpacing: 15.0,
+                            childAspectRatio: 0.48,
+                          ),
+                          itemBuilder: (context, index) {
+                            HomeProductModel productDetails =
+                                widget.products[index];
 
-                                return InkWell(
-                                  onTap: () {
-                                    context
-                                        .read<ProductDetailsProvider>()
-                                        .fetchProductDetails(productDetails.id);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            ProductDetailsScreen(
-                                          productId: productDetails.id,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: ProductTileWidget(
-                                    mainProdId: productDetails.id,
-                                    productTitle: productDetails.name,
-                                    productImage: productDetails.image,
-                                    tempImage:
-                                        'assets/png/products/sample_product.png',
-                                    discountAmount:
-                                        productDetails.sellingPrice.toString(),
-                                    actualAmount: productDetails.mrp.toString(),
-                                    rating:
-                                        productDetails.productRating.avgRating,
-                                    home: true,
-                                    isWishlist: productDetails.isWishlist,
-                                    isCart: productDetails.isCart,
-                                    addToFavouriteEvent: () async {
-                                      final settingsProvider =
-                                          context.read<SettingsProvider>();
-                                      bool isAuth = await settingsProvider
-                                          .checkAccessTokenValidity(context);
-
-                                      if (!isAuth) {
-                                        _showLoginDialog(context);
-                                        return;
-                                      }
-                                      final wishlistProvider =
-                                          context.read<HomeProvider>();
-                                      wishlistProvider.addOrRemoveToWishlist(
-                                        productDetails.id,
-                                        productDetails.isWishlist,
-                                        context,
-                                      );
-                                    },
-                                    addToCartEvent: productDetails.isCart
-                                        ? () {
-                                            context
-                                                .read<BottomNavProvider>()
-                                                .updateIndex(3);
-                                            Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    BottomNavWidget(),
-                                              ),
-                                              (route) => false,
-                                            );
-                                          }
-                                        : () async {
-                                            final settingsProvider = context
-                                                .read<SettingsProvider>();
-                                            bool isAuth = await settingsProvider
-                                                .checkAccessTokenValidity(
-                                                    context);
-
-                                            if (!isAuth) {
-                                              _showLoginDialog(context);
-                                              return;
-                                            }
-                                            context
-                                                .read<HomeProvider>()
-                                                .addToCartMainProduct(
-                                                  productDetails.id,
-                                                  productDetails.isCart,
-                                                  context,
-                                                );
-                                          },
+                            return InkWell(
+                              onTap: () {
+                                context
+                                    .read<ProductDetailsProvider>()
+                                    .fetchProductDetails(productDetails.id);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetailsScreen(
+                                      productId: productDetails.id,
+                                    ),
                                   ),
                                 );
                               },
-                            ),
-                          ),
-                          sizedBoxHeight70,
-                        ],
-                      );
-                    },
-                  ),
-                ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              width: double.infinity,
-              height: 60,
-              color: cWhiteColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Material(
-                    color: Colors.transparent,
-                    child: SizedBox(
-                      height: 55,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(
-                            8), // Round corners for the ripple effect
-                        splashColor: cButtonGreen
-                            .withOpacity(0.3), // Color of the ripple effect
-                        highlightColor: cButtonGreen.withOpacity(0.1),
-                        onTap: () {
-                          log('message');
-                          // _showFilterDropdown(context);
-                          _showSortByOverlay(context);
-                        },
+                              child: ProductTileWidget(
+                                mainProdId: productDetails.id,
+                                productTitle: productDetails.name,
+                                productImage: productDetails.image,
+                                tempImage:
+                                    'assets/png/products/sample_product.png',
+                                discountAmount:
+                                    productDetails.sellingPrice.toString(),
+                                actualAmount: productDetails.mrp.toString(),
+                                rating: productDetails.productRating.avgRating,
+                                home: true,
+                                isWishlist: productDetails.isWishlist,
+                                isCart: productDetails.isCart,
+                                addToFavouriteEvent: () async {
+                                  final settingsProvider =
+                                      context.read<SettingsProvider>();
+                                  bool isAuth = await settingsProvider
+                                      .checkAccessTokenValidity(context);
 
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/svg/icons/sort_icon.svg'),
-                              sizedBoxWidth10,
-                              const CommonTextWidget(
-                                title: 'SORT BY',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                              )
-                            ],
-                          ),
+                                  if (!isAuth) {
+                                    _showLoginDialog(context);
+                                    return;
+                                  }
+                                  final wishlistProvider =
+                                      context.read<HomeProvider>();
+                                  wishlistProvider.addOrRemoveToWishlist(
+                                    productDetails.id,
+                                    productDetails.isWishlist,
+                                    context,
+                                  );
+                                },
+                                addToCartEvent: productDetails.isCart
+                                    ? () {
+                                        context
+                                            .read<BottomNavProvider>()
+                                            .updateIndex(3);
+                                        Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                BottomNavWidget(),
+                                          ),
+                                          (route) => false,
+                                        );
+                                      }
+                                    : () async {
+                                        final settingsProvider =
+                                            context.read<SettingsProvider>();
+                                        bool isAuth = await settingsProvider
+                                            .checkAccessTokenValidity(context);
+
+                                        if (!isAuth) {
+                                          _showLoginDialog(context);
+                                          return;
+                                        }
+                                        context
+                                            .read<HomeProvider>()
+                                            .addToCartMainProduct(
+                                              productDetails.id,
+                                              productDetails.isCart,
+                                              context,
+                                            );
+                                      },
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    ),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: SizedBox(
-                      height: 55,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(
-                            8), // Round corners for the ripple effect
-                        splashColor: cButtonGreen.withOpacity(0.3),
-                        highlightColor: cButtonGreen.withOpacity(0.1),
-                        onTap: () {
-                          log('message');
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  FilterScreen(type: widget.title),
-                            ),
-                          );
-                        },
-
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                  'assets/svg/icons/filter_icon.svg'),
-                              sizedBoxWidth10,
-                              const CommonTextWidget(
-                                title: 'FILTER',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                      sizedBoxHeight70,
+                    ],
+                  );
+                },
               ),
             ),
-          ),
-        ],
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        height: 60,
+        color: cWhiteColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Material(
+              color: Colors.transparent,
+              child: SizedBox(
+                height: 55,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(
+                      8), // Round corners for the ripple effect
+                  splashColor: cButtonGreen
+                      .withOpacity(0.3), // Color of the ripple effect
+                  highlightColor: cButtonGreen.withOpacity(0.1),
+                  onTap: () {
+                    log('message');
+                    // _showFilterDropdown(context);
+                    _showSortByOverlay(context);
+                  },
+
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset('assets/svg/icons/sort_icon.svg'),
+                        sizedBoxWidth10,
+                        const CommonTextWidget(
+                          title: 'SORT BY',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: SizedBox(
+                height: 55,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(
+                      8), // Round corners for the ripple effect
+                  splashColor: cButtonGreen.withOpacity(0.3),
+                  highlightColor: cButtonGreen.withOpacity(0.1),
+                  onTap: () {
+                    log('message');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FilterScreen(type: widget.title),
+                      ),
+                    );
+                  },
+
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset('assets/svg/icons/filter_icon.svg'),
+                        sizedBoxWidth10,
+                        const CommonTextWidget(
+                          title: 'FILTER',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -44,8 +44,7 @@ class EditProfileProvider extends ChangeNotifier {
 
       log("Profile Data provider = ${profileData.toString()}");
 
-      prefs.setString('userName',
-          "${profileData['first_name']} ${profileData['last_name']}");
+      prefs.setString('userName', profileData['first_name']);
 
       firstName.text = profileData['first_name'] ?? '';
       lastName.text = profileData['last_name'] ?? '';
@@ -81,7 +80,7 @@ class EditProfileProvider extends ChangeNotifier {
       if (success) {
         _isEditing = false;
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString("userName", "${firstName.text} ${lastName.text}");
+        prefs.setString("userName", firstName.text);
         if (isplaceOrder == true) {
           Navigator.pop(context);
           Navigator.push(

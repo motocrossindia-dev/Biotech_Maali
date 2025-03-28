@@ -71,16 +71,16 @@ class OrderSummaryDetails {
       id: json["id"] ?? 0,
       orderId: json['order_id'] ?? '',
       customerName: json['customer_name'] ?? '',
-      totalPrice: (json['total_price'] ?? 0.0).toDouble(),
-      totalDiscount: (json['total_discount'] ?? 0.0).toDouble(),
-      grandTotal: (json['grand_total'] ?? 0.0).toDouble(),
+      totalPrice: _parseDouble(json['total_price']) ?? 0.0,
+      totalDiscount: _parseDouble(json['total_discount']) ?? 0.0,
+      grandTotal: _parseDouble(json['grand_total']) ?? 0.0,
       email: json['email'] ?? '',
       mobile: json['mobile'] ?? '',
       trackingId: json['tracking_id'],
       deliveryOption: json['delivery_option'] ?? '',
       status: json['status'] ?? '',
       razorpayOrderId: json['razorpay_order_id'],
-      couponDiscount: (json['coupon_discount'] ?? 0.0).toDouble(),
+      couponDiscount: _parseDouble(json['coupon_discount']) ?? 0.0,
     );
   }
 }
@@ -90,8 +90,8 @@ class OrderItem {
   final String sku;
   final String image;
   final int quantity;
-  final double price;
-  final double salePrice;
+  final double mrp;
+  final double sellingPrice;
   final double discount;
   final double total;
   final String? hsnCode;
@@ -105,8 +105,8 @@ class OrderItem {
     required this.sku,
     required this.image,
     required this.quantity,
-    required this.price,
-    required this.salePrice,
+    required this.mrp,
+    required this.sellingPrice,
     required this.discount,
     required this.total,
     this.hsnCode,
@@ -122,16 +122,34 @@ class OrderItem {
       sku: (json['sku'] ?? 0).toString(), // Convert int to String
       image: json['image'] ?? '',
       quantity: json['quantity'] ?? 0,
-      price: (json['price'] ?? 0.0).toDouble(),
-      salePrice: (json['sale_price'] ?? 0.0).toDouble(),
-      discount: (json['discount'] ?? 0.0).toDouble(),
-      total: (json['total'] ?? 0.0).toDouble(),
-      hsnCode: json['hsn_code'],
+      mrp: _parseDouble(json['mrp']) ?? 0.0,
+      sellingPrice: _parseDouble(json['selling_price']) ?? 0.0,
+      discount: _parseDouble(json['discount']) ?? 0.0,
+      total: _parseDouble(json['total']) ?? 0.0,
+      hsnCode: json['hsn_code']?.toString(),
       orderId: json['order_id'] ?? 0,
       productId: json['product_id'] ?? 0,
-      comboOffer:
-          (json['combo_offer'] ?? '').toString(), // Convert int to String
+      comboOffer: json['combo_offer']?.toString(),
       productName: json['product_name'] ?? '',
     );
   }
+}
+
+// Utility function to safely parse double values
+double? _parseDouble(dynamic value) {
+  if (value == null) return null;
+
+  // If it's already a double, return it
+  if (value is double) return value;
+
+  // If it's an int, convert to double
+  if (value is int) return value.toDouble();
+
+  // If it's a string, parse it
+  if (value is String) {
+    return double.tryParse(value);
+  }
+
+  // If we can't parse it, return null
+  return null;
 }

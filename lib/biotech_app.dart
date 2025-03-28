@@ -4,6 +4,7 @@ import 'package:biotech_maali/src/module/account/coin/coin_provider.dart';
 import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/location_popup/location_pincode_provider.dart';
 import 'package:biotech_maali/src/module/product_compo_list/product_compo_list_provider.dart';
 import 'package:biotech_maali/src/module/product_search/product_search_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
@@ -72,6 +73,7 @@ class BiotechApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CouponProvider()),
         ChangeNotifierProvider(create: (context) => CoinProvider()),
         ChangeNotifierProvider(create: (context) => ReferFriendProvider()),
+        ChangeNotifierProvider(create: (context) => LocationPincodeProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

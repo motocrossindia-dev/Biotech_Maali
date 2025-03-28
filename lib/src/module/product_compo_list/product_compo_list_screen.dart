@@ -3,6 +3,7 @@ import 'package:biotech_maali/src/module/product_compo_list/model/product_compo_
 import 'package:biotech_maali/src/module/product_compo_list/product_compo_list_provider.dart';
 import 'package:biotech_maali/src/module/product_compo_list/widget/product_compo_widget.dart';
 import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
+import 'package:biotech_maali/src/module/product_search/product_search_screen.dart';
 
 import '../../../import.dart';
 
@@ -39,7 +40,12 @@ class _ProductCompoListScreenState extends State<ProductCompoListScreen> {
         actions: [
           InkWell(
             onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => const ,))
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductSearchView(),
+                ),
+              );
             },
             child: const Padding(
               padding: EdgeInsets.only(right: 40.0),

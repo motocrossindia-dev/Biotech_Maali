@@ -1,7 +1,9 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/location_popup/location_pincode_popup.dart';
+import 'package:biotech_maali/src/module/location_popup/location_pincode_provider.dart';
 import 'package:biotech_maali/src/module/product_search/product_search_screen.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
+import 'package:biotech_maali/src/payment_and_order/change_address/change_address_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
 import '../../../../import.dart';
@@ -39,36 +41,42 @@ class CustomAppBarWithSearch extends StatelessWidget
                     height: 42,
                     width: 80,
                   ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/svg/icons/location_icon.svg',
-                        height: 22,
-                        width: 22,
-                      ),
-                      const Text(
-                        'Location 590019',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      TextButton(
-                        child: const Text(
-                          'CHANGE',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: Colors.black,
-                          ),
+                  Consumer<HomeProvider>(
+                    builder: (context, provider, child) => Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/svg/icons/location_icon.svg',
+                          height: 22,
+                          width: 22,
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const LocationPincodePopup(),
+                        Text(
+                          'Location ${provider.pinCode}',
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        TextButton(
+                          child: const Text(
+                            'CHANGE',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              color: Colors.black,
                             ),
-                          );
-                        },
-                      ),
-                    ],
+                          ),
+                          onPressed: () async {
+                            // final changeAddressProvider =
+                            //     context.read<ChangeAddressProvider>();
+
+                            // await changeAddressProvider.fetchAllAddress();
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const LocationPincodePopup()),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

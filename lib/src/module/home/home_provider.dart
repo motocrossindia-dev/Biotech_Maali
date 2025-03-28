@@ -13,12 +13,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../../import.dart';
 
 class HomeProvider extends ChangeNotifier {
-  HomeProvider() {
-    refreshAll();
-  }
+  // HomeProvider() {
+  //   refreshAll();
+  // }
   final HomeRepository _repository = HomeRepository();
 
   bool _isLoading = false;
+
+  String pinCode = "No Pincode";
 
   final bool _isCartLoading = false;
   String? _error;
@@ -65,11 +67,14 @@ class HomeProvider extends ChangeNotifier {
   List<String> get visibleHomeBanners {
     const baseUrl = BaseUrl.baseUrlForImages; // Add your base URL here
     return _banners
-        .where((banner) =>
-            banner.isVisible &&
-            (banner.type == 'Home' || banner.type == 'Hero'))
+        .where((banner) => banner.isVisible && (banner.type == 'Home'))
         .map((banner) => '$baseUrl${banner.mobileBanner}')
         .toList();
+  }
+
+  Future<void> getLocationPincode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    pinCode = prefs.getString('user_pincode') ?? "No Pincode";
   }
 
   void onCaroucelIndexChange(int current) {
@@ -167,6 +172,7 @@ class HomeProvider extends ChangeNotifier {
         fetchHomeProducts(),
         fetchMainCategories(),
         fetchBanners(),
+        getLocationPincode()
       ]);
 
       _isLoading = false;

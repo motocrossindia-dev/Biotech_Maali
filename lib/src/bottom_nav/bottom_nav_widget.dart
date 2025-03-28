@@ -113,7 +113,22 @@ class BottomNavWidget extends StatelessWidget {
                   },
                 );
               case 4:
-                return const AccountScreen();
+                return FutureBuilder<bool>(
+                  future: settingsProvider.checkAccessTokenValidity(context),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CartShimmer());
+                    }
+
+                    final isTokenValid = snapshot.data ?? false;
+                    if (isTokenValid) {
+                      return const AccountScreen();
+                    } else {
+                      log("message is not token valid: $isTokenValid");
+                      return const MobileNumberScreen();
+                    }
+                  },
+                );
               default:
                 return const HomeScreen();
             }

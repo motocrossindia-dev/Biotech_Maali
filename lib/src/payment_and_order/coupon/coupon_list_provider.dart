@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:biotech_maali/src/payment_and_order/coupon/coupon_list_repository.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,6 +25,9 @@ class CouponProvider extends ChangeNotifier {
   double get finalAmount => _cartValue - _discountAmount;
   bool get isCouponApplied => _isCouponApplied; // Getter for the new flag
 
+  String _errorMessage = "";
+  String get errorMessage => _errorMessage;
+
   void setCartValue(double value) {
     _cartValue = value;
     notifyListeners();
@@ -47,11 +49,11 @@ class CouponProvider extends ChangeNotifier {
     }
   }
 
-  Future<OrderData ?> applyCoupon(String couponId, String orderId, String couponCode,
-      BuildContext context) async {
+  Future<OrderData?> applyCoupon(String couponId, String orderId,
+      String couponCode, BuildContext context) async {
     _isLoading = true;
-    _error = null;
-    _isCouponApplied = false; // Reset the flag at the start
+    _errorMessage = ""; // Reset error message before API call
+    _isCouponApplied = false;
     notifyListeners();
 
     try {
@@ -60,15 +62,16 @@ class CouponProvider extends ChangeNotifier {
 
       if (result != null && result.success == true) {
         _appliedCouponCode = couponCode;
-        _isCouponApplied = true; // Set flag to true on success
+        _isCouponApplied = true;
         _discountAmount = result.discountAmount!;
-        
+
         Fluttertoast.showToast(msg: "Coupon applied successfully");
+        // showErrorBottomSheet(context, "Coupon applied successfully");
+
         _isLoading = false;
         notifyListeners();
         return result;
       } else {
-        // This might not be reached since repository throws exceptions on failure
         _appliedCouponCode = null;
         _discountAmount = 0;
         _isLoading = false;
@@ -76,8 +79,20 @@ class CouponProvider extends ChangeNotifier {
         return null;
       }
     } catch (e) {
-      log("Coupon application error: ${e.toString()}");
-      Fluttertoast.showToast(msg: e.toString());
+      log("Coupon application error: $e");
+
+      // Store the error message in provider
+      _errorMessage = e
+          .toString()
+          .replaceFirst("Exception: ", ""); // Remove Exception prefix
+      notifyListeners();
+
+      Fluttertoast.showToast(
+          msg: _errorMessage,
+          textColor: cWhiteColor,
+          backgroundColor: cDarkerRed,
+          toastLength: Toast.LENGTH_LONG);
+
       _appliedCouponCode = null;
       _discountAmount = 0;
       _isLoading = false;
@@ -92,5 +107,44 @@ class CouponProvider extends ChangeNotifier {
     _isCouponApplied = false; // Reset flag when coupon is removed
     notifyListeners();
   }
+}
 
+void showErrorBottomSheet(BuildContext context, String errorMessage) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 50),
+            const SizedBox(height: 10),
+            const Text(
+              "Error",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close BottomSheet
+                Navigator.pop(context); // Go Back to Previous Screen
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

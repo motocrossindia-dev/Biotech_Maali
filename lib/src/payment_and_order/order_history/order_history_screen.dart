@@ -1,7 +1,10 @@
 import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_shimmer.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history/widgets/invoice_download_popup.dart';
+import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_screen.dart';
+import 'package:biotech_maali/src/payment_and_order/order_tracking/order_tracking_screen.dart';
 import 'package:biotech_maali/src/pdf_viewer/pdf_viewer.dart';
 
 import '../../../import.dart';
@@ -294,7 +297,19 @@ class OrderHistoryCard extends StatelessWidget {
             children: [
               if (order.trackingId != "0") ...[
                 OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final orderHistoryProvider =
+                        context.read<OrderHistoryDetailProvider>();
+                    await orderHistoryProvider.fetchOrderDetails(order.id);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DeliveryTrackingWidget(
+                              trackingUpdates: orderHistoryProvider
+                                      .orderDetails?.data.trackingUpdates ??
+                                  []),
+                        ));
+                  },
                   icon: const Icon(Icons.local_shipping_outlined, size: 18),
                   label: const Text(
                     'Track',
@@ -315,15 +330,19 @@ class OrderHistoryCard extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.file_download_outlined),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PdfViewerScreen(
-                        pdfUrl: "${EndUrl.pdfInvoiceUrl}${order.id}/",
-                        title: order.orderId,
+                  if (order.status == "DELIVERED") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PdfViewerScreen(
+                          pdfUrl: "${EndUrl.pdfInvoiceUrl}${order.id}/",
+                          title: order.orderId,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    InvoiceDownloadPopup.showInvoiceBottomSheet(context);
+                  }
                 },
                 tooltip: 'Download Invoice',
                 iconSize: 20,

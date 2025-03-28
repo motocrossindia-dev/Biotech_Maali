@@ -8,6 +8,7 @@ import 'package:biotech_maali/src/module/product_detail/product_details/widgets/
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/product_list_addon_widget.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/product_list_recently_viewed_widget.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/widgets/seed_weight_widget.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import '../../../../import.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -540,7 +541,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               )
                             : CustomizableBorderColoredButton(
                                 title: 'BUY NOW',
-                                event: () {
+                                event: () async {
+                                  final settingsProvider =
+                                      context.read<SettingsProvider>();
+                                  bool isAuth = await settingsProvider
+                                      .checkAccessTokenValidity(context);
+
+                                  if (!isAuth) {
+                                    _showLoginDialog(context);
+                                    return;
+                                  }
                                   provider.placeOrder(
                                       productDetail.product.id, context);
                                 },
@@ -585,4 +595,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
     );
   }
+}
+
+void _showLoginDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const LoginPromptDialog();
+    },
+  );
 }

@@ -92,7 +92,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                       builder:
                                           (context, accountProvider, child) {
                                         return CommonTextWidget(
-                                          title: accountProvider.userName,
+                                          title: accountProvider.userName ??
+                                              'No Name',
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
                                         );

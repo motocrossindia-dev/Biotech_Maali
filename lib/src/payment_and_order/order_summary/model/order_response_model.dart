@@ -41,11 +41,8 @@ class OrderData {
           .map((item) => OrderItem.fromJson(item))
           .toList(),
       success: json['success'],
-      discountAmount: json['discount_amount'] != null
-          ? (json['discount_amount']).toDouble()
-          : 0.0,
-      newTotal:
-          json['new_total'] != null ? (json['new_total']).toDouble() : 0.0,
+      discountAmount: _parseDouble(json['discount_amount']),
+      newTotal: _parseDouble(json['new_total']),
       couponCode: json['coupon_code'],
       redemptionMessage: json['redemption_message'],
     );
@@ -103,9 +100,9 @@ class OrderDetails {
       customerName: json['customer_name'] ?? '',
       email: json['email'] ?? '',
       mobile: json['mobile'] ?? '',
-      totalPrice: (json['total_price'] ?? 0.0).toDouble(),
-      totalDiscount: (json['total_discount'] ?? 0.0).toDouble(),
-      grandTotal: (json['grand_total'] ?? 0.0).toDouble(),
+      totalPrice: _parseDouble(json['total_price']) ?? 0.0,
+      totalDiscount: _parseDouble(json['total_discount']) ?? 0.0,
+      grandTotal: _parseDouble(json['grand_total']) ?? 0.0,
       trackingId: json['tracking_id'],
       deliveryOption: json['delivery_option'] ?? 'Standard',
       paymentMethod: json['payment_method'],
@@ -113,7 +110,7 @@ class OrderDetails {
       razorpayOrderId: json['razorpay_order_id'],
       isComboPurchase: json['is_combo_purchase'] ?? false,
       couponApplied: json['coupon_applied'] ?? false,
-      couponDiscount: (json['coupon_discount'] ?? 0.0).toDouble(),
+      couponDiscount: _parseDouble(json['coupon_discount']) ?? 0.0,
       customerId: json['customer_id'] ?? 0,
       appliedCoupon: json['applied_coupon'],
     );
@@ -157,16 +154,34 @@ class OrderItem {
       sku: json['sku'], // Accept it as-is (int or String)
       image: json['image'] ?? '',
       quantity: json['quantity'] ?? 0,
-      mrp: (json['mrp'] ?? 0.0).toDouble(),
-      sellingPrice: (json['selling_price'] ?? 0.0).toDouble(),
-      discount: (json['discount'] ?? 0.0).toDouble(),
-      total: (json['total'] ?? 0.0).toDouble(),
+      mrp: _parseDouble(json['mrp']) ?? 0.0,
+      sellingPrice: _parseDouble(json['selling_price']) ?? 0.0,
+      discount: _parseDouble(json['discount']) ?? 0.0,
+      total: _parseDouble(json['total']) ?? 0.0,
       hsnCode: json['hsn_code']?.toString(),
       orderId: json['order_id'] ?? 0,
       productId: json['product_id'] ?? 0,
-      comboOffer:
-          json['combo_offer']?.toString(), // Convert to String if non-null
+      comboOffer: json['combo_offer']?.toString(),
       productName: json['product_name'] ?? '',
     );
   }
+}
+
+// Utility function to safely parse double values
+double? _parseDouble(dynamic value) {
+  if (value == null) return null;
+
+  // If it's already a double, return it
+  if (value is double) return value;
+
+  // If it's an int, convert to double
+  if (value is int) return value.toDouble();
+
+  // If it's a string, parse it
+  if (value is String) {
+    return double.tryParse(value);
+  }
+
+  // If we can't parse it, return null
+  return null;
 }

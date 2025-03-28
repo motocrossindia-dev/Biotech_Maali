@@ -48,6 +48,7 @@ class CouponRepository {
       {required String couponId, required String orderId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("access_token");
+
     try {
       final response = await _dio.post(
         EndUrl.applyCouponUrl,
@@ -61,26 +62,30 @@ class CouponRepository {
             "Content-Type": "application/json",
           },
           validateStatus: (status) {
-            return status! < 500;
+            return status! < 500; // Accept only responses with status < 500
           },
         ),
       );
 
       if (response.statusCode == 200) {
-        log("response  : ${response.data}");
-
+        log("Response: ${response.data}");
         return OrderData.fromJson(response.data);
-        // return true;
-      } else {
-        log("Else Block : ${response.data.toString()}");
-        // final Map<String, dynamic> data = response.data;
+      } else if (response.statusCode == 400 ||
+          response.statusCode == 403 ||
+          response.statusCode == 404) {
+        // Extract error message if it's a JSON object
 
-        throw Exception(response.data['error'] ?? 'Failed to apply coupon');
+        log("message: ${response.data['error']}");
+        throw (response.data['error']);
+      } else {
+        log("Else Block: ${response.data.toString()}");
+        throw ("Unexpected error occurred.");
       }
     } on DioException catch (e) {
-      throw Exception('Failed to apply coupon: ${e.message}');
+      throw ('Network Error: ${e.message}');
     } catch (e) {
-      throw Exception('Failed to apply coupon: $e');
+      log("Error : ${e.toString()}");
+      throw Exception(e.toString()); // Ensure only the actual error is thrown
     }
   }
 }

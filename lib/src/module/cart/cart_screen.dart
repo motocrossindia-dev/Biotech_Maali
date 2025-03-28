@@ -2,7 +2,6 @@ import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/cart/cart_shimmer.dart';
 import 'package:biotech_maali/src/module/cart/widgets/cart_product_tile.dart';
 import 'package:biotech_maali/src/module/cart/widgets/price_detailrow.dart';
-
 import '../../../import.dart';
 
 class CartScreen extends StatefulWidget {
@@ -69,110 +68,95 @@ class _CartScreenState extends State<CartScreen> {
             );
           }
 
-          return Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: cartProvider.cartItems.length,
-                      separatorBuilder: (context, index) => Container(
-                        height: 8,
-                        color: cAppBackround,
-                      ),
-                      itemBuilder: (context, index) {
-                        final item = cartProvider.cartItems[index];
-                        return CartProductTile(
-                          key: ValueKey(item.id),
-                          productId: item.productId,
-                          cartId: item.id,
-                          productTitle: item.name,
-                          productImage: item.image,
-                          sellingPrice:
-                              double.parse(item.sellingPrice.toString()),
-                          mrp: double.parse(item.mrp.toString()),
-                          quantity: item.quantity,
-                          stockStatus: item.stockStatus,
-                          onQuantityChanged: (newQuantity) async {
-                            await cartProvider.updateCartItemQuantity(
-                                item.id, newQuantity);
-                          },
-                          onDelete: () async {
-                            await cartProvider.deleteCartItem(item.id, context);
-                          },
-                        );
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: cartProvider.cartItems.length,
+                  separatorBuilder: (context, index) => Container(
+                    height: 8,
+                    color: cAppBackround,
+                  ),
+                  itemBuilder: (context, index) {
+                    final item = cartProvider.cartItems[index];
+                    return CartProductTile(
+                      key: ValueKey(item.id),
+                      productId: item.productId,
+                      cartId: item.id,
+                      productTitle: item.name,
+                      productImage: item.image,
+                      sellingPrice: double.parse(item.sellingPrice.toString()),
+                      mrp: double.parse(item.mrp.toString()),
+                      quantity: item.quantity,
+                      stockStatus: item.stockStatus,
+                      onQuantityChanged: (newQuantity) async {
+                        await cartProvider.updateCartItemQuantity(
+                            item.id, newQuantity);
                       },
-                    ),
-                    Container(
-                      height: 8,
-                      color: cAppBackround,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const CommonTextWidget(
-                            title: 'Price Details',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          const Divider(),
-                          const SizedBox(height: 16),
-                          PriceDetailRow(
-                            title:
-                                'Price (${cartProvider.cartItems.length} Items)',
-                            amount: cartProvider.totalAmount,
-                          ),
-                          const SizedBox(height: 16),
-                          PriceDetailRow(
-                            title: 'Discount',
-                            amount: cartProvider.totalDiscount,
-                            color: Colors.green,
-                          ),
-                          // const SizedBox(height: 16),
-                          // const DeliveryChargesRow(),
-                          const SizedBox(height: 16),
-                          PriceDetailRow(
-                            title: 'Total Amount',
-                            amount: cartProvider.totalAmount -
-                                cartProvider.totalDiscount,
-                            isBold: true,
-                          ),
-                          const SizedBox(height: 16),
-                          Center(
-                            child: CommonTextWidget(
-                              title:
-                                  'You will save ₹${(cartProvider.totalDiscount).toStringAsFixed(2)} on this order',
-                              color: Colors.green,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 80),
-                  ],
+                      onDelete: () async {
+                        await cartProvider.deleteCartItem(item.id, context);
+                      },
+                    );
+                  },
                 ),
-              ),
-              _buildBottomButtons(context),
-            ],
+                Container(
+                  height: 8,
+                  color: cAppBackround,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const CommonTextWidget(
+                        title: 'Price Details',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      const Divider(),
+                      const SizedBox(height: 16),
+                      PriceDetailRow(
+                        title: 'Price (${cartProvider.cartItems.length} Items)',
+                        amount: cartProvider.totalAmount,
+                      ),
+                      const SizedBox(height: 16),
+                      PriceDetailRow(
+                        title: 'Discount',
+                        amount: cartProvider.totalDiscount,
+                        color: Colors.green,
+                      ),
+                      // const SizedBox(height: 16),
+                      // const DeliveryChargesRow(),
+                      const SizedBox(height: 16),
+                      PriceDetailRow(
+                        title: 'Total Amount',
+                        amount: cartProvider.totalAmount -
+                            cartProvider.totalDiscount,
+                        isBold: true,
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: CommonTextWidget(
+                          title:
+                              'You will save ₹${(cartProvider.totalDiscount).toStringAsFixed(2)} on this order',
+                          color: Colors.green,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 80),
+              ],
+            ),
           );
         },
       ),
-    );
-  }
-
-  Widget _buildBottomButtons(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Container(
+      bottomNavigationBar: Container(
         width: double.infinity,
         height: 60,
         color: Colors.white,
