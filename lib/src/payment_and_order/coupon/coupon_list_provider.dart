@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:biotech_maali/src/payment_and_order/coupon/coupon_list_repository.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
+import 'package:biotech_maali/src/widgets/all_message_popups.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../import.dart';
@@ -33,7 +34,7 @@ class CouponProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future fetchCoupons(String orderId) async {
+  Future<void> fetchCoupons(String orderId) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -65,9 +66,17 @@ class CouponProvider extends ChangeNotifier {
         _isCouponApplied = true;
         _discountAmount = result.discountAmount!;
 
-        Fluttertoast.showToast(msg: "Coupon applied successfully");
+        // Fluttertoast.showToast(msg: "Coupon applied successfully");
+        // showSuccessDialog(context, "Coupon applied successfully");
         // showErrorBottomSheet(context, "Coupon applied successfully");
 
+        _isLoading = false;
+        notifyListeners();
+        return result;
+      } else if (result != null && result.success == false) {
+        _appliedCouponCode = couponCode;
+        _isCouponApplied = false; // Reset flag when coupon is not applied
+        _discountAmount = 0;
         _isLoading = false;
         notifyListeners();
         return result;

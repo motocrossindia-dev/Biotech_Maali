@@ -63,7 +63,7 @@ class _CoinScreenState extends State<CoinScreen> {
                                     children: [
                                       Icon(
                                         Icons.monetization_on,
-                                        color: Colors.amber[700],
+                                        color: cBottomNav,
                                         size: 28,
                                       ),
                                       const SizedBox(width: 8),
@@ -72,7 +72,7 @@ class _CoinScreenState extends State<CoinScreen> {
                                         style: TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.amber[700],
+                                          color: cBottomNav,
                                         ),
                                       ),
                                     ],
@@ -249,7 +249,7 @@ class _CoinScreenState extends State<CoinScreen> {
   }) {
     return Row(
       children: [
-        Icon(icon, color: Colors.amber[700]),
+        Icon(icon, color: cBottomNav),
         const SizedBox(width: 16),
         Expanded(
           child: Text(
@@ -259,12 +259,12 @@ class _CoinScreenState extends State<CoinScreen> {
         ),
         Row(
           children: [
-            Icon(Icons.monetization_on, color: Colors.amber[700], size: 16),
+            Icon(Icons.monetization_on, color: cBottomNav, size: 16),
             const SizedBox(width: 4),
             Text(
               coins,
               style: TextStyle(
-                color: Colors.amber[700],
+                color: cBottomNav,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -287,7 +287,7 @@ class _CoinScreenState extends State<CoinScreen> {
           totalAmount,
           style: TextStyle(
             fontSize: 15,
-            color: Colors.amber[700],
+            color: cBottomNav,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -414,7 +414,7 @@ class _CoinScreenState extends State<CoinScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.monetization_on, color: Colors.amber[700]),
+                  Icon(Icons.monetization_on, color: cBottomNav),
                   const SizedBox(width: 4),
                   Text(
                     '$redeemAmount',

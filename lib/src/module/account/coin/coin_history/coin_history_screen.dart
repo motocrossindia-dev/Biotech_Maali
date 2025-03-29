@@ -189,7 +189,7 @@ class CoinHistoryScreen extends StatelessWidget {
                             children: [
                               Icon(
                                 Icons.monetization_on,
-                                color: Colors.amber[700],
+                                color: cBottomNav,
                                 size: 16,
                               ),
                               const SizedBox(width: 4),
@@ -241,7 +241,7 @@ class CoinHistoryScreen extends StatelessWidget {
         const SizedBox(height: 4),
         Row(
           children: [
-            Icon(Icons.monetization_on, color: Colors.amber[700], size: 16),
+            Icon(Icons.monetization_on, color: cBottomNav, size: 16),
             const SizedBox(width: 4),
             Text(
               value,

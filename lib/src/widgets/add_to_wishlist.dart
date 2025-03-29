@@ -62,7 +62,8 @@ void showWishlistMessage(BuildContext context, bool isAdded) {
       ),
 
       // Styling
-      backgroundColor: isAdded ? Colors.grey : Colors.blueGrey,
+      backgroundColor:
+          isAdded ? Colors.blueGrey.shade300 : Colors.blueGrey.shade300,
 
       // Layout & Behavior
       behavior: SnackBarBehavior.floating,

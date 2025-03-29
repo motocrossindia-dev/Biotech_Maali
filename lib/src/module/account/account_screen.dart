@@ -1,5 +1,6 @@
 import 'package:biotech_maali/src/module/account/account_provider.dart';
 import 'package:biotech_maali/src/module/account/coin/coin_screen.dart';
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
 import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_screen.dart';
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
@@ -337,11 +338,11 @@ class _AccountScreenState extends State<AccountScreen> {
                                     ),
                                   );
                                 },
-                                child: const Row(
+                                child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
+                                    const Row(
                                       children: [
                                         sizedBoxWidth25,
                                         sizedBoxWidth20,
@@ -352,10 +353,21 @@ class _AccountScreenState extends State<AccountScreen> {
                                         ),
                                       ],
                                     ),
-                                    CommonTextWidget(
-                                      title: '₹0',
-                                      color: Colors.green,
-                                      fontSize: 16,
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.monetization_on,
+                                          size: 16,
+                                        ),
+                                        CommonTextWidget(
+                                          title: (context
+                                              .read<ReferFriendProvider>()
+                                              .totalcoins
+                                              .toString()),
+                                          color: Colors.green,
+                                          fontSize: 16,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

@@ -135,14 +135,14 @@ class _ReferFriendScreenState extends State<ReferFriendScreen> {
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.amber.shade700),
+                            border: Border.all(color: cBottomNav),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Center(
                             child: Text(
                               'Total Coins Earned: ${provider.totalcoins}',
                               style: TextStyle(
-                                color: Colors.amber.shade700,
+                                color: cBottomNav,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

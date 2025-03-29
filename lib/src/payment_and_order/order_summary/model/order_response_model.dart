@@ -18,7 +18,9 @@ class OrderResponseModel {
 class OrderData {
   final OrderDetails order;
   final List<OrderItem> orderItems;
+
   final bool? success;
+  final String? error;
   final double? discountAmount;
   final double? newTotal;
   final String? couponCode;
@@ -28,6 +30,7 @@ class OrderData {
     required this.order,
     required this.orderItems,
     this.success,
+    this.error,
     this.discountAmount,
     this.newTotal,
     this.couponCode,
@@ -41,6 +44,7 @@ class OrderData {
           .map((item) => OrderItem.fromJson(item))
           .toList(),
       success: json['success'],
+      error: json['error'],
       discountAmount: _parseDouble(json['discount_amount']),
       newTotal: _parseDouble(json['new_total']),
       couponCode: json['coupon_code'],

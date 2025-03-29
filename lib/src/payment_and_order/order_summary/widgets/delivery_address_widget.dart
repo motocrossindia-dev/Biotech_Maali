@@ -1,5 +1,4 @@
 import 'package:biotech_maali/src/payment_and_order/change_address/model/address_model.dart';
-
 import '../../../../import.dart';
 
 class DeliveryAddressWidget extends StatelessWidget {
@@ -13,45 +12,37 @@ class DeliveryAddressWidget extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top row with radio, "Deliver to:" text, and Change button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Left side with radio and "Deliver to:" text
-                Row(
-                  children: [
-                    Radio<bool>(
-                      value: true,
-                      groupValue: provider.isAddressSelected,
-                      onChanged: (value) {
-                        provider.setAddressSelection(value ?? false);
-                      },
-                    ),
-                    const CommonTextWidget(
-                      title: 'Deliver to:',
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-                // Right side with Change button
-                ChangeButton(
-                  title: 'Change',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ChangeAddressScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            // Address details with proper padding for alignment with radio
+            // Top row with "Deliver to:" text and Change button
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 48.0), // Indent to align with "Deliver to:" text
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Left side with "Deliver to:" text
+                  const CommonTextWidget(
+                    title: 'Deliver to:',
+                    color: Colors.grey,
+                  ),
+                  // Right side with Change button
+                  ChangeButton(
+                    title: 'Change',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChangeAddressScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Address details with proper padding
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -86,9 +77,6 @@ class DeliveryAddressWidget extends StatelessWidget {
                   ),
                   sizedBoxHeight05,
                   CommonTextWidget(title: selectedAddress.pincode.toString()),
-                  // Added phone number to match the image
-                  sizedBoxHeight05,
-                  // CommonTextWidget(title: selectedAddress.mobileNumber),
                 ],
               ),
             ),

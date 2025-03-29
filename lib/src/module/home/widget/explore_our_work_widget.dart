@@ -1,6 +1,4 @@
 import 'package:biotech_maali/src/other_modules/out_works/our_work_screen.dart';
-import 'package:biotech_maali/src/other_modules/services/services_screen.dart';
-
 import '../../../../import.dart';
 
 class ExploreOurWorkWidget extends StatelessWidget {

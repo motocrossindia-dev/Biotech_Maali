@@ -3,6 +3,7 @@ import 'package:biotech_maali/src/payment_and_order/coupon/coupon_list_provider.
 import 'package:biotech_maali/src/payment_and_order/coupon/model/coupon_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/order_summary.dart';
+import 'package:biotech_maali/src/widgets/all_message_popups.dart';
 import 'package:biotech_maali/src/widgets/common_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -134,7 +135,7 @@ class _ApplyCouponScreenState extends State<ApplyCouponScreen> {
                           ? Center(child: Text(couponProvider.error!))
                           : ListView.builder(
                               itemCount: couponProvider.coupons.length,
-                              itemBuilder: (context, index) {
+                              itemBuilder: (ctx, index) {
                                 Coupon coupon = couponProvider.coupons[index];
                                 return CouponCard(
                                   coupon: couponProvider.coupons[index],
@@ -154,9 +155,26 @@ class _ApplyCouponScreenState extends State<ApplyCouponScreen> {
                                                 coupon.code,
                                                 context);
 
-                                    if (data != null) {
+                                    if (data != null && data.success == true) {
                                       orderSummaryProvider
                                           .setOrderSummaryData(data);
+                                      if (context.mounted) {
+                                        showSuccessDialog(context,
+                                            "Coupon applied successfully!");
+                                      }
+                                    } else if (data != null &&
+                                        data.success == false) {
+                                      orderSummaryProvider
+                                          .setOrderSummaryData(data);
+                                      if (context.mounted) {
+                                        showErrorDialog(
+                                            context, data.error.toString());
+                                      }
+                                    } else {
+                                      if (context.mounted) {
+                                        showErrorDialog(
+                                            context, "Failed to apply coupon");
+                                      }
                                     }
                                   },
                                 );

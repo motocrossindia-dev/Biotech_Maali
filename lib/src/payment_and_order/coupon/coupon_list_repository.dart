@@ -75,8 +75,8 @@ class CouponRepository {
           response.statusCode == 404) {
         // Extract error message if it's a JSON object
 
-        log("message: ${response.data['error']}");
-        throw (response.data['error']);
+        log("message: ${response.data.toString()}");
+        return OrderData.fromJson(response.data);
       } else {
         log("Else Block: ${response.data.toString()}");
         throw ("Unexpected error occurred.");

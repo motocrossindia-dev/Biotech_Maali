@@ -37,7 +37,7 @@ class RatingsAndReviewsContent extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         title: const CommonTextWidget(
-          title: 'Ratings & Reviews',
+          title: 'Ratings',
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
@@ -81,7 +81,7 @@ class RatingsAndReviewsContent extends StatelessWidget {
 
               Center(
                 child: Text(
-                  '${provider.totalRatings} Ratings & ${provider.reviews.length} Reviews',
+                  '${provider.totalRatings} Ratings',
                   style: const TextStyle(color: Colors.grey),
                 ),
               ),
@@ -235,8 +235,8 @@ class RatingsAndReviewsContent extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(review.productReview),
+          // const SizedBox(height: 8),
+          // Text(review.productReview),
           const Divider(height: 32),
         ],
       ),

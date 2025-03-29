@@ -23,10 +23,10 @@ class PickStoreWidget extends StatelessWidget {
                 Row(
                   children: [
                     Radio<bool>(
-                      value: true,
+                      value: false,
                       groupValue: provider.isAddressSelected,
                       onChanged: (value) {
-                        provider.setAddressSelection(value ?? false);
+                        provider.setChooseDeliveryOption(value ?? false);
                       },
                     ),
                     const CommonTextWidget(

@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:biotech_maali/src/payment_and_order/local_store_list/local_store_list_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/local_store_list/model/local_store_model.dart';
 
 import '../../../import.dart';
 
@@ -13,6 +12,13 @@ class SelectLocalStoreScreen extends StatefulWidget {
 
 class _SelectLocalStoreScreenState extends State<SelectLocalStoreScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Fetch stores when screen loads
+    context.read<LocalStoreListProvider>().fetchStores();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,14 +28,27 @@ class _SelectLocalStoreScreenState extends State<SelectLocalStoreScreen> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Consumer<LocalStoreListProvider>(
         builder: (context, provider, child) {
-          List<Map<String, String>> stores = provider.stores;
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (provider.error != null) {
+            return Center(
+              child: Text(provider.error ?? 'Something went wrong'),
+            );
+          }
+
+          if (provider.stores.isEmpty) {
+            return const Center(
+              child: Text('No stores available'),
+            );
+          }
+
           return Column(
             children: [
               Expanded(
@@ -37,73 +56,68 @@ class _SelectLocalStoreScreenState extends State<SelectLocalStoreScreen> {
                   padding: const EdgeInsets.all(16),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio:
-                        0.76, // Changed from 0.7 to make cards shorter
+                    childAspectRatio: 0.8,
                     crossAxisSpacing: 15,
                     mainAxisSpacing: 15,
                   ),
                   itemCount: provider.stores.length,
                   itemBuilder: (context, index) {
+                    final store = provider.stores[index];
                     return GestureDetector(
-                      onTap: () {
-                        provider.setSelectedStore(index);
-                      },
+                      onTap: () => provider.setSelectedStoreModel(store),
                       child: StoreCard(
                         isSelected: provider.selectedStoreIndex == index,
-                        imageUrl: stores[index]['image']!,
-                        address: stores[index]['address']!,
+                        store: store,
                       ),
                     );
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: BorderSide(color: cButtonGreen),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+              const SizedBox(height: 16),
+              if (provider.stores.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            side: BorderSide(color: cButtonGreen),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: CommonTextWidget(
+                            title: 'CANCEL',
+                            color: cButtonGreen,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: CommonTextWidget(
-                          title: 'CANCEL',
-                          color: cButtonGreen,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: cButtonGreen,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: cButtonGreen,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          onPressed: () =>
+                              Navigator.pop(context, provider.selectedStore),
+                          child: const CommonTextWidget(
+                            title: 'DELIVER HERE',
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () {
-                          // Handle delivery action
-                          Navigator.pop(context, provider.selectedStoreIndex);
-                        },
-                        child: const CommonTextWidget(
-                          title: 'DELIVER HERE',
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
             ],
           );
         },
@@ -114,48 +128,43 @@ class _SelectLocalStoreScreenState extends State<SelectLocalStoreScreen> {
 
 class StoreCard extends StatelessWidget {
   final bool isSelected;
-  final String imageUrl;
-  final String address;
+  final LocalStoreModel store;
 
   const StoreCard({
     super.key,
     required this.isSelected,
-    required this.imageUrl,
-    required this.address,
+    required this.store,
   });
 
   @override
   Widget build(BuildContext context) {
-    log("Image : $imageUrl");
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2, // Changed from 3 to reduce image height proportion
+          // Image section with fixed height
+          SizedBox(
+            height: 120, // Fixed height for image
             child: Stack(
+              fit: StackFit.expand,
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(8),
                     topRight: Radius.circular(8),
                   ),
-                  child: Image.asset(
-                    imageUrl,
-                    width: double.infinity,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: const Center(
-                          child: Icon(Icons.image_not_supported, size: 40),
-                        ),
-                      );
-                    },
-                  ),
+                  child: store.image != null
+                      ? Image.network(
+                          store.getFullImageUrl()!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              _buildErrorContainer(),
+                        )
+                      : _buildErrorContainer(),
                 ),
                 if (isSelected)
                   Positioned.fill(
@@ -177,21 +186,62 @@ class StoreCard extends StatelessWidget {
               ],
             ),
           ),
+          // Content section
           Expanded(
-            flex: 2, // Changed from 2 to reduce text area height proportion
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Text(
-                  address,
-                  style: const TextStyle(fontSize: 12),
-                  maxLines: 5, // Reduced from 5 to show less text
-                  overflow: TextOverflow.ellipsis,
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // Add this
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    store.location,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Flexible(
+                    child: Text(
+                      store.address,
+                      style: const TextStyle(fontSize: 12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min, // Add this
+                    children: [
+                      const Icon(Icons.access_time, size: 12),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          store.timePeriod,
+                          style: const TextStyle(fontSize: 10),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildErrorContainer() {
+    return Container(
+      color: Colors.grey[300],
+      child: const Center(
+        child: Icon(Icons.image_not_supported, size: 40),
       ),
     );
   }

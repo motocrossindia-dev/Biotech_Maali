@@ -33,12 +33,12 @@ class OrderSummaryRepository {
     }
   }
 
-  Future<OrderSummaryResponse> updateOrderSummary({
-    required BuildContext context,
-    required int orderId,
-    required int addressId,
-    required String deliveryOption,
-  }) async {
+  Future<OrderSummaryResponse> updateOrderSummary(
+      {required BuildContext context,
+      required int orderId,
+      required int addressId,
+      required String deliveryOption,
+      int? storeId}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('access_token');
@@ -47,25 +47,51 @@ class OrderSummaryRepository {
         throw Exception('Authentication token is missing');
       }
 
-      log("Request payload: orderId: $orderId, addressId: $addressId, deliveryOption: $deliveryOption");
-
-      final response = await dio.patch(
-        EndUrl.orderSummaryUrl,
-        data: {
-          'order_id': orderId,
-          'address_id': addressId,
-          'delivery_option': deliveryOption,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-          validateStatus: (status) {
-            return status! < 500;
-          },
-        ),
+      log(
+        "Request payload: orderId: $orderId, addressId: $addressId, deliveryOption: $deliveryOption, storeId: ${prefs.getString('store_id')}",
       );
+
+      Response? response;
+
+      if (deliveryOption == "Pick Up Store") {
+        response = await dio.patch(
+          EndUrl.orderSummaryUrl,
+          data: {
+            'order_id': orderId,
+            'address_id': addressId,
+            'delivery_option': deliveryOption,
+            'store_id': storeId.toString(),
+          },
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+            validateStatus: (status) {
+              return status! < 500;
+            },
+          ),
+        );
+      } else {
+        response = await dio.patch(
+          EndUrl.orderSummaryUrl,
+          data: {
+            'order_id': orderId,
+            'address_id': addressId,
+            'delivery_option': deliveryOption,
+            // 'store_id': storeId.toString(),
+          },
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+            validateStatus: (status) {
+              return status! < 500;
+            },
+          ),
+        );
+      }
 
       if (response.statusCode == 200) {
         log("Response data: ${response.data}");
