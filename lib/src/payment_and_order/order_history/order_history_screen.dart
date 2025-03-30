@@ -301,14 +301,26 @@ class OrderHistoryCard extends StatelessWidget {
                     final orderHistoryProvider =
                         context.read<OrderHistoryDetailProvider>();
                     await orderHistoryProvider.fetchOrderDetails(order.id);
+
+                    // Convert the tracking updates to the correct type
+                    final trackingUpdates = (orderHistoryProvider
+                                .orderDetails?.data.trackingUpdates ??
+                            [])
+                        .map((update) => TrackingUpdate(
+                              status: update.status,
+                              timestamp: update.timestamp,
+                              notes: update.notes,
+                            ))
+                        .toList();
+
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DeliveryTrackingWidget(
-                              trackingUpdates: orderHistoryProvider
-                                      .orderDetails?.data.trackingUpdates ??
-                                  []),
-                        ));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DeliveryTrackingWidget(
+                          trackingUpdates: trackingUpdates,
+                        ),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.local_shipping_outlined, size: 18),
                   label: const Text(

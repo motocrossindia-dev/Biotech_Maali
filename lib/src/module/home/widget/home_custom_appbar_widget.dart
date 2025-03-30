@@ -1,9 +1,7 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/location_popup/location_pincode_popup.dart';
-import 'package:biotech_maali/src/module/location_popup/location_pincode_provider.dart';
 import 'package:biotech_maali/src/module/product_search/product_search_screen.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
-import 'package:biotech_maali/src/payment_and_order/change_address/change_address_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 
 import '../../../../import.dart';

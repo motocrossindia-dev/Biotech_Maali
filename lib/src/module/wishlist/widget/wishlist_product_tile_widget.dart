@@ -28,7 +28,7 @@ class WishlistProductTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
+    const baseUrl = BaseUrl.baseUrlForImages;
 
     return Container(
       width: 175,
@@ -41,7 +41,11 @@ class WishlistProductTileWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0, top: 8),
                 child: InkWell(
-                    onTap: addDeleteEvent, child: const Icon(Icons.delete_outline)),
+                    onTap: addDeleteEvent,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 15.0, top: 15),
+                      child: Icon(Icons.delete_outline),
+                    )),
               )
             ],
           ),

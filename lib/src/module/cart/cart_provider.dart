@@ -1,5 +1,6 @@
 import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/cart/model/cart_item_model.dart';
+import 'package:biotech_maali/src/module/product_detail/product_details/model/recently_viewed_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
 import 'package:biotech_maali/src/widgets/add_to_cart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -91,7 +92,7 @@ class CartProvider extends ChangeNotifier {
 
       if (success) {
         _cartItems.removeWhere((item) => item.id == cartId);
-
+        refreshAllProducts(context);
         Fluttertoast.showToast(
           msg: "Item removed from cart",
           backgroundColor: Colors.green,
@@ -150,7 +151,8 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> addToCartMainProduct(int productId,bool isCart, BuildContext context) async {
+  Future<bool> addToCartMainProduct(
+      int productId, bool isCart, BuildContext context) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -165,8 +167,6 @@ class CartProvider extends ChangeNotifier {
         showCartMessage(context, false);
         return true;
       }
-
-    
     } catch (e) {
       _error = e.toString();
       Fluttertoast.showToast(
@@ -240,5 +240,11 @@ class CartProvider extends ChangeNotifier {
       _isPlacingOrder = false;
       notifyListeners();
     }
+  }
+
+  void refreshAllProducts(BuildContext context) {
+    final homeProvider = context.read<HomeProvider>();
+    // final productListProdvider = context.read<ProductListProdvider>();
+    homeProvider.fetchHomeProducts();
   }
 }

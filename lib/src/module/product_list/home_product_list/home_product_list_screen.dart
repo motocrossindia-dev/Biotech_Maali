@@ -41,7 +41,7 @@ class _HomeProductListScreenState extends State<HomeProductListScreen> {
   }
 
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    // await Future.delayed(const Duration(milliseconds: 50));
     if (mounted) {
       setState(() {
         _isLoading = false;

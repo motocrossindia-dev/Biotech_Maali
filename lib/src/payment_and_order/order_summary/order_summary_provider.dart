@@ -1,6 +1,6 @@
 import 'dart:developer';
-import 'package:biotech_maali/biotech_app.dart';
 import 'package:biotech_maali/src/payment_and_order/change_address/model/address_model.dart';
+import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_screen.dart';
 import 'package:biotech_maali/src/payment_and_order/local_store_list/local_store_list_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_response_model.dart';
@@ -25,6 +25,7 @@ class OrderSummaryProvider extends ChangeNotifier {
   String selectedDeliveryOption = 'Standard';
   bool isAddressSelected = false;
   OrderData? _orderData;
+  // double totalAmount = 0.0;
 
   OrderData? get orderData => _orderData;
   bool get isLoading => _isLoading;
@@ -128,7 +129,7 @@ class OrderSummaryProvider extends ChangeNotifier {
       );
 
       log("orderSummary Response: ${orderSummaryResponse.data.order.orderId}");
-
+      context.read<ChoosePaymentProvider>().handleWalletCheckbox(false, null);
       Navigator.push(
         context,
         MaterialPageRoute(

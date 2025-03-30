@@ -258,9 +258,9 @@ class _ReferralPopupState extends State<ReferralPopup>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Icon(Icons.share, color: Colors.white),
                     SizedBox(width: 10),
                     Text(

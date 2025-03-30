@@ -14,10 +14,39 @@ class ChoosePaymentProvider extends ChangeNotifier {
   String _error = '';
   OrderSummaryResponse? _orderSummaryResponse;
 
+  bool isWalletCheckbox = false;
+  bool isOnlineRadioButton = true;
+  double _walletBalence = 0.0;
   bool get isLoading => _isLoading;
   String get error => _error;
   BuildContext context;
   int? orderId;
+
+  void handleOnlinePaymentOption(bool value) {
+    isOnlineRadioButton = !value;
+    log("value : $value");
+    notifyListeners();
+  }
+
+  void handleCashOnDeliveryPayment(bool value) {
+
+    
+    isOnlineRadioButton = value;
+    log("value : $value");
+    notifyListeners();
+  }
+
+  void handleWalletCheckbox(bool value, double? walletBalence) {
+    isWalletCheckbox = value;
+    if (walletBalence != null) {
+      _walletBalence = walletBalence;
+    } else {
+      _walletBalence = 0.0;
+    }
+
+    log("wallet balance : $_walletBalence");
+    notifyListeners();
+  }
 
   ChoosePaymentProvider(this.context) {
     _razorpay = Razorpay();
@@ -26,16 +55,17 @@ class ChoosePaymentProvider extends ChangeNotifier {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  void setOrderSummary(OrderSummaryResponse response) {
-    _orderSummaryResponse = response;
-    notifyListeners();
-  }
+  // void setOrderSummary(OrderSummaryResponse response) {
+  //   _orderSummaryResponse = response;
+  //   notifyListeners();
+  // }
 
   Future<void> initiatePayment(
-      BuildContext context, OrderSummaryResponse response) async {
-    log("order summary response : ${response.toString()}");
+      BuildContext context, OrderSummaryResponse orderSummaryResponse) async {
+    log("order summary response : ${orderSummaryResponse.data.order.grandTotal}");
 
-    _orderSummaryResponse = response;
+    _orderSummaryResponse = orderSummaryResponse;
+
     try {
       _isLoading = true;
       _error = '';
@@ -57,7 +87,7 @@ class ChoosePaymentProvider extends ChangeNotifier {
 
       final options = {
         "key": "rzp_test_zu1D9WznwNYRVG",
-        "amount": (_orderSummaryResponse!.data.order.grandTotal * 100).toInt(),
+        "amount": (orderSummaryResponse.data.order.grandTotal * 100).toInt(),
         "name": "Biotech Maali",
         "description": "Order #${_orderSummaryResponse!.data.order.orderId}",
         "order_id": response["razorpay_order"]['id'],
@@ -80,6 +110,7 @@ class ChoosePaymentProvider extends ChangeNotifier {
       );
     } finally {
       _isLoading = false;
+      // isWalletCheckbox = false;
       notifyListeners();
     }
   }
@@ -95,6 +126,8 @@ class ChoosePaymentProvider extends ChangeNotifier {
       );
 
       if (navigatorKey.currentContext != null) {
+        isWalletCheckbox = false;
+        notifyListeners();
         // Show success dialog
         showDialog(
           context: navigatorKey.currentContext!,

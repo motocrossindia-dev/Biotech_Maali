@@ -62,12 +62,12 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup>
                 ),
                 const SizedBox(height: 20),
                 // Success Text
-                const Text(
+                Text(
                   'Payment Successful!',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: cButtonGreen,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -85,47 +85,34 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup>
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                        ),
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const OrderHistoryScreen(),
-                            ),
-                            (route) => false,
-                          );
-                        },
-                        child: const Text(
-                          'Order History',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
+                        child: CustomizableBorderColoredButton(
+                      title: 'View Order',
+                      fontSize: 12,
+                      event: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrderHistoryScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                    )),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                        ),
-                        onPressed: () {
+                      child: CustomizableButton(
+                        fontSize: 12,
+                        title: 'Go Home',
+                        event: () async {
                           context.read<BottomNavProvider>().updateIndex(0);
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>  BottomNavWidget(),
+                              builder: (context) => BottomNavWidget(),
                             ),
                             (route) => false,
                           );
                         },
-                        child: const Text(
-                          'Go Home',
-                          style: TextStyle(color: Colors.white),
-                        ),
                       ),
                     ),
                   ],

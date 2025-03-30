@@ -23,15 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    final homeProvider = context.read<HomeProvider>();
+    // final homeProvider = context.read<HomeProvider>();
 
     _initializeWidgets();
     _setupScrollController();
     // Fetch data when screen initializes
-    homeProvider.fetchHomeProducts();
-    homeProvider.fetchMainCategories();
-    homeProvider.fetchBanners();
-    homeProvider.validateToken(context);
+    // homeProvider.fetchHomeProducts();
+    // homeProvider.fetchMainCategories();
+    // homeProvider.fetchBanners();
+    // homeProvider.validateToken(context);
     context.read<ReferFriendProvider>().getReferralDetails();
   }
 

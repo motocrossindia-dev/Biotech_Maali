@@ -51,4 +51,6 @@ class EndUrl {
   static String addRatingAndRiviewUrl = "${baseUrl}product/ratingAndReviews/";
   static String pdfInvoiceUrl = "${baseUrl}order/invoice/";
   static String storeListUrl = "${baseUrl}store/store_list/";
+  static String getWalletUrl = "${baseUrl}wallet/wallet/";
+  static String getWalletTransactionUrl = "${baseUrl}wallet/transactions/"; 
 }

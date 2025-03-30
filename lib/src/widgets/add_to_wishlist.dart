@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
+
 import '../../import.dart';
 
 void showWishlistMessage(BuildContext context, bool isAdded) {
@@ -86,7 +88,7 @@ void showWishlistMessage(BuildContext context, bool isAdded) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const CartScreen()),
+            MaterialPageRoute(builder: (context) => const WishlistScreen()),
           );
         },
       ),

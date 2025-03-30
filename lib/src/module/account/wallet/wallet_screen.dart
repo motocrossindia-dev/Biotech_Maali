@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:biotech_maali/src/module/account/wallet/wallet_history/wallet_history_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../import.dart';
 
@@ -10,9 +9,16 @@ class WalletScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WalletProvider();
     return Consumer<WalletProvider>(
       builder: (context, walletProvider, _) {
+        if (walletProvider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (walletProvider.error != null) {
+          return Center(child: Text('Error: ${walletProvider.error}'));
+        }
+
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -21,136 +27,116 @@ class WalletScreen extends StatelessWidget {
             ),
             title: const Text('Wallet'),
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Balance Card
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Total Wallet Balance',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '₹${walletProvider.balance.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                const Text('Top Up Wallet', style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 16),
-
-                // Amount Input Field
-                TextFormField(
-                  controller: walletProvider.amountController,
-                  onChanged: (value) {
-                    log("value: $value");
-                    if (value == "") {
-                      int amount = int.parse("0");
-                      walletProvider.setSelectedAmount(amount);
-                      return;
-                    }
-                    int amount = int.parse(value);
-                    walletProvider.setSelectedAmount(amount);
-                  },
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter amount',
-                  ),
-                  readOnly: false,
-                ),
-                const SizedBox(height: 16),
-
-                // Quick Amount Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildAmountButton(context, 1000, walletProvider),
-                    _buildAmountButton(context, 500, walletProvider),
-                    _buildAmountButton(context, 100, walletProvider),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Proceed Button
-                ElevatedButton(
-                  onPressed: walletProvider.selectedAmount > 0
-                      ? () => _proceedToPayment(context)
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          8), // Adjust the radius value as needed
-                    ),
-                    backgroundColor: cButtonGreen,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'PROCEED TO TOP-UP',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Transaction History Button
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const WalletHistoryScreen(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await walletProvider.fetchWalletDetails();
+              await walletProvider.fetchTransactions();
+            },
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Balance Card
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
                         children: [
-                          Icon(Icons.sync, color: Colors.blue[900]),
-                          const SizedBox(width: 8),
+                          const Text(
+                            'Total Wallet Balance',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 8),
                           Text(
-                            'WALLET TRANSACTION HISTORY',
-                            style: TextStyle(color: Colors.blue[900]),
+                            '₹${walletProvider.balance.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
                           ),
                         ],
                       ),
-                      Icon(Icons.chevron_right, color: Colors.blue[900]),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  const Text('Top Up Wallet', style: TextStyle(fontSize: 18)),
+                  const SizedBox(height: 16),
+
+                  // Amount Input Field
+                  TextFormField(
+                    controller: walletProvider.amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter amount',
+                      prefixText: '₹',
+                    ),
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        walletProvider.setSelectedAmount(0);
+                        return;
+                      }
+                      walletProvider.setSelectedAmount(int.parse(value));
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Quick Amount Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildAmountButton(context, 100, walletProvider),
+                      _buildAmountButton(context, 500, walletProvider),
+                      _buildAmountButton(context, 1000, walletProvider),
                     ],
                   ),
-                ),
-                sizedBoxHeight20,
+                  const SizedBox(height: 24),
 
-                // Recent Transactions
-                _buildRecentTransactions(
-                    title: "Wallet, Refund & Gift Credits",
-                    subTitle: "100% Utilization",
-                    totalAmount: "₹0"),
-                _buildRecentTransactions(
-                    title: "Biotech Maali Rewards",
-                    subTitle: "25% Utilization On Cart Value",
-                    totalAmount: "₹1500"),
-              ],
+                  // Recent Transactions
+                  if (walletProvider.transactions.isNotEmpty) ...[
+                    const Text(
+                      'Recent Transactions',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    ...walletProvider.transactions.take(3).map((transaction) {
+                      return Card(
+                        child: ListTile(
+                          title: Text(transaction.description),
+                          subtitle: Text(
+                            DateFormat('dd MMM yyyy').format(transaction.createdAt),
+                          ),
+                          trailing: Text(
+                            '₹${transaction.amount}',
+                            style: TextStyle(
+                              color: transaction.isCredit ? Colors.green : Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
+
+                  const SizedBox(height: 16),
+
+                  // View All Transactions Button
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WalletHistoryScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('VIEW ALL TRANSACTIONS'),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -170,81 +156,6 @@ class WalletScreen extends StatelessWidget {
         ),
       ),
       child: Text('₹$amount'),
-    );
-  }
-
-  Widget _buildRecentTransactions({
-    required String title,
-    required String subTitle,
-    required String totalAmount,
-  }) {
-    return Card(
-      child: ListTile(
-        title: Text(title),
-        subtitle: Text(subTitle),
-        trailing: Text(
-          totalAmount,
-          style: const TextStyle(
-            fontSize: 15,
-            color: Colors.green,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _proceedToPayment(BuildContext context) {
-    // Here you would typically integrate with Razorpay
-    // For demo, we'll just show the success screen
-    showDialog(
-      context: context,
-      builder: (context) => const PaymentSuccessDialog(),
-    );
-  }
-}
-
-// Payment Success Dialog
-class PaymentSuccessDialog extends StatelessWidget {
-  const PaymentSuccessDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.blue[900],
-              size: 48,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Top Up Success',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text('your top up has been done'),
-            const SizedBox(height: 8),
-            const Text(
-              'Total Top Up',
-              style: TextStyle(color: Colors.grey),
-            ),
-            Text(
-              '₹${context.read<WalletProvider>().selectedAmount}',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

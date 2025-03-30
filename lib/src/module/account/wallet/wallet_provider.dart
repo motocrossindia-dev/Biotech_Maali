@@ -1,21 +1,65 @@
 import 'package:biotech_maali/src/module/account/wallet/wallet_model.dart';
+import 'package:biotech_maali/src/module/account/wallet/wallet_repository.dart';
 import 'package:flutter/material.dart';
 
 class WalletProvider extends ChangeNotifier {
+  final WalletRepository _repository = WalletRepository();
+
   WalletProvider() {
-    initializeData();
+    fetchWalletDetails();
+    fetchTransactions();
   }
+
   double _balance = 0.0;
   int _selectedAmount = 0;
-  List<WalletTransactionModel> _transactions = [];
+  bool _isLoading = false;
+  List<Transaction> _transactions = [];
+  String? _error;
 
   final TextEditingController _amountController = TextEditingController();
+
   TextEditingController get amountController => _amountController;
   double get balance => _balance;
   int get selectedAmount => _selectedAmount;
-  List<WalletTransactionModel> get transactions => _transactions;
-  List<WalletTransactionModel> get recentTransactions =>
-      _transactions.take(3).toList();
+  List<Transaction> get transactions => _transactions;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> fetchWalletDetails() async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final response = await _repository.getWalletDetails();
+      _balance = double.parse(response.data.balance);
+
+      _isLoading = false;
+      _error = null;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchTransactions() async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final response = await _repository.getTransactions();
+      _transactions = response.data.transactions;
+
+      _isLoading = false;
+      _error = null;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
 
   void setSelectedAmount(int amount) {
     _amountController.text = amount.toString();
@@ -25,51 +69,8 @@ class WalletProvider extends ChangeNotifier {
 
   void addBalance(double amount) {
     _balance += amount;
-    _transactions.insert(
-        0,
-        WalletTransactionModel(
-          title: 'Topup',
-          amount: amount,
-          isCredit: true,
-          date: DateTime.now(),
-        ));
     notifyListeners();
-  }
-
-  // Initialize with some dummy data
-  void initializeData() {
-    _transactions = [
-      WalletTransactionModel(
-          title: 'Promotional Reward Added on Registration',
-          amount: 500,
-          isCredit: true,
-          date: DateTime.now()),
-      WalletTransactionModel(
-          title: 'Hanif(Referral)',
-          amount: 500,
-          isCredit: true,
-          date: DateTime.now()),
-      WalletTransactionModel(
-          title: 'Lily Plant',
-          amount: 500,
-          isCredit: false,
-          date: DateTime.now()),
-      WalletTransactionModel(
-          title: 'Hanif(Referral)',
-          amount: 500,
-          isCredit: true,
-          date: DateTime.now()),
-      WalletTransactionModel(
-          title: 'Promotional Reward Added on Registration',
-          amount: 500,
-          isCredit: true,
-          date: DateTime.now()),
-      WalletTransactionModel(
-          title: 'Lily Plant',
-          amount: 500,
-          isCredit: false,
-          date: DateTime.now())
-    ];
-    notifyListeners();
+    fetchWalletDetails(); // Refresh wallet details after adding balance
+    fetchTransactions(); // Refresh transactions
   }
 }

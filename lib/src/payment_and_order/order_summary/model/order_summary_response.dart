@@ -41,7 +41,7 @@ class OrderSummaryDetails {
   final String customerName;
   final double totalPrice;
   final double totalDiscount;
-  final double grandTotal;
+   double grandTotal;
   final String email;
   final String mobile;
   final String? trackingId;

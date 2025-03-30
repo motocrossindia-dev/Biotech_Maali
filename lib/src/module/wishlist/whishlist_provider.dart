@@ -52,13 +52,16 @@ class WishlistProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFromWishlist(int productId) async {
+  Future<void> removeFromWishlist(int productId, BuildContext context) async {
     try {
       bool result = await _wishlistRepository.removeFromWishlist(productId);
       if (result) {
+        _products.removeWhere((item) => item.id == productId);
+        notifyListeners();
+        final homeProvider = context.read<HomeProvider>();
+        homeProvider.fetchHomeProducts();
         Fluttertoast.showToast(msg: "Item deleted from the wishlist");
       }
-      await fetchWishlist(); // Refresh the list
     } catch (e) {
       _error = e.toString();
       notifyListeners();

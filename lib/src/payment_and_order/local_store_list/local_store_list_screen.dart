@@ -109,7 +109,7 @@ class _SelectLocalStoreScreenState extends State<SelectLocalStoreScreen> {
                           onPressed: () =>
                               Navigator.pop(context, provider.selectedStore),
                           child: const CommonTextWidget(
-                            title: 'DELIVER HERE',
+                            title: 'PICKUP HERE',
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),

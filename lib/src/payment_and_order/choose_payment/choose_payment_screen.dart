@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
+import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
 import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_summary_response.dart';
 
@@ -12,6 +14,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  bool _showCODMessage = false;
   @override
   Widget build(BuildContext context) {
     final orderDetails = widget.orderSummaryResponse;
@@ -70,14 +73,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           isGreen: true),
                       _buildPriceRow('Delivery Charges', 'Free',
                           originalPrice: '₹', isGreen: true),
-                      _buildPriceRow('Secured Packaging Fee', '' /*₹198*/),
+                      _buildPriceRow('Secured Packaging Fee', ''),
 
                       const Divider(height: 32),
 
                       // Total
-                      _buildPriceRow('Total Amount',
-                          '₹${orderDetails.data.order.grandTotal}',
-                          isBold: true),
+                      _buildPriceRow(
+                        'Total Amount',
+                        '₹${orderDetails.data.order.grandTotal}',
+                        isBold: true,
+                      ),
 
                       // Savings
                       Padding(
@@ -93,18 +98,63 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                       // Payment Options
                       const SizedBox(height: 20),
-                      _buildPaymentOption(
-                        'Redeem Cashback',
-                        '-₹799.00',
-                        isCheckbox: true,
+                      Consumer<WalletProvider>(
+                        builder: (context, walletProvider, child) {
+                          return _buildPaymentOption(
+                            'Redeem Cashback',
+                            walletProvider.balance.toStringAsFixed(1),
+                            isCheckbox: true,
+                          );
+                        },
                       ),
-                      _buildPaymentOption(
-                        'Razorpay Secure (UPI, Cards, Wallets, NetBanking)',
-                        '',
-                        showPaymentIcons: true,
+                      Consumer<ChoosePaymentProvider>(
+                        builder: (context, choosePaymentProvider, child) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildPaymentOption(
+                                'Razorpay Secure (UPI, Cards, Wallets, NetBanking)',
+                                '',
+                                showPaymentIcons: true,
+                                onChanged: (value) {
+                                  choosePaymentProvider
+                                      .handleOnlinePaymentOption(value!);
+                                },
+                                radioValue:
+                                    choosePaymentProvider.isOnlineRadioButton,
+                                radioGroupValue: true,
+                              ),
+                              _buildPaymentOption(
+                                'Cash on Delivery/Pay on Delivery',
+                                '',
+                                onChanged: (value) {
+                                  // choosePaymentProvider
+                                  //     .handleCashOnDeliveryPayment(value!);
+
+                                  setState(() {
+                                    _showCODMessage = true;
+                                  });
+
+                                  Future.delayed(const Duration(seconds: 2),
+                                      () {
+                                    if (mounted) {
+                                      setState(() {
+                                        _showCODMessage = false;
+                                      });
+                                    }
+                                  });
+                                },
+                                radioValue:
+                                    !choosePaymentProvider.isOnlineRadioButton,
+                                radioGroupValue: true,
+                                message: _showCODMessage
+                                    ? 'Cash on Delivery is not available to this area'
+                                    : null,
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                      _buildPaymentOption(
-                          'Cash on Delivery/Pay on Delivery', ''),
                     ],
                   ),
                 ),
@@ -189,21 +239,69 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget _buildPaymentOption(String label, String amount,
-      {bool isCheckbox = false, bool showPaymentIcons = false}) {
+  Widget _buildPaymentOption(
+    String label,
+    String amount, {
+    bool isCheckbox = false,
+    bool showPaymentIcons = false,
+    Function(bool?)? onChanged,
+    bool radioValue = false,
+    bool radioGroupValue = false,
+    String? message,
+  }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           if (isCheckbox)
-            Checkbox(value: false, onChanged: (value) {})
+            Checkbox(
+              value: context.watch<ChoosePaymentProvider>().isWalletCheckbox,
+              onChanged: (value) {
+                if (value == true) {
+                  widget.orderSummaryResponse.data.order.grandTotal =
+                      widget.orderSummaryResponse.data.order.grandTotal -
+                          double.parse(amount);
+                } else if (value == false) {
+                  widget.orderSummaryResponse.data.order.grandTotal =
+                      widget.orderSummaryResponse.data.order.grandTotal +
+                          double.parse(amount);
+                }
+                context.read<ChoosePaymentProvider>().handleWalletCheckbox(
+                    value!, context.read<WalletProvider>().balance);
+              },
+            )
           else
-            Radio(value: false, groupValue: true, onChanged: (value) {}),
+            Radio(
+                value: radioValue,
+                groupValue: radioGroupValue,
+                onChanged: onChanged),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label),
+                if (message != null)
+                  AnimatedOpacity(
+                    opacity: message.isNotEmpty ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      margin: const EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          color: Colors.red.shade700,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  Text(label),
                 if (showPaymentIcons)
                   Row(
                     children: [
@@ -246,7 +344,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           if (amount.isNotEmpty)
             Text(
-              amount,
+              "₹$amount",
               style: TextStyle(
                 color: Colors.green[600],
                 fontWeight: FontWeight.w500,
