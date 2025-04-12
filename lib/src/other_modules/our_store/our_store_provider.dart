@@ -1,6 +1,5 @@
 import 'package:biotech_maali/src/other_modules/our_store/model/our_store_model.dart';
 import 'package:biotech_maali/src/other_modules/our_store/our_store_repository.dart';
-
 import '../../../import.dart';
 
 class OurStoreProvider with ChangeNotifier {

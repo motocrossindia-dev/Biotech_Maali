@@ -1,7 +1,5 @@
-import 'package:biotech_maali/core/core.dart';
 import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_model.dart';
-import 'package:dio/dio.dart';
 
 class WalletRepository {
   final Dio dio = Dio();

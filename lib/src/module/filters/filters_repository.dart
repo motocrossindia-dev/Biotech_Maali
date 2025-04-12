@@ -24,9 +24,13 @@ class FiltersRepository {
 
   Future<List<Product>> applyFilters(
       String type, Map<String, dynamic> filters) async {
+    String result =
+        type.isNotEmpty ? type.toLowerCase().substring(0, type.length - 1) : '';
+
+    log("Result: ${result.toString()}");
     try {
       final queryParams = {
-        'type': type.toLowerCase(),
+        'type': result.toString(),
         ...filters,
       };
 

@@ -99,26 +99,32 @@ class WalletScreen extends StatelessWidget {
                   if (walletProvider.transactions.isNotEmpty) ...[
                     const Text(
                       'Recent Transactions',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    ...walletProvider.transactions.take(3).map((transaction) {
-                      return Card(
-                        child: ListTile(
-                          title: Text(transaction.description),
-                          subtitle: Text(
-                            DateFormat('dd MMM yyyy').format(transaction.createdAt),
-                          ),
-                          trailing: Text(
-                            '₹${transaction.amount}',
-                            style: TextStyle(
-                              color: transaction.isCredit ? Colors.green : Colors.red,
-                              fontWeight: FontWeight.bold,
+                    ...walletProvider.transactions.take(3).map(
+                      (transaction) {
+                        return Card(
+                          child: ListTile(
+                            title: Text(transaction.description),
+                            subtitle: Text(
+                              DateFormat('dd MMM yyyy')
+                                  .format(transaction.createdAt),
+                            ),
+                            trailing: Text(
+                              '₹${transaction.amount}',
+                              style: TextStyle(
+                                color: transaction.isCredit
+                                    ? Colors.green
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      },
+                    ),
                   ],
 
                   const SizedBox(height: 16),

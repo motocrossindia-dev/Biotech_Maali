@@ -7,6 +7,7 @@ import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/wishlist_screen.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/module/product_list/product_list_shimmer.dart';
+import 'package:biotech_maali/src/widgets/shimmer/product_tile_shimmer.dart';
 
 import '../../../../import.dart';
 
@@ -29,6 +30,7 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   String _selectedOption = 'Default';
+  final ScrollController _scrollController = ScrollController();
 
   final List<String> _sortOptions = [
     'Default',
@@ -41,11 +43,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_scrollListener);
 
     if (widget.isCategory) {
-      context
-          .read<ProductListProdvider>()
-          .getCategoryProductList(categoryId: widget.id);
+      if (widget.title == "OFFERS") {
+        context.read<ProductListProdvider>().getOfferProductList(context);
+      } else {
+        context
+            .read<ProductListProdvider>()
+            .getCategoryProductList(categoryId: widget.id);
+      }
     } else {
       context
           .read<ProductListProdvider>()
@@ -54,6 +61,32 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
     // Set local _selectedOption to match provider's current sort option
     _selectedOption = context.read<ProductListProdvider>().currentSortOption;
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      final provider = context.read<ProductListProdvider>();
+      if (!provider.isLoadingMore && provider.hasMoreData) {
+        if (widget.isCategory) {
+          if (widget.title == "OFFERS") {
+            provider.getOfferProductList(context, loadMore: true);
+          } else {
+            provider.getCategoryProductList(
+                categoryId: widget.id, loadMore: true);
+          }
+        } else {
+          provider.getSubCategoryProductList(
+              subCategoryId: widget.id, loadMore: true);
+        }
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -89,6 +122,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       body: context.watch<ProductListProdvider>().isLoading
           ? const ProductListShimmer()
           : SingleChildScrollView(
+              controller: _scrollController,
               child: Consumer<ProductListProdvider>(
                 builder: (context, provider, child) {
                   List<Product> products = provider.allProducts;
@@ -203,15 +237,25 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           },
                         ),
                       ),
+                      if (provider.isLoadingMore)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ProductTileShimmer(),
+                              SizedBox(width: 15),
+                              ProductTileShimmer(),
+                            ],
+                          ),
+                        ),
                       sizedBoxHeight70,
                     ],
                   );
                 },
               ),
             ),
-      bottomNavigationBar:
-      
-       Container(
+      bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: cWhiteColor,
           boxShadow: [

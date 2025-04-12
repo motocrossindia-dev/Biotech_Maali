@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/account/coin/coin_provider.dart';
+import 'package:intl/intl.dart';
 import '../../../../../import.dart';
 
 class CoinHistoryScreen extends StatelessWidget {
@@ -178,7 +179,8 @@ class CoinHistoryScreen extends StatelessWidget {
                           ),
                           title: Text(transaction.reference),
                           subtitle: Text(
-                            transaction.createdAt.toIso8601String(),
+                            DateFormat('dd MMM yyyy, hh:mm a')
+                                .format(transaction.createdAt),
                             style: const TextStyle(
                               fontSize: 12,
                               color: Colors.grey,

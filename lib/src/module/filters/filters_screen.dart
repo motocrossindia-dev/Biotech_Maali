@@ -17,6 +17,7 @@ class _FilterScreenState extends State<FilterScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FiltersProvider>().resetAllFilters();
       log("category name : ${widget.type}");
       context.read<FiltersProvider>().loadFilters(widget.type);
     });

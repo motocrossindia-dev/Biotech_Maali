@@ -42,6 +42,7 @@ class EndUrl {
   static String categoryProductUrl = "${baseUrl}product/category-products/";
   static String subCategoryProductUrl =
       "${baseUrl}product/subcategory-products/";
+  static String getOfferproductList = "${baseUrl}product/offerProducts/";
   static String getCouponsUrl = "${baseUrl}coupon/coupons/";
   static String applyCouponUrl = "${baseUrl}order/applyCoupon/";
   static String comboOffersUrl = "${baseUrl}combo/combo-offers/";
@@ -52,5 +53,5 @@ class EndUrl {
   static String pdfInvoiceUrl = "${baseUrl}order/invoice/";
   static String storeListUrl = "${baseUrl}store/store_list/";
   static String getWalletUrl = "${baseUrl}wallet/wallet/";
-  static String getWalletTransactionUrl = "${baseUrl}wallet/transactions/"; 
+  static String getWalletTransactionUrl = "${baseUrl}wallet/transactions/";
 }

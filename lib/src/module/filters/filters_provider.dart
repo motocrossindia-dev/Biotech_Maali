@@ -119,6 +119,7 @@ class FiltersProvider extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
+      log("Type : $type");
 
       final params = getFilterParams();
       final result = await _repository.applyFilters(type, params);
@@ -126,6 +127,7 @@ class FiltersProvider extends ChangeNotifier {
       log("result . lenght : ${result.length}");
 
       context.read<ProductListProdvider>().setFilteredProducts(result);
+      resetAllFilters();
       isLoading = false;
       notifyListeners();
 
