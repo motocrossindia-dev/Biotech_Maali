@@ -54,32 +54,5 @@ class ProductSearchRepository {
       log("Error: ${e.toString()}");
       throw Exception('Failed to search products: $e');
     }
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? token = prefs.getString("access_token");
-    // try {
-    //   Uri uri = Uri.parse(url);
-    //   String pageNumber = uri.queryParameters['page'] ?? '1';
-
-    //   final response = await _dio.post(
-    //     EndUrl.searchUrl,
-    //     data: {
-    //       'search': searchQuery, // Pass the original search query
-    //       'page': pageNumber,
-    //     },
-    //     options: Options(headers: {
-    //       if (token != null) 'Authorization': 'Bearer $token',
-    //       'Content-Type': 'application/json',
-    //     }),
-    //   );
-
-    //   if (response.data['message'] == 'success') {
-    //     return SearchResponse.fromJson(response.data);
-    //   }
-    //   return SearchResponse(products: [], count: 0);
-    // } catch (e) {
-    //   log("Error: ${e.toString()}");
-    //   throw Exception('Failed to load more products: $e');
-    // }
   }
 }

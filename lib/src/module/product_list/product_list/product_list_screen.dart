@@ -178,6 +178,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             );
                           },
                           child: ProductTileWidget(
+                            isOffer: widget.title == "OFFERS" ? true : false,
                             mainProdId: product.id,
                             productTitle: product.name,
                             productImage: product.image,

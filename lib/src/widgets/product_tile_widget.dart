@@ -3,6 +3,7 @@ import '../../import.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductTileWidget extends StatelessWidget {
+  final bool? isOffer;
   final String productTitle;
   final String? productImage;
   final String tempImage;
@@ -17,6 +18,7 @@ class ProductTileWidget extends StatelessWidget {
   final int? mainProdId;
 
   const ProductTileWidget({
+    this.isOffer,
     required this.productTitle,
     this.productImage,
     required this.tempImage,
@@ -32,10 +34,64 @@ class ProductTileWidget extends StatelessWidget {
     super.key,
   });
 
+  String _calculateDiscountPercentage() {
+    if (discountAmount == null ||
+        actualAmount.isEmpty ||
+        discountAmount!.isEmpty) return '0';
+    final actual = double.tryParse(actualAmount) ?? 0;
+    final discount = double.tryParse(discountAmount!) ?? 0;
+    if (actual == 0) return '0';
+    final percentage = ((actual - discount) / actual * 100).round();
+    return percentage.toString();
+  }
+
+  Widget _buildProductImage() {
+    const baseUrl = BaseUrl.baseUrlForImages;
+    return Stack(
+      children: [
+        productImage != null
+            ? SizedBox(
+                height: 150,
+                child: CachedNetworkImage(
+                  imageUrl: '$baseUrl$productImage',
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      _buildNoImagePlaceholder(),
+                ),
+              )
+            : _buildNoImagePlaceholder(),
+        if (isOffer == true)
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: cButtonGreen,
+                borderRadius: const BorderRadius.only(
+                  // topLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
+              child: Text(
+                '${_calculateDiscountPercentage()}% OFF',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    const baseUrl = BaseUrl.baseUrlForImages;
-
     return Container(
       width: 175,
       decoration: BoxDecoration(color: cAppBackround),
@@ -61,20 +117,7 @@ class ProductTileWidget extends StatelessWidget {
                   ],
                 )
               : sizedBoxHeight08,
-          productImage != null
-              ? SizedBox(
-                  height: 150,
-                  child: CachedNetworkImage(
-                    imageUrl: '$baseUrl$productImage',
-                    fit: BoxFit.fill,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    errorWidget: (context, url, error) =>
-                        _buildNoImagePlaceholder(),
-                  ),
-                )
-              : _buildNoImagePlaceholder(),
+          _buildProductImage(),
           sizedBoxHeight10,
           RatingBarWidget(
             rating: rating ?? 0,
@@ -117,30 +160,6 @@ class ProductTileWidget extends StatelessWidget {
                     title: isCart ? "Go To Cart" : 'Add To Cart',
                     height: 38,
                     event: addToCartEvent,
-                    // isCart
-                    //     ? () {
-                    //         context.read<BottomNavProvider>().updateIndex(3);
-                    //         Navigator.pushAndRemoveUntil(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //             builder: (context) => BottomNavWidget(),
-                    //           ),
-                    //           (route) => false,
-                    //         );
-                    //       }
-                    //     : () async {
-                    //         final settingsProvider =
-                    //             context.read<SettingsProvider>();
-                    //         bool isAuth = await settingsProvider
-                    //             .checkAccessTokenValidity(context);
-
-                    //         if (!isAuth) {
-                    //           _showLoginDialog(context);
-                    //           return;
-                    //         }
-                    //         context.read<HomeProvider>().addToCartMainProduct(
-                    //             mainProdId!, isCart, context);
-                    //       },
                   ),
                 )
               : sizedBoxHeight0
