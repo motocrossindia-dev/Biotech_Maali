@@ -15,6 +15,11 @@ class FiltersProvider extends ChangeNotifier {
   RangeValues _currentRangeValues = const RangeValues(0, 9999);
   RangeValues get currentRangeValues => _currentRangeValues;
 
+  bool _isLoadingMore = false;
+  String? _nextPageUrl;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasMoreData => _nextPageUrl != null;
+
   Future<void> loadFilters(String type) async {
     String category = "";
     if (type == "POTS") {
@@ -115,27 +120,53 @@ class FiltersProvider extends ChangeNotifier {
     return params;
   }
 
-  Future<List<Product>> applyFilters(String type, BuildContext context) async {
+  Future<List<Product>> applyFilters(String type, BuildContext context,
+      {bool loadMore = false}) async {
     try {
-      isLoading = true;
+      if (loadMore) {
+        if (_isLoadingMore || !hasMoreData) return [];
+        _isLoadingMore = true;
+      } else {
+        isLoading = true;
+        // Reset pagination on fresh filter
+        _nextPageUrl = null;
+      }
       notifyListeners();
+
       log("Type : $type");
-
       final params = getFilterParams();
-      final result = await _repository.applyFilters(type, params);
+      final filterResult = await _repository.applyFilters(type, params,
+          nextPageUrl: loadMore ? _nextPageUrl : null);
 
-      log("result . lenght : ${result.length}");
+      log("message : ${filterResult.message}");
+      log("products : ${filterResult.products.length}");
+      log("next page URL: ${filterResult.nextPage}");
 
-      context.read<ProductListProdvider>().setFilteredProducts(result);
-      resetAllFilters();
-      isLoading = false;
-      notifyListeners();
+      _nextPageUrl = filterResult.nextPage;
+      final List<Product> products = filterResult.products;
 
-      return result;
+      if (!loadMore) {
+        // Reset products on fresh filter
+        context.read<ProductListProdvider>().setFilteredProducts(products);
+        resetAllFilters();
+      } else {
+        // Append products on pagination
+        context.read<ProductListProdvider>().appendProducts(products);
+      }
+
+      return products;
     } catch (e) {
+      log("Filter error: $e");
+      rethrow;
+    } finally {
       isLoading = false;
+      _isLoadingMore = false;
       notifyListeners();
-      throw Exception('Failed to apply filters');
     }
+  }
+
+  void resetPagination() {
+    _nextPageUrl = null;
+    _isLoadingMore = false;
   }
 }

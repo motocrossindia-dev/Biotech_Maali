@@ -12,9 +12,12 @@ class ProductListModel {
   });
 
   factory ProductListModel.fromJson(Map<String, dynamic> json) {
+    // Handle both 'products' and 'results' keys
+    List<dynamic> productsList = json['products'] ?? json['results'] ?? [];
+
     return ProductListModel(
       message: json['message']?.toString() ?? '',
-      products: (json['products'] as List? ?? [])
+      products: productsList
           .map((productJson) => Product.fromJson(productJson))
           .toList(),
       nextPage: json['next']?.toString(),

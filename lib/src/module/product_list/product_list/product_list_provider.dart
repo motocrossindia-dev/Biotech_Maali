@@ -24,8 +24,10 @@ class ProductListProdvider extends ChangeNotifier {
   bool get hasMoreData => _nextPageUrl != null;
 
   setFilteredProducts(List<Product> products) async {
-    _originalProducts = List.from(products); // Store original order
+    log("Setting filtered products: ${products.length}");
+    _originalProducts = List.from(products);
     _allProducts = products;
+    log("After setting - allProducts length: ${_allProducts.length}");
     notifyListeners();
   }
 
@@ -222,6 +224,14 @@ class ProductListProdvider extends ChangeNotifier {
     }
 
     _allProducts = sortedProducts;
+    notifyListeners();
+  }
+
+  appendProducts(List<Product> newProducts) {
+    log("Appending ${newProducts.length} products to existing ${_allProducts.length}");
+    _allProducts.addAll(newProducts);
+    _originalProducts.addAll(List.from(newProducts));
+    log("After appending - total products: ${_allProducts.length}");
     notifyListeners();
   }
 }

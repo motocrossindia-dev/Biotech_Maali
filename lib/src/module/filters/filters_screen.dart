@@ -317,6 +317,8 @@ class _FilterScreenState extends State<FilterScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 try {
+                  provider
+                      .resetPagination(); // Reset pagination before applying new filters
                   final result =
                       await provider.applyFilters(widget.type, context);
                   if (mounted) {

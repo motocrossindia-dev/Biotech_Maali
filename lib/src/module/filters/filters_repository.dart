@@ -22,31 +22,31 @@ class FiltersRepository {
     }
   }
 
-  Future<List<Product>> applyFilters(
-      String type, Map<String, dynamic> filters) async {
+  Future<ProductListModel> applyFilters(
+      String type, Map<String, dynamic> filters,
+      {String? nextPageUrl}) async {
     String result =
         type.isNotEmpty ? type.toLowerCase().substring(0, type.length - 1) : '';
 
-    log("Result: ${result.toString()}");
     try {
       final queryParams = {
         'type': result.toString(),
         ...filters,
       };
 
+      String url = nextPageUrl ?? '$baseUrl/filters/productsFilter/';
+
+      log("Filter query URL: $url");
       log("Filter query params: $queryParams");
 
       final response = await _dio.get(
-        '$baseUrl/filters/productsFilter/',
-        queryParameters: queryParams,
+        nextPageUrl ?? url,
+        queryParameters: nextPageUrl != null ? null : queryParams,
       );
 
       if (response.statusCode == 200) {
         log("Filter applied response: ${response.data}");
-        List<Product> filteredProducts = (response.data["results"] as List)
-            .map((item) => Product.fromJson(item))
-            .toList();
-        return filteredProducts;
+        return ProductListModel.fromJson(response.data);
       } else {
         throw Exception('Failed to apply filters');
       }
