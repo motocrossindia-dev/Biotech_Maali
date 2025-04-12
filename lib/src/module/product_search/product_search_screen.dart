@@ -3,6 +3,7 @@ import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
+import 'package:biotech_maali/src/widgets/shimmer/product_tile_shimmer.dart';
 import 'product_search_provider.dart';
 
 class ProductSearchView extends StatelessWidget {
@@ -43,13 +44,17 @@ class ProductSearchView extends StatelessWidget {
                     crossAxisSpacing: 15,
                     mainAxisSpacing: 15,
                   ),
-                  itemCount: provider.products.length,
+                  itemCount: provider.products.length +
+                      (provider.nextPage != null ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index == provider.products.length) {
+                      if (!provider.isLoadingMore) {
+                        provider.loadMore();
+                      }
+                      return const ProductTileShimmer();
+                    }
+
                     final product = provider.products[index];
-                    // bool isWishlistId = context
-                    //     .watch<HomeProvider>()
-                    //     .mainWishlistProductId
-                    //     .contains(product.id);
                     return InkWell(
                       onTap: () {
                         context

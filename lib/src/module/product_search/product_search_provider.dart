@@ -8,7 +8,9 @@ class ProductSearchProvider extends ChangeNotifier {
   List<ProductSearchModel> products = [];
   bool isLoading = false;
   String error = '';
-
+  String? nextPage;
+  bool isLoadingMore = false;
+  String lastSearchQuery = '';
 
   void updateWishList(bool isWishlist, int productId) {
     final productIndex =
@@ -32,18 +34,43 @@ class ProductSearchProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<void> searchProducts(String query) async {
     try {
       isLoading = true;
       error = '';
+      lastSearchQuery = query; // Store the search query
       notifyListeners();
 
-      products = await _repository.searchProducts(query);
-      
+      final response = await _repository.searchProducts(query);
+      products = response.products;
+      nextPage = response.nextPage;
+
       isLoading = false;
       notifyListeners();
     } catch (e) {
       isLoading = false;
+      error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (nextPage == null || isLoadingMore) return;
+
+    try {
+      isLoadingMore = true;
+      // notifyListeners();
+
+      final response =
+          await _repository.loadMoreProducts(nextPage!, lastSearchQuery);
+      products.addAll(response.products);
+      nextPage = response.nextPage;
+
+      isLoadingMore = false;
+      notifyListeners();
+    } catch (e) {
+      isLoadingMore = false;
       error = e.toString();
       notifyListeners();
     }
