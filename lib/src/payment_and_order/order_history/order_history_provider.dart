@@ -31,4 +31,19 @@ class OrderHistoryProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> cancelOrder(String orderId) async {
+    try {
+      final result = await _repository.cancelOrder(orderId);
+
+      if (result['success']?.contains(orderId) ?? false) {
+        await fetchOrderHistory(); // Refresh order list
+        return true;
+      }
+      return false;
+    } catch (e) {
+      log("Error cancelling order: ${e.toString()}");
+      return false;
+    }
+  }
 }

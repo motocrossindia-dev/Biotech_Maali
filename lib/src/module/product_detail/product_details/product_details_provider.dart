@@ -49,6 +49,13 @@ class ProductDetailsProvider extends ChangeNotifier {
   // New property for selected tab
   int _selectedTab = 0;
 
+  // Pincode check properties
+  bool _isCheckingPincode = false;
+  bool? _isDeliveryAvailable;
+  String? _deliveryState;
+  String? _deliveryPincode;
+  String? _pincodeError;
+
   // Getters
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -74,6 +81,13 @@ class ProductDetailsProvider extends ChangeNotifier {
 
   // Getter for selected tab
   int get selectedTab => _selectedTab;
+
+  // Getters for pincode check
+  bool get isCheckingPincode => _isCheckingPincode;
+  bool? get isDeliveryAvailable => _isDeliveryAvailable;
+  String? get deliveryState => _deliveryState;
+  String? get deliveryPincode => _deliveryPincode;
+  String? get pincodeError => _pincodeError;
 
   void updateQuantity() {
     _quantity = 1;
@@ -495,6 +509,36 @@ class ProductDetailsProvider extends ChangeNotifier {
 
   void onCarouselIndexChange(int current) {
     _carouselIndex = current;
+    notifyListeners();
+  }
+
+  Future<void> checkDeliveryPincode(String pincode) async {
+    try {
+      _isCheckingPincode = true;
+      _pincodeError = null;
+      notifyListeners();
+
+      final result =
+          await productDetailsRepository.checkDeliveryPincode(pincode);
+
+      _deliveryPincode = result['pincode'];
+      _deliveryState = result['state'];
+      _isDeliveryAvailable = result['delivery_available'];
+    } catch (e) {
+      _pincodeError = "Invalid Pincode";
+      _isDeliveryAvailable = null;
+      _deliveryState = null;
+    } finally {
+      _isCheckingPincode = false;
+      notifyListeners();
+    }
+  }
+
+  void clearPincodeCheck() {
+    _isDeliveryAvailable = null;
+    _deliveryState = null;
+    _deliveryPincode = null;
+    _pincodeError = null;
     notifyListeners();
   }
 }

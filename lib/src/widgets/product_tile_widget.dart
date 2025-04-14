@@ -72,7 +72,7 @@ class ProductTileWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: cButtonGreen,
                 borderRadius: const BorderRadius.only(
-                  // topLeft: Radius.circular(8),
+                  topLeft: Radius.circular(8),
                   bottomRight: Radius.circular(8),
                 ),
               ),

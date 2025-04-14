@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enquiry_provider.dart';
+import 'package:biotech_maali/src/other_modules/our_store/our_store_screen.dart';
 import '../../../import.dart';
 
 class FranchiseScreen extends StatelessWidget {
@@ -194,7 +195,16 @@ class FranchiseScreen extends StatelessWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: CommonButtonWidget(event: () {}, title: 'VIEW ALL'),
+              child: CommonButtonWidget(
+                  event: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OurStoresScreen(),
+                      ),
+                    );
+                  },
+                  title: 'VIEW ALL'),
             ),
 
             const SizedBox(height: 20),

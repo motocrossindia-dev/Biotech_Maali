@@ -243,6 +243,23 @@ class ProductDetailsRepository {
       return false;
     }
   }
+
+  Future<Map<String, dynamic>> checkDeliveryPincode(String pincode) async {
+    try {
+      final response = await _dio.post(
+        '${EndUrl.baseUrl}/tracking/check-pincode/',
+        data: {'pincode': pincode},
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      }
+      throw Exception('Failed to check pincode');
+    } catch (e) {
+      log("Pincode check error: $e");
+      throw Exception('Error checking pincode: $e');
+    }
+  }
 }
 
 class ProfileNotUpdatedException implements Exception {

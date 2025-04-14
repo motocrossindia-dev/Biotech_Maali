@@ -16,9 +16,9 @@ class ServiceEnquiryModel {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'contact': contact,
+      'contact_no': contact,
       'location': location,
-      'service': service,
+      'services': service,
       'message': message
     };
   }

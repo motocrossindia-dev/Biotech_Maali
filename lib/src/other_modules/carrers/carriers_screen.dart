@@ -1,8 +1,21 @@
-import 'package:biotech_maali/src/other_modules/carrers/carrers_provider.dart';
+import 'package:biotech_maali/src/other_modules/carrers/carriers_provider.dart';
 import '../../../import.dart';
 
-class CarrersScreen extends StatelessWidget {
+class CarrersScreen extends StatefulWidget {
   const CarrersScreen({super.key});
+
+  @override
+  State<CarrersScreen> createState() => _CarrersScreenState();
+}
+
+class _CarrersScreenState extends State<CarrersScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => context.read<CarrersProvider>().loadCarriers(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +82,10 @@ class _JobListingsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CarrersProvider>(
       builder: (context, provider, child) {
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
         final jobs = isNonTech ? provider.nonTechJobs : provider.techJobs;
 
         if (jobs.isEmpty) {
@@ -157,21 +174,22 @@ class _JobListingsTab extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        ...job.requirements.map((req) => Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 16, bottom: 4),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('• ',
-                                      style: TextStyle(fontSize: 14)),
-                                  Expanded(
-                                    child: Text(req,
-                                        style: const TextStyle(fontSize: 14)),
-                                  ),
-                                ],
-                              ),
-                            )),
+                        ...job.requirements.map(
+                          (req) => Padding(
+                            padding: const EdgeInsets.only(left: 16, bottom: 4),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('• ',
+                                    style: TextStyle(fontSize: 14)),
+                                Expanded(
+                                  child: Text(req,
+                                      style: const TextStyle(fontSize: 14)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,

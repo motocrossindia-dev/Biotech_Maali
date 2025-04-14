@@ -8,7 +8,7 @@ import 'package:biotech_maali/src/module/location_popup/location_pincode_provide
 import 'package:biotech_maali/src/module/product_compo_list/product_compo_list_provider.dart';
 import 'package:biotech_maali/src/module/product_search/product_search_provider.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
-import 'package:biotech_maali/src/other_modules/carrers/carrers_provider.dart';
+import 'package:biotech_maali/src/other_modules/carrers/carriers_provider.dart';
 import 'package:biotech_maali/src/other_modules/contact_us/contact_us_provider.dart';
 import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enquiry_provider.dart';
 import 'package:biotech_maali/src/other_modules/our_store/our_store_provider.dart';

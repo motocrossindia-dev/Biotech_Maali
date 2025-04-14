@@ -33,7 +33,7 @@ class ServicesRepository {
         data: enquiry.toJson(),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       } else {
         return false;

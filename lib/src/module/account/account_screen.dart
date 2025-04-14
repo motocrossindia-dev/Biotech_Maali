@@ -5,7 +5,7 @@ import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_scree
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
-import 'package:biotech_maali/src/other_modules/carrers/carrers_screen.dart';
+import 'package:biotech_maali/src/other_modules/carrers/carriers_screen.dart';
 import 'package:biotech_maali/src/other_modules/contact_us/contact_us_screen.dart';
 import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enquiry_screen.dart';
 import 'package:biotech_maali/src/other_modules/our_store/our_store_screen.dart';

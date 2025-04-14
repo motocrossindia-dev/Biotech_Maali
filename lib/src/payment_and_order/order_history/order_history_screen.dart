@@ -295,6 +295,25 @@ class OrderHistoryCard extends StatelessWidget {
           ),
           Row(
             children: [
+              if (order.status.toLowerCase() != 'cancelled' &&
+                  order.status.toLowerCase() != 'delivered') ...[
+                OutlinedButton(
+                  onPressed: () =>
+                      _showCancelConfirmation(context, order.orderId),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                    minimumSize: const Size(0, 32),
+                  ),
+                  child: const Text(
+                    'Cancel Order',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
               if (order.trackingId != "0") ...[
                 OutlinedButton.icon(
                   onPressed: () async {
@@ -369,6 +388,46 @@ class OrderHistoryCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _showCancelConfirmation(
+      BuildContext context, String orderId) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cancel Order'),
+          content: const Text('Are you sure you want to cancel this order?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      final success =
+          await context.read<OrderHistoryProvider>().cancelOrder(orderId);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success
+                  ? 'Order cancelled successfully'
+                  : 'Failed to cancel order',
+            ),
+            backgroundColor: success ? Colors.green : Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _navigateToDetails(BuildContext context) {
