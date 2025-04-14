@@ -38,352 +38,347 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     super.dispose();
   }
 
+  Widget _buildPincodeChecker() {
+    final provider = context.watch<ProductDetailsProvider>();
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
+        // decoration: BoxDecoration(
+        //   color: Colors.grey[50],
+        //   borderRadius: BorderRadius.circular(12),
+        //   border: Border.all(color: Colors.grey[200]!),
+        // ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Check Delivery Availability',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 47,
+                    decoration: const BoxDecoration(
+                      // color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
+                    ),
+                    child: TextField(
+                      controller: _pincodeController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter 6-digit pincode',
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        prefixIcon: Icon(Icons.location_on_outlined,
+                            color: Colors.grey[600]),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            bottomLeft: Radius.circular(10),
+                          ),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            bottomLeft: Radius.circular(10),
+                          ),
+                          borderSide: BorderSide(color: Colors.grey[200]!),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            bottomLeft: Radius.circular(10),
+                          ),
+                          borderSide:
+                              BorderSide(color: cButtonGreen, width: 1.5),
+                        ),
+                        contentPadding: EdgeInsets.zero,
+                        counterText: "",
+                      ),
+                      textAlignVertical: TextAlignVertical.center,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      style: const TextStyle(fontSize: 16),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 47,
+                  decoration: BoxDecoration(
+                    color: cButtonGreen,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                      onTap: provider.isCheckingPincode
+                          ? null
+                          : () {
+                              if (_pincodeController.text.length == 6) {
+                                provider.checkDeliveryPincode(
+                                    _pincodeController.text);
+                                FocusScope.of(context).unfocus();
+                              }
+                            },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        alignment: Alignment.center,
+                        child: provider.isCheckingPincode
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Check',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            if (provider.isDeliveryAvailable != null)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                decoration: BoxDecoration(
+                  color: provider.isDeliveryAvailable!
+                      ? Colors.green.withOpacity(0.1)
+                      : Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: provider.isDeliveryAvailable!
+                        ? Colors.green.withOpacity(0.3)
+                        : Colors.red.withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      provider.isDeliveryAvailable!
+                          ? Icons.check_circle
+                          : Icons.cancel,
+                      color: provider.isDeliveryAvailable!
+                          ? Colors.green
+                          : Colors.red,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        provider.isDeliveryAvailable!
+                            ? 'Delivery available to ${provider.deliveryState}'
+                            : 'Delivery not available to this location',
+                        style: TextStyle(
+                          color: provider.isDeliveryAvailable!
+                              ? Colors.green.shade800
+                              : Colors.red.shade800,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else if (provider.pincodeError != null)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.error_outline,
+                        color: Colors.red, size: 22),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        provider.pincodeError!,
+                        style: TextStyle(
+                          color: Colors.red.shade800,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // Widget _buildPincodeChecker() {
   //   final provider = context.watch<ProductDetailsProvider>();
 
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey[50],
-  //       borderRadius: BorderRadius.circular(12),
-  //       border: Border.all(color: Colors.grey[200]!),
-  //     ),
+  //   return Padding(
+  //     padding: const EdgeInsets.all(16),
   //     child: Column(
   //       crossAxisAlignment: CrossAxisAlignment.start,
   //       children: [
   //         const Text(
   //           'Check Delivery Availability',
   //           style: TextStyle(
+  //             fontSize: 18,
   //             fontWeight: FontWeight.bold,
-  //             fontSize: 16,
   //           ),
   //         ),
   //         const SizedBox(height: 12),
-  //         Container(
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(10),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.grey.withOpacity(0.1),
-  //                 spreadRadius: 1,
-  //                 blurRadius: 3,
-  //                 offset: const Offset(0, 1),
-  //               ),
-  //             ],
-  //           ),
-  //           child: Row(
-  //             crossAxisAlignment: CrossAxisAlignment.center,
-  //             children: [
-  //               Expanded(
-  //                 child: Container(
-  //                   height: 50,
-  //                   decoration: const BoxDecoration(
-  //                     color: Colors.white,
-  //                     borderRadius: BorderRadius.only(
-  //                       topLeft: Radius.circular(10),
-  //                       bottomLeft: Radius.circular(10),
-  //                     ),
+  //         Row(
+  //           children: [
+  //             Expanded(
+  //               child: TextField(
+  //                 controller: _pincodeController,
+  //                 decoration: InputDecoration(
+  //                   hintText: 'Enter 6-digit Pincode',
+  //                   filled: true,
+  //                   fillColor: Colors.grey.shade100,
+  //                   border: OutlineInputBorder(
+  //                     borderRadius: BorderRadius.circular(10),
+  //                     borderSide: BorderSide(color: Colors.grey.shade400),
   //                   ),
-  //                   child: TextField(
-  //                     controller: _pincodeController,
-  //                     decoration: InputDecoration(
-  //                       hintText: 'Enter 6-digit pincode',
-  //                       hintStyle: TextStyle(color: Colors.grey[400]),
-  //                       prefixIcon: Icon(Icons.location_on_outlined,
-  //                           color: Colors.grey[600]),
-  //                       border: const OutlineInputBorder(
-  //                         borderRadius: BorderRadius.only(
-  //                           topLeft: Radius.circular(10),
-  //                           bottomLeft: Radius.circular(10),
+  //                   focusedBorder: OutlineInputBorder(
+  //                     borderRadius: BorderRadius.circular(10),
+  //                     borderSide: const BorderSide(color: Colors.green),
+  //                   ),
+  //                   contentPadding: const EdgeInsets.symmetric(
+  //                       horizontal: 12, vertical: 10),
+  //                   counterText: "",
+  //                 ),
+  //                 keyboardType: TextInputType.number,
+  //                 maxLength: 6,
+  //               ),
+  //             ),
+  //             const SizedBox(width: 12),
+  //             SizedBox(
+  //               height: 40,
+  //               child: ElevatedButton.icon(
+  //                 onPressed: provider.isCheckingPincode
+  //                     ? null
+  //                     : () {
+  //                         if (_pincodeController.text.length == 6) {
+  //                           provider
+  //                               .checkDeliveryPincode(_pincodeController.text);
+  //                         }
+  //                       },
+  //                 icon: provider.isCheckingPincode
+  //                     ? const SizedBox(
+  //                         width: 16,
+  //                         height: 16,
+  //                         child: CircularProgressIndicator(
+  //                           strokeWidth: 2,
+  //                           color: Colors.white,
   //                         ),
-  //                         borderSide: BorderSide.none,
-  //                       ),
-  //                       enabledBorder: OutlineInputBorder(
-  //                         borderRadius: const BorderRadius.only(
-  //                           topLeft: Radius.circular(10),
-  //                           bottomLeft: Radius.circular(10),
-  //                         ),
-  //                         borderSide: BorderSide(color: Colors.grey[200]!),
-  //                       ),
-  //                       focusedBorder: const OutlineInputBorder(
-  //                         borderRadius: BorderRadius.only(
-  //                           topLeft: Radius.circular(10),
-  //                           bottomLeft: Radius.circular(10),
-  //                         ),
-  //                         borderSide:
-  //                             BorderSide(color: Colors.green, width: 1.5),
-  //                       ),
-  //                       contentPadding: EdgeInsets.zero,
-  //                       counterText: "",
-  //                     ),
-  //                     textAlignVertical: TextAlignVertical.center,
-  //                     keyboardType: TextInputType.number,
-  //                     maxLength: 6,
-  //                     style: const TextStyle(fontSize: 16),
-  //                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+  //                       )
+  //                     : const Icon(Icons.search, size: 18),
+  //                 label: const Text(
+  //                   'Check',
+  //                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+  //                 ),
+  //                 style: ElevatedButton.styleFrom(
+  //                   backgroundColor: cButtonGreen,
+  //                   foregroundColor: Colors.white,
+  //                   padding:
+  //                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //                   shape: RoundedRectangleBorder(
+  //                     borderRadius: BorderRadius.circular(10),
   //                   ),
   //                 ),
   //               ),
-  //               Container(
-  //                 height: 50,
-  //                 decoration: const BoxDecoration(
-  //                   color: Colors.green,
-  //                   borderRadius: BorderRadius.only(
-  //                     topRight: Radius.circular(10),
-  //                     bottomRight: Radius.circular(10),
-  //                   ),
-  //                 ),
-  //                 child: Material(
-  //                   color: Colors.transparent,
-  //                   child: InkWell(
-  //                     borderRadius: const BorderRadius.only(
-  //                       topRight: Radius.circular(10),
-  //                       bottomRight: Radius.circular(10),
-  //                     ),
-  //                     onTap: provider.isCheckingPincode
-  //                         ? null
-  //                         : () {
-  //                             if (_pincodeController.text.length == 6) {
-  //                               provider.checkDeliveryPincode(
-  //                                   _pincodeController.text);
-  //                               FocusScope.of(context).unfocus();
-  //                             }
-  //                           },
-  //                     child: Container(
-  //                       padding: const EdgeInsets.symmetric(horizontal: 20),
-  //                       alignment: Alignment.center,
-  //                       child: provider.isCheckingPincode
-  //                           ? const SizedBox(
-  //                               width: 20,
-  //                               height: 20,
-  //                               child: CircularProgressIndicator(
-  //                                 strokeWidth: 2,
-  //                                 color: Colors.white,
-  //                               ),
-  //                             )
-  //                           : const Text(
-  //                               'Check',
-  //                               style: TextStyle(
-  //                                 color: Colors.white,
-  //                                 fontWeight: FontWeight.bold,
-  //                                 fontSize: 15,
-  //                               ),
-  //                             ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
+  //             ),
+  //           ],
   //         ),
-  //         const SizedBox(height: 16),
+  //         const SizedBox(height: 10),
   //         if (provider.isDeliveryAvailable != null)
   //           Container(
-  //             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+  //             padding: const EdgeInsets.all(12),
   //             decoration: BoxDecoration(
   //               color: provider.isDeliveryAvailable!
-  //                   ? Colors.green.withOpacity(0.1)
-  //                   : Colors.red.withOpacity(0.1),
+  //                   ? Colors.green.shade50
+  //                   : Colors.red.shade50,
   //               borderRadius: BorderRadius.circular(8),
   //               border: Border.all(
-  //                 color: provider.isDeliveryAvailable!
-  //                     ? Colors.green.withOpacity(0.3)
-  //                     : Colors.red.withOpacity(0.3),
+  //                 color:
+  //                     provider.isDeliveryAvailable! ? Colors.green : Colors.red,
   //               ),
   //             ),
   //             child: Row(
   //               children: [
   //                 Icon(
   //                   provider.isDeliveryAvailable!
-  //                       ? Icons.check_circle
-  //                       : Icons.cancel,
+  //                       ? Icons.check_circle_outline
+  //                       : Icons.cancel_outlined,
   //                   color: provider.isDeliveryAvailable!
   //                       ? Colors.green
   //                       : Colors.red,
-  //                   size: 22,
   //                 ),
-  //                 const SizedBox(width: 12),
+  //                 const SizedBox(width: 10),
   //                 Expanded(
   //                   child: Text(
   //                     provider.isDeliveryAvailable!
-  //                         ? 'Delivery available to ${provider.deliveryState}'
-  //                         : 'Delivery not available to this location',
+  //                         ? 'Delivery is available to ${provider.deliveryState}'
+  //                         : 'Delivery is not available to this location',
   //                     style: TextStyle(
+  //                       fontWeight: FontWeight.w500,
   //                       color: provider.isDeliveryAvailable!
   //                           ? Colors.green.shade800
   //                           : Colors.red.shade800,
-  //                       fontWeight: FontWeight.w500,
-  //                       fontSize: 14,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           )
-  //         else if (provider.pincodeError != null)
-  //           Container(
-  //             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-  //             decoration: BoxDecoration(
-  //               color: Colors.red.withOpacity(0.1),
-  //               borderRadius: BorderRadius.circular(8),
-  //               border: Border.all(color: Colors.red.withOpacity(0.3)),
-  //             ),
-  //             child: Row(
-  //               children: [
-  //                 const Icon(Icons.error_outline, color: Colors.red, size: 22),
-  //                 const SizedBox(width: 12),
-  //                 Expanded(
-  //                   child: Text(
-  //                     provider.pincodeError!,
-  //                     style: TextStyle(
-  //                       color: Colors.red.shade800,
-  //                       fontWeight: FontWeight.w500,
-  //                       fontSize: 14,
   //                     ),
   //                   ),
   //                 ),
   //               ],
   //             ),
   //           ),
+  //         if (provider.pincodeError != null)
+  //           Padding(
+  //             padding: const EdgeInsets.only(top: 10),
+  //             child: Text(
+  //               provider.pincodeError!,
+  //               style: const TextStyle(
+  //                 color: Colors.red,
+  //                 fontWeight: FontWeight.w500,
+  //               ),
+  //             ),
+  //           ),
   //       ],
   //     ),
   //   );
   // }
-
-  Widget _buildPincodeChecker() {
-    final provider = context.watch<ProductDetailsProvider>();
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Check Delivery Availability',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _pincodeController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter 6-digit Pincode',
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey.shade400),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.green),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
-                    counterText: "",
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLength: 6,
-                ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                height: 48,
-                child: ElevatedButton.icon(
-                  onPressed: provider.isCheckingPincode
-                      ? null
-                      : () {
-                          if (_pincodeController.text.length == 6) {
-                            provider
-                                .checkDeliveryPincode(_pincodeController.text);
-                          }
-                        },
-                  icon: provider.isCheckingPincode
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(Icons.search),
-                  label: const Text(
-                    'Check',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: cButtonGreen,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          if (provider.isDeliveryAvailable != null)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: provider.isDeliveryAvailable!
-                    ? Colors.green.shade50
-                    : Colors.red.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color:
-                      provider.isDeliveryAvailable! ? Colors.green : Colors.red,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    provider.isDeliveryAvailable!
-                        ? Icons.check_circle_outline
-                        : Icons.cancel_outlined,
-                    color: provider.isDeliveryAvailable!
-                        ? Colors.green
-                        : Colors.red,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      provider.isDeliveryAvailable!
-                          ? 'Delivery is available to ${provider.deliveryState}'
-                          : 'Delivery is not available to this location',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: provider.isDeliveryAvailable!
-                            ? Colors.green.shade800
-                            : Colors.red.shade800,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          if (provider.pincodeError != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                provider.pincodeError!,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
