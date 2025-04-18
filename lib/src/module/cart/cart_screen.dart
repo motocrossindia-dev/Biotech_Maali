@@ -183,8 +183,9 @@ class _CartScreenState extends State<CartScreen> {
                       ? const ButtonShimmer() // Use ButtonShimmer instead of CartShimmer
                       : CustomizableButton(
                           title: 'PLACE ORDER',
-                          event: () => provider.placeOrder(context),
-                        ),
+                          event: () {
+                            provider.placeOrder(context);
+                          }),
                 );
               },
             ),

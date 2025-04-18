@@ -90,7 +90,7 @@ class CartProvider extends ChangeNotifier {
 
       final success = await _repository.deleteCartItem(cartId);
 
-      if (success) {
+      if (success == true) {
         _cartItems.removeWhere((item) => item.id == cartId);
         refreshAllProducts(context);
         Fluttertoast.showToast(
