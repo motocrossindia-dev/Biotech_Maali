@@ -17,6 +17,8 @@ class CarrierModel {
     required this.desiredSkills,
   });
 
+  // sample
+
   factory CarrierModel.fromJson(Map<String, dynamic> json) {
     return CarrierModel(
       id: json['id'] ?? 0,
