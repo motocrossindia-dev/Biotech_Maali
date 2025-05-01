@@ -1,5 +1,3 @@
-import '../../../import.dart';
-
 class CarrierModel {
   final int id;
   final String categories;
