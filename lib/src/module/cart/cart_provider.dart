@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/cart/model/cart_item_model.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/product_details_repository.dart';
@@ -232,8 +234,13 @@ class CartProvider extends ChangeNotifier {
         backgroundColor: Colors.red,
       );
     } catch (e) {
+      log("Error placing order: ${e.toString()}");
+      String errorMessage = e.toString();
+      // Remove "Exception:" prefixes from the error message
+      errorMessage = errorMessage.replaceAll('Exception: ', '');
+      errorMessage = errorMessage.replaceAll(':', ',');
       Fluttertoast.showToast(
-        msg: e.toString(),
+        msg: errorMessage,
         backgroundColor: Colors.red,
       );
     } finally {

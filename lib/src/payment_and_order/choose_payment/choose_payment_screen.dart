@@ -185,8 +185,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     child: CustomizableButton(
                       title: 'PROCEED',
                       event: () async {
-                        context.read<ChoosePaymentProvider>().initiatePayment(
-                            context, widget.orderSummaryResponse);
+                        context
+                            .read<ChoosePaymentProvider>()
+                            .checkPaymentMethod(
+                                widget.orderSummaryResponse, context);
                       },
                     ),
                   ),
@@ -257,13 +259,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
               value: context.watch<ChoosePaymentProvider>().isWalletCheckbox,
               onChanged: (value) {
                 if (value == true) {
-                  widget.orderSummaryResponse.data.order.grandTotal =
-                      widget.orderSummaryResponse.data.order.grandTotal -
-                          double.parse(amount);
+                  // if (double.parse(amount) >=
+                  //     widget.orderSummaryResponse.data.order.grandTotal) {
+                  double actualWalletBalance = double.parse(amount) -
+                      widget.orderSummaryResponse.data.order.grandTotal;
+
+                  context
+                      .read<ChoosePaymentProvider>()
+                      .handleWalletBalance(actualWalletBalance);
+                  // } else {
+                  //   context
+                  //       .read<ChoosePaymentProvider>()
+                  //       .handleWalletBalance(0.0);
+                  // }
+                  // widget.orderSummaryResponse.data.order.grandTotal =
+
+                  //     widget.orderSummaryResponse.data.order.grandTotal -
+                  //         double.parse(amount);
                 } else if (value == false) {
-                  widget.orderSummaryResponse.data.order.grandTotal =
-                      widget.orderSummaryResponse.data.order.grandTotal +
-                          double.parse(amount);
+                  // widget.orderSummaryResponse.data.order.grandTotal =
+                  //     widget.orderSummaryResponse.data.order.grandTotal +
+                  //         double.parse(amount);
+                  double actualWalletBalance =
+                      // widget.orderSummaryResponse.data.order.grandTotal +
+                      double.parse(amount);
+
+                  context
+                      .read<ChoosePaymentProvider>()
+                      .handleWalletBalance(actualWalletBalance);
                 }
                 context.read<ChoosePaymentProvider>().handleWalletCheckbox(
                     value!, context.read<WalletProvider>().balance);
@@ -343,7 +366,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           if (amount.isNotEmpty)
             Text(
-              "₹$amount",
+              context.watch<ChoosePaymentProvider>().actualWalletBalance !=
+                          null &&
+                      context.watch<ChoosePaymentProvider>().isWalletCheckbox
+                  ? "₹${context.watch<ChoosePaymentProvider>().actualWalletBalance!.toStringAsFixed(1)}"
+                  : "₹$amount",
               style: TextStyle(
                 color: Colors.green[600],
                 fontWeight: FontWeight.w500,

@@ -28,7 +28,7 @@ class ChoosePaymentRepository {
         ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 206) {
         log("response in repository : ${response.data.toString()}");
         return response.data;
       } else if (response.statusCode == 400) {

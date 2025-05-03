@@ -83,6 +83,27 @@ class WalletScreen extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: walletProvider.isProcessingPayment
+                        ? null
+                        : () => walletProvider.addMoneyToWallet(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: walletProvider.isProcessingPayment
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child:
+                                CircularProgressIndicator(color: Colors.white),
+                          )
+                        : const Text(
+                            'ADD MONEY',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                  ),
+                  const SizedBox(height: 24),
 
                   // Quick Amount Buttons
                   Row(

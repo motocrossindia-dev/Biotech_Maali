@@ -42,7 +42,7 @@ class CouponProvider extends ChangeNotifier {
     try {
       _coupons = await _repository.getCoupons(orderId);
     } catch (e) {
-      _error = e.toString();
+      _error = "No coupons available";
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -66,7 +66,7 @@ class Transaction {
   final String transactionType;
   final String amount;
   final String status;
-  final String referenceId;
+  final String? referenceId; // Make referenceId nullable
   final String description;
   final DateTime createdAt;
 
@@ -74,7 +74,7 @@ class Transaction {
     required this.transactionType,
     required this.amount,
     required this.status,
-    required this.referenceId,
+    this.referenceId, // Remove required keyword
     required this.description,
     required this.createdAt,
   });
@@ -82,9 +82,9 @@ class Transaction {
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
       transactionType: json['transaction_type'],
-      amount: json['amount'],
+      amount: json['amount'].toString(), // Convert amount to String explicitly
       status: json['status'],
-      referenceId: json['reference_id'],
+      referenceId: json['reference_id']?.toString(), // Handle null value
       description: json['description'],
       createdAt: DateTime.parse(json['created_at']),
     );

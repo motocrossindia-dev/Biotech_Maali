@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
+import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/home/home_shimmer.dart';
 import 'package:biotech_maali/src/module/home/widget/promotional_banner.dart';
 import 'package:biotech_maali/src/module/home/widget/referral_popup.dart';
@@ -23,16 +24,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    // final homeProvider = context.read<HomeProvider>();
-
     _initializeWidgets();
     _setupScrollController();
-    // Fetch data when screen initializes
-    // homeProvider.fetchHomeProducts();
-    // homeProvider.fetchMainCategories();
-    // homeProvider.fetchBanners();
-    // homeProvider.validateToken(context);
+
     context.read<ReferFriendProvider>().getReferralDetails();
+
+    // Move wallet fetch to post-frame callback
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<WalletProvider>().fetchWalletDetails();
+      }
+    });
   }
 
   void _initializeWidgets() {
