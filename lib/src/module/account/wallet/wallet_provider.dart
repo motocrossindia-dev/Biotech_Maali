@@ -77,13 +77,6 @@ class WalletProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addBalance(double amount) {
-    _balance += amount;
-    notifyListeners();
-    fetchWalletDetails(); // Refresh wallet details after adding balance
-    fetchTransactions(); // Refresh transactions
-  }
-
   void _initializeRazorpay() {
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
@@ -148,6 +141,8 @@ class WalletProvider extends ChangeNotifier {
         razorpayOrderId: response.orderId!,
         razorpaySignature: response.signature!,
       );
+      _amountController.clear();
+      _selectedAmount = 0;
 
       await fetchWalletDetails();
       await fetchTransactions();
@@ -165,9 +160,11 @@ class WalletProvider extends ChangeNotifier {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    log("Payment failed: ${response.message}");
     Fluttertoast.showToast(
-      msg: response.message ?? "Payment failed",
-      backgroundColor: Colors.red,
+      msg: "Payment failed",
+      textColor: Colors.red,
+      backgroundColor: Colors.white,
     );
   }
 

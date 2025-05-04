@@ -1,5 +1,6 @@
 import 'package:biotech_maali/src/module/account/wallet/wallet_history/wallet_history_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
+import 'package:biotech_maali/src/module/account/wallet/wallet_shimmer.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../import.dart';
@@ -12,7 +13,7 @@ class WalletScreen extends StatelessWidget {
     return Consumer<WalletProvider>(
       builder: (context, walletProvider, _) {
         if (walletProvider.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: WalletShimmer());
         }
 
         if (walletProvider.error != null) {
@@ -83,12 +84,16 @@ class WalletScreen extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 16),
+
                   ElevatedButton(
                     onPressed: walletProvider.isProcessingPayment
                         ? null
                         : () => walletProvider.addMoneyToWallet(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      backgroundColor: cButtonGreen,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     child: walletProvider.isProcessingPayment
@@ -115,7 +120,39 @@ class WalletScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-
+                  OutlinedButton(
+                    onPressed: () {
+                      context.read<WalletProvider>().fetchTransactions();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WalletHistoryScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.history, color: Colors.blue[900]),
+                            const SizedBox(width: 8),
+                            Text(
+                              'WALLET TRANSACTION HISTORY',
+                              style: TextStyle(color: Colors.blue[900]),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.chevron_right, color: Colors.blue[900]),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   // Recent Transactions
                   if (walletProvider.transactions.isNotEmpty) ...[
                     const Text(
@@ -148,20 +185,7 @@ class WalletScreen extends StatelessWidget {
                     ),
                   ],
 
-                  const SizedBox(height: 16),
-
                   // View All Transactions Button
-                  OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const WalletHistoryScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text('VIEW ALL TRANSACTIONS'),
-                  ),
                 ],
               ),
             ),

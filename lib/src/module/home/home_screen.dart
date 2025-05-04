@@ -1,3 +1,4 @@
+import 'package:biotech_maali/src/module/account/account_provider.dart';
 import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/home/home_shimmer.dart';
@@ -33,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<WalletProvider>().fetchWalletDetails();
+        context.read<AccountProvider>().getUserName();
+        context.read<EditProfileProvider>().fetchProfileData();
       }
     });
   }

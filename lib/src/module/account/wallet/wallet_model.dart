@@ -54,7 +54,7 @@ class TransactionData {
 
   factory TransactionData.fromJson(Map<String, dynamic> json) {
     return TransactionData(
-      balance: json['balance'].toDouble(),
+      balance: double.parse(json['balance'].toString()),
       transactions: (json['transactions'] as List)
           .map((t) => Transaction.fromJson(t))
           .toList(),
@@ -66,7 +66,7 @@ class Transaction {
   final String transactionType;
   final String amount;
   final String status;
-  final String? referenceId; // Make referenceId nullable
+  final String? referenceId; // Made nullable
   final String description;
   final DateTime createdAt;
 
@@ -74,18 +74,18 @@ class Transaction {
     required this.transactionType,
     required this.amount,
     required this.status,
-    this.referenceId, // Remove required keyword
+    this.referenceId, // Made optional
     required this.description,
     required this.createdAt,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
-      transactionType: json['transaction_type'],
-      amount: json['amount'].toString(), // Convert amount to String explicitly
-      status: json['status'],
-      referenceId: json['reference_id']?.toString(), // Handle null value
-      description: json['description'],
+      transactionType: json['transaction_type'] ?? '',
+      amount: json['amount']?.toString() ?? '0.00',
+      status: json['status'] ?? '',
+      referenceId: json['reference_id'], // Can be null
+      description: json['description'] ?? '',
       createdAt: DateTime.parse(json['created_at']),
     );
   }

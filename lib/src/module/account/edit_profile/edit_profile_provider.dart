@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/account/account_provider.dart';
 import 'package:biotech_maali/src/module/account/edit_profile/edit_profile_repository.dart';
 import 'package:intl/intl.dart';
 
@@ -81,6 +82,7 @@ class EditProfileProvider extends ChangeNotifier {
         _isEditing = false;
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("userName", firstName.text);
+        await context.read<AccountProvider>().getUserName();
         if (isplaceOrder == true) {
           Navigator.pop(context);
           Navigator.push(

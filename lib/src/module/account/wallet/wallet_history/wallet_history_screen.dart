@@ -54,7 +54,7 @@ class WalletHistoryScreen extends StatelessWidget {
                           style: const TextStyle(color: Colors.grey),
                         ),
                         Text(
-                          'Reference ID: ${transaction.referenceId}',
+                          'Reference ID: ${transaction.referenceId ?? 'Not Available'}',
                           style: const TextStyle(fontSize: 12),
                         ),
                       ],

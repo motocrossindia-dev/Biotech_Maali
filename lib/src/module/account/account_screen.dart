@@ -31,6 +31,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final accountProviderWatch = context.watch<AccountProvider>();
     return Scaffold(
       backgroundColor: cScaffoldBackground,
       appBar: AppBar(
@@ -298,6 +299,10 @@ class _AccountScreenState extends State<AccountScreen> {
                               sizedBoxHeight20,
                               InkWell(
                                 onTap: () {
+                                  final walletProvider =
+                                      context.read<WalletProvider>();
+                                  walletProvider.fetchWalletDetails();
+                                  walletProvider.fetchTransactions();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
