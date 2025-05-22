@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import '../../../import.dart';
-import 'carrier_model.dart';
 import 'carriers_service.dart';
 
 class JobListing {
@@ -69,7 +70,7 @@ class CarrersProvider with ChangeNotifier {
       _nonTechJobs = nonTechJobs;
     } catch (e) {
       // Handle error
-      print('Error loading carriers: $e');
+      log('Error loading carriers: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

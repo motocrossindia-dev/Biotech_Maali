@@ -92,7 +92,7 @@ class ChoosePaymentProvider extends ChangeNotifier {
     if (isWallet) {
       if (actualWalletBalance! >= 0) {
         try {
-          final response = await _repository.proceedToPayment(
+          await _repository.proceedToPayment(
             orderId: _orderSummaryResponse!.data.order.id,
             paymentMethod: 'Wallet',
           );
