@@ -1,4 +1,3 @@
-import 'package:biotech_maali/src/splash/error/error_screen.dart';
 import 'package:biotech_maali/src/splash/splash_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../import.dart';

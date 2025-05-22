@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/src/module/home/model/home_product_model.dart';
 import 'package:biotech_maali/src/module/product_search/product_search_screen.dart';

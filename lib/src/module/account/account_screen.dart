@@ -31,7 +31,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accountProviderWatch = context.watch<AccountProvider>();
+    context.watch<AccountProvider>();
     return Scaffold(
       backgroundColor: cScaffoldBackground,
       appBar: AppBar(
