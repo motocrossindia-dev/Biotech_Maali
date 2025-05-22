@@ -28,7 +28,13 @@ class _FilterScreenState extends State<FilterScreen> {
     return Consumer<FiltersProvider>(
       builder: (context, provider, _) {
         if (provider.isLoading) {
-          return const Center(child: ProductListShimmer());
+          return const Center(
+            child: Scaffold(
+              body: Center(
+                child: ProductListShimmer(),
+              ),
+            ),
+          );
         }
 
         return Scaffold(

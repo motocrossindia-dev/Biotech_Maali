@@ -21,6 +21,7 @@ class HomeProvider extends ChangeNotifier {
   bool _isLoading = false;
 
   String pinCode = "No Pincode";
+  String placeName = "No Place";
 
   final bool _isCartLoading = false;
   String? _error;
@@ -75,6 +76,11 @@ class HomeProvider extends ChangeNotifier {
   Future<void> getLocationPincode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     pinCode = prefs.getString('user_pincode') ?? "No Pincode";
+  }
+
+  Future<void> getLocationName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    placeName = prefs.getString('user_locality') ?? "No Pincode";
   }
 
   void onCaroucelIndexChange(int current) {
@@ -172,7 +178,8 @@ class HomeProvider extends ChangeNotifier {
         fetchHomeProducts(),
         fetchMainCategories(),
         fetchBanners(),
-        getLocationPincode()
+        getLocationPincode(),
+        getLocationName()
       ]);
 
       _isLoading = false;

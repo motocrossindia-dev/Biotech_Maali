@@ -70,13 +70,13 @@ class _PermissionHandleScreenState extends State<PermissionHandleScreen> {
                     onRequest: provider.requestMicrophonePermission,
                     icon: Icons.mic_outlined,
                   ),
-                  _buildPermissionTile(
-                    title: 'Notifications',
-                    subtitle: 'Required for order updates and offers',
-                    isGranted: provider.notificationPermission,
-                    onRequest: provider.requestNotificationPermission,
-                    icon: Icons.notifications_outlined,
-                  ),
+                  // _buildPermissionTile(
+                  //   title: 'Notifications',
+                  //   subtitle: 'Required for order updates and offers',
+                  //   isGranted: provider.notificationPermission,
+                  //   onRequest: provider.requestNotificationPermission,
+                  //   icon: Icons.notifications_outlined,
+                  // ),
                   const Spacer(),
                   SizedBox(
                     width: double.infinity,

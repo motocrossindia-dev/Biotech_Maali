@@ -87,7 +87,7 @@ class SplashProvider extends ChangeNotifier {
   }
 
   Future<void> loadData(BuildContext context) async {
-    // await context.read<LocationPincodeProvider>().getCurrentLocation(context);
+    await context.read<LocationPincodeProvider>().getCurrentLocation(context);
     await context.read<HomeProvider>().refreshAll();
   }
 

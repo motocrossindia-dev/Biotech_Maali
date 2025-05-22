@@ -54,32 +54,6 @@ class SplashScreen extends StatelessWidget {
           );
         }
 
-        // Handle navigation after state is updated
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   if (splashProvider.navigationTarget == "home") {
-        //     Navigator.pushReplacement(
-        //       context,
-        //       MaterialPageRoute(
-        //         builder: (context) =>  BottomNavWidget(),
-        //       ),
-        //     );
-        //   } else if (splashProvider.navigationTarget == "login") {
-        //     Navigator.pushReplacement(
-        //       context,
-        //       MaterialPageRoute(
-        //         builder: (context) => const MobileNumberScreen(),
-        //       ),
-        //     );
-        //   } else if (splashProvider.navigationTarget == "error") {
-        //     Navigator.pushReplacement(
-        //       context,
-        //       MaterialPageRoute(
-        //         builder: (context) => const ErrorScreen(),
-        //       ),
-        //     );
-        //   }
-        // });
-
         // Placeholder widget while navigationTarget is being determined
         return Scaffold(
           body: Column(

@@ -47,9 +47,21 @@ class CustomAppBarWithSearch extends StatelessWidget
                           height: 22,
                           width: 22,
                         ),
-                        Text(
-                          'Location ${provider.pinCode}',
-                          style: const TextStyle(color: Colors.black),
+                        const SizedBox(width: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              provider.pinCode,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            Text(
+                              provider.placeName.length > 10
+                                  ? '${provider.placeName.substring(0, 15)}..'
+                                  : provider.placeName,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ],
                         ),
                         TextButton(
                           child: const Text(
@@ -164,16 +176,16 @@ class CustomAppBarWithSearch extends StatelessWidget
                       );
                     },
                   ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/svg/icons/notification_unselected.svg',
-                      height: 24,
-                      width: 24,
-                    ),
-                    onPressed: () {
-                      // Handle notification button press
-                    },
-                  ),
+                  // IconButton(
+                  //   icon: SvgPicture.asset(
+                  //     'assets/svg/icons/notification_unselected.svg',
+                  //     height: 24,
+                  //     width: 24,
+                  //   ),
+                  //   onPressed: () {
+                  //     // Handle notification button press
+                  //   },
+                  // ),
                 ],
               ),
             )

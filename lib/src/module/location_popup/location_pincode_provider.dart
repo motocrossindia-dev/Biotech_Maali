@@ -91,6 +91,8 @@ class LocationPincodeProvider extends ChangeNotifier {
         _pincodeController.text = place.postalCode ?? '';
         log("_addressController.text: ${_addressController.text}");
 
+        log("user locality: ${place.locality}");
+
         prefs.setString("user_current_address", _addressController.text.trim());
 
         prefs.setString("user_pincode", place.postalCode ?? '');

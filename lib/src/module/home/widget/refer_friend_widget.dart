@@ -36,13 +36,20 @@ class ReferFriendWidget extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Center(
-                child: CommonTextWidget(
-                  title:
-                      'Every plant purchase is a gift that keeps on giving. Earn coins and redeem them for exclusive discounts.',
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  textAlign: TextAlign.center,
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Center(
+                  child: CommonTextWidget(
+                    title:
+                        'Every plant purchase is a gift that keeps on giving. '
+                        'Earn coins and redeem them for exclusive discounts.',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    textAlign: TextAlign.center,
+                    maxLines: 3, // Allow up to 3 lines for better text wrapping
+                    overflow:
+                        TextOverflow.visible, // Show all text without ellipsis
+                  ),
                 ),
               ),
               Row(

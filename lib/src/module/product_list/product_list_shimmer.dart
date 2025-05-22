@@ -6,42 +6,45 @@ class ProductListShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // Banner shimmer
-          Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
-            child: Container(
-              width: double.infinity,
-              height: 180,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+    return Container(
+      color: Colors.white, // Add white background
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Banner shimmer
+            Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                width: double.infinity,
+                height: 180,
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
-          ),
-          // Grid shimmer
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 6,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 15.0,
-                mainAxisSpacing: 15.0,
-                childAspectRatio: 0.48,
+            // Grid shimmer
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 6,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 15.0,
+                  mainAxisSpacing: 15.0,
+                  childAspectRatio: 0.48,
+                ),
+                itemBuilder: (context, index) {
+                  return _buildProductTileShimmer(context);
+                },
               ),
-              itemBuilder: (context, index) {
-                return _buildProductTileShimmer(context);
-              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

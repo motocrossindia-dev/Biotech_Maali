@@ -55,7 +55,7 @@ class _ChatInputState extends State<ChatInput>
         if (status == 'done' || status == 'notListening') {
           setState(() {
             _isListening = false;
-            _animationController.reset();
+            // _animationController.reset();
             _animationController.stop();
           });
 
@@ -162,7 +162,9 @@ class _ChatInputState extends State<ChatInput>
             child: TextField(
               controller: widget.controller,
               decoration: InputDecoration(
-                hintText: _isListening ? 'Listening...' : 'Search products...',
+                hintText: _isListening
+                    ? 'Listening...'
+                    : 'Search for plants or pots etc...',
                 hintStyle: TextStyle(
                   color: _isListening
                       ? cButtonGreen.withOpacity(0.6)
@@ -193,6 +195,7 @@ class _ChatInputState extends State<ChatInput>
   @override
   void dispose() {
     _animationController.dispose();
+    _speech.stop();
     super.dispose();
   }
 }
