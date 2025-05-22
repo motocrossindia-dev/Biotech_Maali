@@ -78,7 +78,7 @@ void showWishlistMessage(BuildContext context, bool isAdded) {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
 
       // Shorter Duration
-      duration: const Duration(milliseconds: 2500),
+      duration: const Duration(milliseconds: 900),
 
       // Action Button
       action: SnackBarAction(

@@ -1,8 +1,3 @@
-import 'package:biotech_maali/src/module/services/screens/drip_irrigation_screen.dart';
-import 'package:biotech_maali/src/module/services/screens/garden_maintenance_screen.dart';
-import 'package:biotech_maali/src/module/services/screens/landscaping_service_screen.dart';
-import 'package:biotech_maali/src/module/services/screens/terrace_garden_screen.dart';
-import 'package:biotech_maali/src/module/services/screens/vertical_garden_screen.dart';
 import 'package:biotech_maali/src/other_modules/services/services_provider.dart';
 import 'package:biotech_maali/src/other_modules/services/widgets/contact_form_widget.dart';
 import 'package:biotech_maali/src/other_modules/services/widgets/how_its_work_widget.dart';

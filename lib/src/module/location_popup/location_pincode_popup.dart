@@ -148,7 +148,7 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
                       ),
                     ),
                     onPressed: () {
-                      // provider.getCurrentLocation(context);
+                      provider.getCurrentLocation(context);
                     },
                     child: const Text('Use Current Location'),
                   ),

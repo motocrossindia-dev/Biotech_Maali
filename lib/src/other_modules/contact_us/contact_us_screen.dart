@@ -1,5 +1,6 @@
 import 'package:biotech_maali/src/other_modules/contact_us/contact_us_provider.dart';
 import 'package:biotech_maali/src/other_modules/contact_us/model/cantact_us_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../import.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -267,7 +268,73 @@ class _ContactScreenState extends State<ContactScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              sizedBoxHeight25,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      final Uri url =
+                          Uri.parse('https://facebook.com/your-page');
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: Image.asset(
+                      'assets/png/images/facebook_icon.png',
+                      height: 40,
+                      width: 40,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      final Uri url =
+                          Uri.parse('https://instagram.com/your-profile');
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: Image.asset(
+                      'assets/png/images/instagram.png',
+                      height: 40,
+                      width: 40,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      final Uri url =
+                          Uri.parse('https://youtube.com/your-channel');
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: Image.asset(
+                      'assets/png/images/youtube.png',
+                      height: 40,
+                      width: 40,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      final Uri url = Uri.parse(
+                          'https://linkedin.com/company/your-company');
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: Image.asset(
+                      'assets/png/images/linkedin.png',
+                      height: 40,
+                      width: 40,
+                    ),
+                  ),
+                ],
+              ),
+              // const SizedBox(height: 24),
               Image.asset("assets/png/images/cantact_us_1.png"),
             ],
           ),

@@ -44,11 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // Initialize all widgets that will be lazy loaded
     _allWidgets.addAll([
       const HomeProductsTileWidget(title: 'Featured'),
+      const CompoOfferWidget(),
       const HomeProductsTileWidget(title: 'Latest'),
       const HomeProductsTileWidget(title: 'Bestseller'),
       const ReferFriendWidget(),
       const HomeProductsTileWidget(title: 'Seasonal Collection'),
-      const CompoOfferWidget(),
       const YoutubeVideoplayerWidget(),
       const ExploreOurWorkWidget(),
     ]);
@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+
     super.dispose();
   }
 

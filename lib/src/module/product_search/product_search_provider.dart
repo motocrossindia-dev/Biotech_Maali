@@ -12,6 +12,10 @@ class ProductSearchProvider extends ChangeNotifier {
   bool isLoadingMore = false;
   String lastSearchQuery = '';
 
+  bool isTyping = false;
+
+  bool showBorderAnimation = false;
+
   void updateWishList(bool isWishlist, int productId) {
     final productIndex =
         products.indexWhere((product) => product.id == productId);
@@ -35,24 +39,36 @@ class ProductSearchProvider extends ChangeNotifier {
     }
   }
 
+  Timer? _debounce;
+
   Future<void> searchProducts(String query) async {
-    try {
-      isLoading = true;
-      error = '';
-      lastSearchQuery = query; // Store the search query
-      notifyListeners();
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-      final response = await _repository.searchProducts(query);
-      products = response.products;
-      nextPage = response.nextPage;
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      try {
+        isLoading = true;
+        error = '';
+        lastSearchQuery = query;
+        notifyListeners();
 
-      isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      isLoading = false;
-      error = e.toString();
-      notifyListeners();
-    }
+        final response = await _repository.searchProducts(query);
+        products = response.products;
+        nextPage = response.nextPage;
+
+        isLoading = false;
+        notifyListeners();
+      } catch (e) {
+        isLoading = false;
+        error = e.toString();
+        notifyListeners();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   Future<void> loadMore() async {

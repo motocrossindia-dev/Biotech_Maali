@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/src/other_modules/services/services_provider.dart';
 
 import '../../../../import.dart';
@@ -22,6 +24,15 @@ class _ContactFormSectionState extends State<ContactFormSection> {
       return '$fieldName is required';
     }
     return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ServicesProvider>().getCurrentLocationAddress().then((value) {
+      log("Location from shared preference: $value");
+      _locationController.text = value;
+    });
   }
 
   void _submitForm() async {
@@ -124,13 +135,31 @@ class _ContactFormSectionState extends State<ContactFormSection> {
                   validator: (value) => _validateField(value, 'Location'),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _serviceController,
+                DropdownButtonFormField<String>(
+                  value: _serviceController.text.isEmpty
+                      ? null
+                      : _serviceController.text,
                   decoration: const InputDecoration(
                     labelText: 'Service',
                     border: OutlineInputBorder(),
                   ),
+                  items: context
+                      .read<ServicesProvider>()
+                      .serviceList
+                      .map((String service) {
+                    return DropdownMenuItem<String>(
+                      value: service,
+                      child: Text(service),
+                    );
+                  }).toList(),
                   validator: (value) => _validateField(value, 'Service'),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        _serviceController.text = newValue;
+                      });
+                    }
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -140,7 +169,7 @@ class _ContactFormSectionState extends State<ContactFormSection> {
                     labelText: 'Message',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) => _validateField(value, 'Message'),
+                  // validator: (value) => _validateField(value, 'Message'),
                 ),
                 const SizedBox(height: 24),
                 Consumer<ServicesProvider>(

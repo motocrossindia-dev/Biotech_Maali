@@ -1,13 +1,27 @@
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/product_search/widget/search_speek_input.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/widgets/shimmer/product_tile_shimmer.dart';
 import 'product_search_provider.dart';
 
-class ProductSearchView extends StatelessWidget {
+class ProductSearchView extends StatefulWidget {
   const ProductSearchView({super.key});
+
+  @override
+  State<ProductSearchView> createState() => _ProductSearchViewState();
+}
+
+class _ProductSearchViewState extends State<ProductSearchView> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +31,13 @@ class ProductSearchView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SearchBar(
-              onChanged: (query) {
-                if (query.isNotEmpty) {
-                  context.read<ProductSearchProvider>().searchProducts(query);
-                }
-              },
-            ),
+          ChatInput(
+            controller: _searchController,
+            onSearch: (query) {
+              if (query.isNotEmpty) {
+                context.read<ProductSearchProvider>().searchProducts(query);
+              }
+            },
           ),
           Expanded(
             child: Consumer<ProductSearchProvider>(

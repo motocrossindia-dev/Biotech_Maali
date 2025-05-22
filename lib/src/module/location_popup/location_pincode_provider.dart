@@ -17,9 +17,7 @@ class LocationPincodeProvider extends ChangeNotifier {
   GoogleMapController? _mapController;
   bool isLocationEnabled = false;
   bool showAllAddresses = false;
-  bool isLogin  =false;
-
-
+  bool isLogin = false;
 
   Future<void> checkUserLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -92,6 +90,8 @@ class LocationPincodeProvider extends ChangeNotifier {
             "${place.administrativeArea}, ${place.country}";
         _pincodeController.text = place.postalCode ?? '';
         log("_addressController.text: ${_addressController.text}");
+
+        prefs.setString("user_current_address", _addressController.text.trim());
 
         prefs.setString("user_pincode", place.postalCode ?? '');
         prefs.setString("user_locality", place.locality ?? '');

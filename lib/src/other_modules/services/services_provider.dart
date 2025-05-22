@@ -13,6 +13,15 @@ class ServicesProvider with ChangeNotifier {
   String _error = '';
   bool _isSubmitting = false;
 
+  List<String> serviceList = [
+    'Landscaping',
+    'Terrace Gardening',
+    'Kitchen Gardening',
+    'Vertical Wall Gardening',
+    'Drip Irrigation',
+    'Garden Maintenance',
+  ];
+
   ServicesProvider() : _repository = ServicesRepository();
 
   List<ServiceModel> get services => _services.where((s) => s.visible).toList();
@@ -43,8 +52,23 @@ class ServicesProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> submitForm(String name, String contact, String location,
-      String service, String message) async {
+  Future<String> getCurrentLocationAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? location = prefs.getString('user_current_address');
+    if (location == null) {
+      return "Location not found";
+    } else {
+      return location;
+    }
+  }
+
+  Future<bool> submitForm(
+    String name,
+    String contact,
+    String location,
+    String service,
+    String message,
+  ) async {
     try {
       _isSubmitting = true;
       _error = '';
@@ -72,8 +96,8 @@ class ServicesProvider with ChangeNotifier {
     }
   }
 
-  void clearError() {
-    _error = '';
+  void clearError(String error) {
+    _error = error;
     notifyListeners();
   }
 }

@@ -88,7 +88,9 @@ class CustomAppBarWithSearch extends StatelessWidget
                     child: SizedBox(
                       height: 42,
                       width: 251,
-                      child: TextField(
+                      child: TextFormField(
+                        readOnly: true, // Prevents keyboard from showing
+                        showCursor: false, // Hides the cursor
                         onTap: () {
                           Navigator.push(
                             context,
@@ -98,9 +100,8 @@ class CustomAppBarWithSearch extends StatelessWidget
                           );
                         },
                         decoration: InputDecoration(
-                          filled:
-                              true, // This line is necessary to show the fill color
-                          fillColor: cSearchBox, // Your custom color
+                          filled: true,
+                          fillColor: cSearchBox,
                           hintStyle: GoogleFonts.poppins(fontSize: 12),
                           hintText: 'Search for "plants"',
                           prefixIcon: const Icon(Icons.search, size: 22),
@@ -118,7 +119,6 @@ class CustomAppBarWithSearch extends StatelessWidget
                                       const ProductSearchView(),
                                 ),
                               );
-                              // Handle microphone button press
                             },
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
