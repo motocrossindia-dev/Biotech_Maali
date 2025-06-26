@@ -5,7 +5,7 @@ import 'model/filter_response_model.dart';
 
 class FiltersRepository {
   final Dio _dio = Dio();
-  final String baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
+  final String baseUrl = 'https://www.backend.biotechmaali.com';
 
   Future<FilterResponseModel> getFilters(String type) async {
     log("type : $type");

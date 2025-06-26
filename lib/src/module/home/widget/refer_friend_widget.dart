@@ -10,20 +10,24 @@ class ReferFriendWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final width = media.size.width;
+    final height = media.size.height;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 280,
-          width: double.infinity,
+          height: height * 0.32, // ~280px for 870px height
+          width: width,
           child: Image.asset(
             'assets/png/images/home_screen_img_1.jpg',
             fit: BoxFit.fill,
           ),
         ),
         Container(
-          height: 184,
-          width: double.infinity,
+          height: height * 0.21, // ~184px for 870px height
+          width: width,
           color: cReferFriendsHome,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,9 +40,10 @@ class ReferFriendWidget extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Center(
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.04), // ~16px for 400px width
+                child: const Center(
                   child: CommonTextWidget(
                     title:
                         'Every plant purchase is a gift that keeps on giving. '
@@ -46,9 +51,8 @@ class ReferFriendWidget extends StatelessWidget {
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
                     textAlign: TextAlign.center,
-                    maxLines: 3, // Allow up to 3 lines for better text wrapping
-                    overflow:
-                        TextOverflow.visible, // Show all text without ellipsis
+                    maxLines: 3,
+                    overflow: TextOverflow.visible,
                   ),
                 ),
               ),
@@ -56,8 +60,8 @@ class ReferFriendWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    height: 38,
-                    width: 147,
+                    height: height * 0.044, // ~38px for 870px height
+                    width: width * 0.41, // ~147px for 400px width
                     child: BorderColoredButton(
                       title: 'Learn More',
                       event: () async {
@@ -77,12 +81,12 @@ class ReferFriendWidget extends StatelessWidget {
                                 .referralCode
                                 .text);
                       },
-                      height: 38,
+                      height: height * 0.044,
                     ),
                   ),
                   SizedBox(
-                    height: 38,
-                    width: 150,
+                    height: height * 0.044,
+                    width: width * 0.41, // ~150px for 400px width
                     child: CommonButtonWidget(
                       title: 'Refer A Friend',
                       event: () async {

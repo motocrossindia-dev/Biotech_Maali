@@ -74,6 +74,7 @@ class WishlistProductTileWidget extends StatelessWidget {
             color: cProductTitle,
             fontSize: 14,
             fontWeight: FontWeight.w400,
+            maxLines: 1,
           ),
           sizedBoxHeight10,
           Row(

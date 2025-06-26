@@ -7,7 +7,7 @@ class TokenRepository {
 
   // Base URL for the API
   static const String _baseUrl =
-      "http://www.dev.back.biotechmaali.com:8000/api/token";
+      "https://www.backend.biotechmaali.com/api/token";
 
   TokenRepository()
       : _dio = Dio(BaseOptions(

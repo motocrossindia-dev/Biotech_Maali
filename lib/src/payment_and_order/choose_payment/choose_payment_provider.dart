@@ -69,6 +69,7 @@ class ChoosePaymentProvider extends ChangeNotifier {
   void checkPaymentMethod(
       OrderSummaryResponse orderSummaryResponse, BuildContext context) {
     log("order summary response : ${orderSummaryResponse.data.order.grandTotal}");
+    actualWalletBalance = context.read<WalletProvider>().balance;
     _orderSummaryResponse = orderSummaryResponse;
     if (actualWalletBalance! < 0 && isWalletCheckbox) {
       initiatePayment(context, orderSummaryResponse,
@@ -135,7 +136,7 @@ class ChoosePaymentProvider extends ChangeNotifier {
       orderId = response["order_id"];
 
       final options = {
-        "key": "rzp_test_zu1D9WznwNYRVG",
+        "key": "rzp_test_y70g5dxx6kOQ7v",
         "amount": (amoutToPay * 100).toInt(),
         "name": "Biotech Maali",
         "description": "Order #${_orderSummaryResponse!.data.order.orderId}",

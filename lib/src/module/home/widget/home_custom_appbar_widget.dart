@@ -56,8 +56,8 @@ class CustomAppBarWithSearch extends StatelessWidget
                               style: const TextStyle(color: Colors.black),
                             ),
                             Text(
-                              provider.placeName.length > 10
-                                  ? '${provider.placeName.substring(0, 15)}..'
+                              provider.placeName.length > 15
+                                  ? '${provider.placeName.substring(0, provider.placeName.length > 15 ? 15 : provider.placeName.length)}..'
                                   : provider.placeName,
                               style: const TextStyle(color: Colors.black),
                             ),

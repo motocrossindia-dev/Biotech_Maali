@@ -57,11 +57,17 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'For a seamless shopping experience!',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'For a seamless shopping!',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -108,31 +114,32 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
                           maxLength: 6,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          prefs.setString(
-                              "user_pincode", provider.pincodeController.text);
-                          await context
-                              .read<HomeProvider>()
-                              .getLocationPincode();
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(2), // Square shape
-                            side: BorderSide(
-                                color: cBottomNav,
-                                width: 1), // Border color & width
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        height: 45,
+                        width: MediaQuery.of(context).size.width *
+                            0.25, // Responsive width
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setString("user_pincode",
+                                provider.pincodeController.text);
+                            await context
+                                .read<HomeProvider>()
+                                .getLocationPincode();
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                              side: BorderSide(color: cBottomNav, width: 1),
+                            ),
+                            backgroundColor: Colors.white,
+                            foregroundColor: cBottomNav,
                           ),
-                          backgroundColor:
-                              Colors.white, // Button background color
-                          foregroundColor: cBottomNav, // Text color
+                          child: const Text('Submit'),
                         ),
-                        child: const Text('Submit'),
                       ),
                     ],
                   ),
@@ -238,190 +245,3 @@ Widget buildShimmerEffect() {
     ),
   );
 }
-
-
-
-// class LocationPickerScreen extends StatefulWidget {
-//   const LocationPickerScreen({super.key});
-
-//   @override
-//   _LocationPickerScreenState createState() => _LocationPickerScreenState();
-// }
-
-// class _LocationPickerScreenState extends State<LocationPickerScreen> {
-//   GoogleMapController? _mapController;
-//   LatLng? _selectedLocation;
-//   bool _isLoading = false;
-//   String _addressDetails = '';
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _getCurrentLocation();
-//   }
-
-//   Future<void> _getCurrentLocation() async {
-//     setState(() => _isLoading = true);
-
-//     try {
-//       LocationPermission permission = await Geolocator.requestPermission();
-//       if (permission == LocationPermission.denied) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text('Location permissions are denied')),
-//         );
-//         return;
-//       }
-
-//       Position position = await Geolocator.getCurrentPosition(
-//         desiredAccuracy: LocationAccuracy.high,
-//       );
-
-//       LatLng currentLocation = LatLng(position.latitude, position.longitude);
-//       setState(() {
-//         _selectedLocation = currentLocation;
-//         _isLoading = false;
-//       });
-
-//       _mapController?.animateCamera(
-//         CameraUpdate.newCameraPosition(
-//           CameraPosition(target: currentLocation, zoom: 18),
-//         ),
-//       );
-
-//       await _fetchAddressFromCoordinates(currentLocation);
-//     } catch (e) {
-//       setState(() => _isLoading = false);
-//       debugPrint('Error getting location: $e');
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text('Could not fetch current location')),
-//       );
-//     }
-//   }
-
-//   Future<void> _fetchAddressFromCoordinates(LatLng location) async {
-//     try {
-//       List<Placemark> placemarks = await placemarkFromCoordinates(
-//         location.latitude,
-//         location.longitude,
-//         localeIdentifier: "en_IN",
-//       );
-
-//       if (placemarks.isNotEmpty) {
-//         Placemark place = placemarks.first;
-
-//         // Extract relevant address details
-//         setState(() {
-//           _addressDetails =
-//               """ ${place.locality ?? ''}, ${place.subLocality ?? ''}, ${place.subAdministrativeArea ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}, ${place.postalCode ?? ''}"""
-//                   .trim();
-//         });
-//       }
-//     } catch (e) {
-//       debugPrint('Error fetching address: $e');
-//     }
-//   }
-
-//   void _onMapMoved(CameraPosition position) {
-//     setState(() => _selectedLocation = position.target);
-//   }
-
-//   void _onCameraIdle() {
-//     if (_selectedLocation != null) {
-//       _fetchAddressFromCoordinates(_selectedLocation!);
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Select Location'),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.check),
-//             onPressed: _selectedLocation != null
-//                 ? () {
-//                     Navigator.pop(context, {
-//                       'location': _selectedLocation,
-//                       'address': _addressDetails,
-//                     });
-//                   }
-//                 : null,
-//           ),
-//         ],
-//       ),
-//       body: Stack(
-//         children: [
-//           GoogleMap(
-//             initialCameraPosition: CameraPosition(
-//               target: _selectedLocation ?? const LatLng(12.9716, 77.5946),
-//               zoom: 18,
-//             ),
-//             onMapCreated: (GoogleMapController controller) {
-//               _mapController = controller;
-//             },
-//             onCameraMove: _onMapMoved,
-//             onCameraIdle: _onCameraIdle,
-//             mapType: MapType.normal,
-//             myLocationEnabled: true,
-//             myLocationButtonEnabled: false,
-//             zoomControlsEnabled: true,
-//             zoomGesturesEnabled: true,
-//           ),
-//           const Positioned(
-//             top: 0,
-//             bottom: 0,
-//             left: 0,
-//             right: 0,
-//             child: Icon(
-//               Icons.location_pin,
-//               color: Colors.red,
-//               size: 50,
-//             ),
-//           ),
-//           Positioned(
-//             bottom: 16,
-//             left: 16,
-//             right: 16,
-//             child: Container(
-//               padding: const EdgeInsets.all(12),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(10),
-//                 boxShadow: const [
-//                   BoxShadow(
-//                     color: Colors.black26,
-//                     blurRadius: 10,
-//                     offset: Offset(0, 4),
-//                   ),
-//                 ],
-//               ),
-//               child: Text(
-//                 _addressDetails.isNotEmpty
-//                     ? _addressDetails
-//                     : 'Moving the map to select location...',
-//                 style: const TextStyle(fontSize: 14),
-//                 maxLines: 6,
-//                 overflow: TextOverflow.ellipsis,
-//               ),
-//             ),
-//           ),
-//           Positioned(
-//             bottom: 80,
-//             right: 16,
-//             child: FloatingActionButton(
-//               mini: true,
-//               backgroundColor: Colors.white,
-//               onPressed: _getCurrentLocation,
-//               child: _isLoading
-//                   ? const CircularProgressIndicator(
-//                       strokeWidth: 2,
-//                       valueColor: AlwaysStoppedAnimation<Color>(Colors.blue))
-//                   : const Icon(Icons.my_location, color: Colors.blue),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

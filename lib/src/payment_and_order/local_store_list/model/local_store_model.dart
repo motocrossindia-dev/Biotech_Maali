@@ -19,7 +19,7 @@ class LocalStoreModel {
 
   String? getFullImageUrl() {
     if (image == null) return null;
-    const baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
+    const baseUrl = 'https://www.backend.biotechmaali.com';
     return '$baseUrl$image';
   }
 

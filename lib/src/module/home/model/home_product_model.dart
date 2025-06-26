@@ -29,7 +29,7 @@ class HomeProductModel {
 
   String? getFullImageUrl() {
     if (image == null) return null;
-    const baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
+    const baseUrl = 'https://www.backend.biotechmaali.com';
     return '$baseUrl$image';
   }
 
@@ -51,19 +51,19 @@ class HomeProductModel {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'is_featured': isFeatured,
-    'is_best_seller': isBestSeller,
-    'is_seasonal_collection': isSeasonalCollection,
-    'is_trending': isTrending,
-    'is_cart': isCart,
-    'is_wishlist': isWishlist,
-    'product_rating': productRating.toJson(),
-    'image': image,
-    'selling_price': sellingPrice,
-    'mrp': mrp,
-  };
+        'id': id,
+        'name': name,
+        'is_featured': isFeatured,
+        'is_best_seller': isBestSeller,
+        'is_seasonal_collection': isSeasonalCollection,
+        'is_trending': isTrending,
+        'is_cart': isCart,
+        'is_wishlist': isWishlist,
+        'product_rating': productRating.toJson(),
+        'image': image,
+        'selling_price': sellingPrice,
+        'mrp': mrp,
+      };
 }
 
 class ProductRating {
@@ -83,7 +83,7 @@ class ProductRating {
   }
 
   Map<String, dynamic> toJson() => {
-    'avg_rating': avgRating,
-    'num_ratings': numRatings,
-  };
+        'avg_rating': avgRating,
+        'num_ratings': numRatings,
+      };
 }

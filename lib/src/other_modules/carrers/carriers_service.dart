@@ -3,7 +3,7 @@ import 'carrier_model.dart';
 
 class CarriersService {
   final Dio _dio = Dio();
-  final String baseUrl = 'http://www.dev.back.biotechmaali.com:8000';
+  final String baseUrl = 'https://www.backend.biotechmaali.com';
 
   Future<List<CarrierModel>> getCarriers() async {
     try {

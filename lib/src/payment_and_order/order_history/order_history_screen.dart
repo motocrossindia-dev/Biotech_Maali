@@ -285,16 +285,6 @@ class OrderHistoryCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.person_outline, size: 16, color: Colors.grey),
-              const SizedBox(width: 4),
-              Text(
-                order.customerName,
-                style: const TextStyle(fontSize: 13),
-              ),
-            ],
-          ),
-          Row(
-            children: [
               if (order.status.toLowerCase() != 'cancelled' &&
                   order.status.toLowerCase() != 'delivered') ...[
                 OutlinedButton(
