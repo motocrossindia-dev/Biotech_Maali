@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enquiry_provider.dart';
+import 'package:biotech_maali/src/other_modules/our_store/our_store_provider.dart';
 import 'package:biotech_maali/src/other_modules/our_store/our_store_screen.dart';
 import '../../../import.dart';
 
@@ -188,7 +189,18 @@ class FranchiseScreen extends StatelessWidget {
             _buildWhyWeRockSection(),
             ..._buildFeatureItems(),
             _buildStoreLocationsSection(),
-            ..._buildStoreCards(),
+            // ..._buildStoreCards(),
+            SizedBox(
+              height: 350,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: context.read<OurStoreProvider>().stores.length,
+                itemBuilder: (context, index) {
+                  final store = context.read<OurStoreProvider>().stores[index];
+                  return StoreCard(store: store);
+                },
+              ),
+            ),
 
             const SizedBox(height: 20),
 

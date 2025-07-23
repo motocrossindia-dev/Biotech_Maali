@@ -1,4 +1,4 @@
-import '../import.dart';
+import '../../import.dart';
 
 //Extra Large
 
@@ -26,8 +26,8 @@ const TextStyle tsMediumTextWithColorDarkGrey =
 
 //Regular
 
-TextStyle tsRegularTextBold =
-    const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.black);
+TextStyle tsRegularTextBold = const TextStyle(
+    fontSize: 17.0, fontWeight: FontWeight.bold, color: Colors.black);
 
 const TextStyle tsRegularText = TextStyle(fontSize: 17.0);
 
@@ -61,7 +61,8 @@ const TextStyle tsSmallText = TextStyle(fontSize: 14.0);
 
 const TextStyle tsSmallTextGrey =
     TextStyle(fontSize: 14.0, color: Color(0xFF676767));
-TextStyle tsSmallTextWhite = const TextStyle(fontSize: 14.0, color: Colors.white);
+TextStyle tsSmallTextWhite =
+    const TextStyle(fontSize: 14.0, color: Colors.white);
 
 const TextStyle tsSmallTextUnderlineBold = TextStyle(
     fontWeight: FontWeight.w500,

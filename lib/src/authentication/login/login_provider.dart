@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/account/account_provider.dart';
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
+import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginProvider extends ChangeNotifier {
@@ -23,6 +26,28 @@ class LoginProvider extends ChangeNotifier {
       if (result) {
         prefs.setString("userName", "${name.text} ");
         prefs.setBool("isLogin", true);
+        await context.read<EditProfileProvider>().fetchProfileData();
+        await context.read<ReferFriendProvider>().getReferralDetails();
+        await context.read<WalletProvider>().fetchWalletDetails();
+        await context.read<AccountProvider>().getUserName();
+        int productId = prefs.getInt("productId") ?? 0;
+        log("Product ID: $productId");
+
+        if (productId != 0) {
+          prefs.remove("productId");
+          context.read<BottomNavProvider>().updateIndex(0);
+          navigatorKey.currentState?.pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => BottomNavWidget(
+                isProductDetailsScreen: true,
+                productId: productId,
+              ),
+            ),
+            (route) => false,
+          );
+
+          return;
+        }
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

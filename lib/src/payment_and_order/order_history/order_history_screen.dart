@@ -1,12 +1,9 @@
 import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_shimmer.dart';
-import 'package:biotech_maali/src/payment_and_order/order_history/widgets/invoice_download_popup.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_screen.dart';
 import 'package:biotech_maali/src/payment_and_order/order_tracking/order_tracking_screen.dart';
-import 'package:biotech_maali/src/pdf_viewer/pdf_viewer.dart';
-
 import '../../../import.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
@@ -139,302 +136,193 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
 
 class OrderHistoryCard extends StatelessWidget {
   final OrderHistory order;
-  final Color borderColor = const Color.fromARGB(255, 49, 42, 42);
+  static const Color themeColor = Color(0xFF749F09);
 
   const OrderHistoryCard({required this.order, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: borderColor),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () => _navigateToDetails(context),
-        child: Column(
-          children: [
-            _buildHeader(),
-            const Divider(height: 1),
-            _buildBody(),
-            const Divider(height: 1),
-            _buildFooter(context, order),
-          ],
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderHistoryDetailScreen(
+              orderId: order.id,
+              orderNumber: order.orderId,
+              orderDate: order.date,
+              grandTotal: order.grandTotal,
+              paymentMethod: order.paymentMethod ?? 'Not defined',
+              deliveryAddress: order.deliveryAddress,
+              customerName: order.customerName,
+              totalPrice: order.totalPrice,
+              totalDiscount: order.totalDiscount,
+              deliveryOption: order.deliveryOption,
+              orderStatus: order.status,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        elevation: 2,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Status chip and date
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      '${BaseUrl.baseUrlForImages}${order.productDetails?.productImage ?? ""}', // Example image URL
+                      height: 100,
+                      width: 160,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey.shade200,
+                        height: 60,
+                        width: 60,
+                        child: const Icon(Icons.image_not_supported,
+                            color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Column(
+                            children: [
+                              _buildStatusChip(order.status),
+                              // Text(
+                              //   _formatDate(order.date),
+                              //   style: TextStyle(
+                              //     color: Colors.grey.shade500,
+                              //     fontSize: 10,
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Action buttons
+                      Row(
+                        // mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          if (order.trackingId != "0") ...[
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                final orderHistoryProvider =
+                                    context.read<OrderHistoryDetailProvider>();
+                                await orderHistoryProvider
+                                    .fetchOrderDetails(order.id);
+
+                                final trackingUpdates = (orderHistoryProvider
+                                            .orderDetails
+                                            ?.data
+                                            .trackingUpdates ??
+                                        [])
+                                    .map((update) => TrackingUpdate(
+                                          status: update.status,
+                                          timestamp: update.timestamp,
+                                          notes: update.notes,
+                                        ))
+                                    .toList();
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeliveryTrackingWidget(
+                                      trackingUpdates: trackingUpdates,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.local_shipping_outlined,
+                                  size: 16),
+                              label: const Text('Track'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: themeColor,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 1,
+                                ),
+                                textStyle: const TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Order #${order.orderId}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Placed on ${_formatDate(order.date)}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          _buildStatusChip(order.status),
-        ],
-      ),
-    );
-  }
+  Widget _buildStatusChip(String status) {
+    Color chipColor;
+    Color backgroundColor;
 
-  Widget _buildBody() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      color: Colors.grey[50],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Total Amount',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '₹${order.grandTotal}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'Payment Method',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    order.paymentMethod ?? 'Not defined',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Delivery Option: ${order.deliveryOption}',
-                style: const TextStyle(fontSize: 13),
-              ),
-              Text(
-                'Discount: ₹${order.totalDiscount.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  color: Colors.green,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooter(BuildContext context, OrderHistory order) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              if (order.status.toLowerCase() != 'cancelled' &&
-                  order.status.toLowerCase() != 'delivered') ...[
-                OutlinedButton(
-                  onPressed: () =>
-                      _showCancelConfirmation(context, order.orderId),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                    minimumSize: const Size(0, 32),
-                  ),
-                  child: const Text(
-                    'Cancel Order',
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-              if (order.trackingId != "0") ...[
-                OutlinedButton.icon(
-                  onPressed: () async {
-                    final orderHistoryProvider =
-                        context.read<OrderHistoryDetailProvider>();
-                    await orderHistoryProvider.fetchOrderDetails(order.id);
-
-                    // Convert the tracking updates to the correct type
-                    final trackingUpdates = (orderHistoryProvider
-                                .orderDetails?.data.trackingUpdates ??
-                            [])
-                        .map((update) => TrackingUpdate(
-                              status: update.status,
-                              timestamp: update.timestamp,
-                              notes: update.notes,
-                            ))
-                        .toList();
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DeliveryTrackingWidget(
-                          trackingUpdates: trackingUpdates,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.local_shipping_outlined, size: 18),
-                  label: const Text(
-                    'Track',
-                    style: TextStyle(fontSize: 13),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.blue,
-                    side: const BorderSide(color: Colors.blue),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 0,
-                    ),
-                    minimumSize: const Size(0, 32),
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-              IconButton(
-                icon: const Icon(Icons.file_download_outlined),
-                onPressed: () {
-                  if (order.status == "DELIVERED") {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PdfViewerScreen(
-                          pdfUrl: "${EndUrl.pdfInvoiceUrl}${order.id}/",
-                          title: order.orderId,
-                        ),
-                      ),
-                    );
-                  } else {
-                    InvoiceDownloadPopup.showInvoiceBottomSheet(context);
-                  }
-                },
-                tooltip: 'Download Invoice',
-                iconSize: 20,
-                constraints: const BoxConstraints(
-                  minWidth: 32,
-                  minHeight: 32,
-                ),
-                padding: EdgeInsets.zero,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showCancelConfirmation(
-      BuildContext context, String orderId) async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cancel Order'),
-          content: const Text('Are you sure you want to cancel this order?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Yes'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (result == true) {
-      final success =
-          await context.read<OrderHistoryProvider>().cancelOrder(orderId);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success
-                  ? 'Order cancelled successfully'
-                  : 'Failed to cancel order',
-            ),
-            backgroundColor: success ? Colors.green : Colors.red,
-          ),
-        );
-      }
+    switch (status.toLowerCase()) {
+      case 'initiated':
+        chipColor = Colors.blue;
+        backgroundColor = Colors.blue.withOpacity(0.1);
+        break;
+      case 'paid':
+        chipColor = themeColor;
+        backgroundColor = themeColor.withOpacity(0.1);
+        break;
+      case 'cancelled':
+        chipColor = Colors.red;
+        backgroundColor = Colors.red.withOpacity(0.1);
+        break;
+      case 'delivered':
+        chipColor = Colors.green;
+        backgroundColor = Colors.green.withOpacity(0.1);
+        break;
+      default:
+        chipColor = Colors.grey;
+        backgroundColor = Colors.grey.withOpacity(0.1);
     }
-  }
 
-  void _navigateToDetails(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OrderHistoryDetailScreen(
-          orderId: order.id,
-          orderNumber: order.orderId,
-          orderDate: order.date,
-          grandTotal: order.grandTotal,
-          paymentMethod: order.paymentMethod ?? 'Not defined',
-          deliveryAddress: order.deliveryAddress,
-          customerName: order.customerName,
-          totalPrice: order.totalPrice,
-          totalDiscount: order.totalDiscount,
-          deliveryOption: order.deliveryOption,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: chipColor, width: 1),
+      ),
+      child: Text(
+        status,
+        style: TextStyle(
+          color: chipColor,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -461,50 +349,5 @@ class OrderHistoryCard extends StatelessWidget {
       'Dec'
     ];
     return months[month - 1];
-  }
-
-  Widget _buildStatusChip(String status) {
-    Color chipColor;
-    Color textColor;
-    Color backgroundColor;
-
-    switch (status.toLowerCase()) {
-      case 'initiated':
-        chipColor = Colors.blue;
-        textColor = Colors.blue;
-        backgroundColor = Colors.blue.withOpacity(0.1);
-        break;
-      case 'paid':
-        chipColor = Colors.green;
-        textColor = Colors.green;
-        backgroundColor = Colors.green.withOpacity(0.1);
-        break;
-      case 'cancelled':
-        chipColor = Colors.red;
-        textColor = Colors.red;
-        backgroundColor = Colors.red.withOpacity(0.1);
-        break;
-      default:
-        chipColor = Colors.grey;
-        textColor = Colors.grey;
-        backgroundColor = Colors.grey.withOpacity(0.1);
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: chipColor),
-      ),
-      child: Text(
-        status,
-        style: TextStyle(
-          color: textColor,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
   }
 }

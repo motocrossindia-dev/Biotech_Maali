@@ -62,7 +62,7 @@ class _CoinScreenState extends State<CoinScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(
-                                        Icons.monetization_on,
+                                        Icons.currency_rupee,
                                         color: cBottomNav,
                                         size: 28,
                                       ),
@@ -259,7 +259,7 @@ class _CoinScreenState extends State<CoinScreen> {
         ),
         Row(
           children: [
-            Icon(Icons.monetization_on, color: cBottomNav, size: 16),
+            Icon(Icons.currency_rupee, color: cBottomNav, size: 16),
             const SizedBox(width: 4),
             Text(
               coins,
@@ -414,7 +414,7 @@ class _CoinScreenState extends State<CoinScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.monetization_on, color: cBottomNav),
+                  Icon(Icons.currency_rupee, color: cBottomNav),
                   const SizedBox(width: 4),
                   Text(
                     '$redeemAmount',

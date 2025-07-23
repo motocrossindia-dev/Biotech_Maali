@@ -9,6 +9,8 @@ class CarrersScreen extends StatefulWidget {
 }
 
 class _CarrersScreenState extends State<CarrersScreen> {
+  static const Color themeColor = Color(0xFF749F09);
+
   @override
   void initState() {
     super.initState();
@@ -25,37 +27,64 @@ class _CarrersScreenState extends State<CarrersScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Carrers'),
+        title: const Text('Careers'),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        foregroundColor: themeColor,
         elevation: 0,
       ),
+      backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
-            child: const Text(
-              'Shape the Future with Biotech Maali',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Shape the Future with Biotech Maali',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: themeColor,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Explore exciting career opportunities and join our team!',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              ],
             ),
           ),
-          const DefaultTabController(
-            length: 2,
-            child: Expanded(
+          const SizedBox(height: 8),
+          Expanded(
+            child: DefaultTabController(
+              length: 2,
               child: Column(
                 children: [
-                  TabBar(
-                    tabs: [
-                      Tab(text: 'Non-Tech Positions'),
-                      Tab(text: 'Technology Positions'),
-                    ],
-                    labelColor: Colors.black,
-                    indicatorColor: Colors.black,
+                  Container(
+                    color: Colors.white,
+                    child: const TabBar(
+                      tabs: [
+                        Tab(text: 'Non-Tech Positions'),
+                        Tab(text: 'Technology Positions'),
+                      ],
+                      labelColor: themeColor,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: themeColor,
+                      indicatorWeight: 3,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                  Expanded(
+                  const Expanded(
                     child: TabBarView(
                       children: [
                         _JobListingsTab(isNonTech: true),
@@ -75,6 +104,7 @@ class _CarrersScreenState extends State<CarrersScreen> {
 
 class _JobListingsTab extends StatelessWidget {
   final bool isNonTech;
+  static const Color themeColor = Color(0xFF749F09);
 
   const _JobListingsTab({required this.isNonTech});
 
@@ -83,7 +113,8 @@ class _JobListingsTab extends StatelessWidget {
     return Consumer<CarrersProvider>(
       builder: (context, provider, child) {
         if (provider.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(color: themeColor));
         }
 
         final jobs = isNonTech ? provider.nonTechJobs : provider.techJobs;
@@ -93,30 +124,27 @@ class _JobListingsTab extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/empty_clipboard.png',
+                SvgPicture.asset(
+                  'assets/svg/images/empty_data.svg',
                   width: 100,
                   height: 100,
-                  color: Colors.blue[300],
+                  color: themeColor.withOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Sorry Currently',
+                  'No openings currently',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: themeColor,
                   ),
                 ),
+                const SizedBox(height: 6),
                 Text(
-                  'We have no opening',
+                  'Stay tuned for future opportunities!',
                   style: TextStyle(
                     color: Colors.grey[600],
-                  ),
-                ),
-                Text(
-                  'Stay tuned',
-                  style: TextStyle(
-                    color: Colors.grey[600],
+                    fontSize: 15,
                   ),
                 ),
               ],
@@ -130,14 +158,21 @@ class _JobListingsTab extends StatelessWidget {
           itemBuilder: (context, index) {
             final job = jobs[index];
             return Card(
-              margin: const EdgeInsets.only(bottom: 16),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+                side: BorderSide(color: themeColor.withOpacity(0.15), width: 1),
+              ),
+              margin: const EdgeInsets.only(bottom: 18),
+              color: Colors.white,
               child: ExpansionTile(
-                leading: const Icon(Icons.work, color: Colors.blue),
+                leading: const Icon(Icons.work, color: themeColor, size: 28),
                 title: Text(
                   job.title,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 17,
+                    color: themeColor,
                   ),
                 ),
                 subtitle: Text(
@@ -163,6 +198,7 @@ class _JobListingsTab extends StatelessWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
+                            color: themeColor,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -181,7 +217,8 @@ class _JobListingsTab extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text('• ',
-                                    style: TextStyle(fontSize: 14)),
+                                    style: TextStyle(
+                                        fontSize: 14, color: themeColor)),
                                 Expanded(
                                   child: Text(req,
                                       style: const TextStyle(fontSize: 14)),
@@ -194,6 +231,18 @@ class _JobListingsTab extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: themeColor,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
                             onPressed: () {
                               // Handle apply action
                             },

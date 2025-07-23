@@ -1,19 +1,62 @@
 // ignore_for_file: must_be_immutable
-
 import 'dart:developer';
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+import 'package:biotech_maali/src/bottom_nav/widgets/account_prompt_widget.dart';
+import 'package:biotech_maali/src/bottom_nav/widgets/cart_login_prompt_widget.dart';
 import 'package:biotech_maali/src/module/cart/cart_shimmer.dart';
+import 'package:biotech_maali/src/module/location_popup/location_pincode_provider.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:flutter/services.dart';
 import '../../import.dart';
 
-class BottomNavWidget extends StatelessWidget {
-  BottomNavWidget({super.key});
+class BottomNavWidget extends StatefulWidget {
+  final bool isProductDetailsScreen;
+  final int productId;
+  const BottomNavWidget(
+      {this.productId = 0, this.isProductDetailsScreen = false, super.key});
 
+  @override
+  State<BottomNavWidget> createState() => _BottomNavWidgetState();
+}
+
+class _BottomNavWidgetState extends State<BottomNavWidget> {
   // At the class level, add this variable
   DateTime? _lastBackPressTime;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BottomNavProvider>().checkAccessTokenValidity(context);
+      context
+          .read<LocationPincodeProvider>()
+          .getCurrentLocationFromBottomNav(context);
+    });
+    if (widget.isProductDetailsScreen) {
+      // If this widget is created from ProductDetailsScreen, show the login dialog
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ProductDetailsScreen(productId: widget.productId),
+            ),
+          );
+        },
+      );
+    }
+  }
+
   Future<bool> _onWillPop(BuildContext context) async {
+    if (context.read<BottomNavProvider>().currentIndex != 0) {
+      // If not on the home screen, go back to the home screen
+      context.read<BottomNavProvider>().updateIndex(0);
+      return false; // Prevents the app from exiting
+    }
+
     // Check if this is the second back press within 2 seconds
+
     if (_lastBackPressTime != null &&
         DateTime.now().difference(_lastBackPressTime!) <=
             const Duration(seconds: 2)) {
@@ -92,10 +135,25 @@ class BottomNavWidget extends StatelessWidget {
                 return const HomeScreen();
               case 1:
                 return const ExploreScreen();
+              // case 2:
+              //   return const ScanScreen();
               case 2:
-                return const ScanScreen();
-              case 3:
-                // Fixed version - immediately check token and return appropriate widget
+                log("message is token valid in screen **********: ${context.read<BottomNavProvider>().isTokenValid}");
+                // if (context.read<BottomNavProvider>().isTokenValid != true) {
+                //   WidgetsBinding.instance.addPostFrameCallback((_) {
+                //     showLoginDialog(context);
+                //   });
+                //   return CartLoginPromptWidget(
+                //     onLogin: () {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => const MobileNumberScreen(),
+                //         ),
+                //       );
+                //     },
+                //   ); // Return an empty widget if not valid
+                // }
                 return FutureBuilder<bool>(
                   future: settingsProvider.checkAccessTokenValidity(context),
                   builder: (context, snapshot) {
@@ -108,11 +166,35 @@ class BottomNavWidget extends StatelessWidget {
                       return const CartScreen();
                     } else {
                       log("message is not token valid: $isTokenValid");
-                      return const MobileNumberScreen();
+                      return CartLoginPromptWidget(
+                        onLogin: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MobileNumberScreen(),
+                            ),
+                          );
+                        },
+                      );
                     }
                   },
                 );
-              case 4:
+              case 3:
+                // if (context.read<BottomNavProvider>().isTokenValid != true) {
+                //   WidgetsBinding.instance.addPostFrameCallback((_) {
+                //     showLoginDialog(context);
+                //   });
+                //   return AccountPromptWidget(
+                //     onLogin: () {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => const MobileNumberScreen(),
+                //         ),
+                //       );
+                //     },
+                //   ); // Return an empty widget if not valid
+                // }
                 return FutureBuilder<bool>(
                   future: settingsProvider.checkAccessTokenValidity(context),
                   builder: (context, snapshot) {
@@ -125,7 +207,16 @@ class BottomNavWidget extends StatelessWidget {
                       return const AccountScreen();
                     } else {
                       log("message is not token valid: $isTokenValid");
-                      return const MobileNumberScreen();
+                      return AccountPromptWidget(
+                        onLogin: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MobileNumberScreen(),
+                            ),
+                          );
+                        },
+                      );
                     }
                   },
                 );
@@ -207,38 +298,38 @@ class BottomNavWidget extends StatelessWidget {
                         ),
                   label: 'Explore',
                 ),
+                // BottomNavigationBarItem(
+                //   icon: bottomNavProvider.currentIndex == 2
+                //       ? Column(
+                //           children: [
+                //             SvgPicture.asset(
+                //               "assets/svg/bottom_nav_bar/navbar_selected_line.svg",
+                //               colorFilter:
+                //                   ColorFilter.mode(cBottomNav, BlendMode.srcIn),
+                //               height: 4,
+                //               width: 31,
+                //             ),
+                //             sizedBoxHeight08,
+                //             SvgPicture.asset(
+                //               "assets/svg/bottom_nav_bar/icon_scan.svg",
+                //               colorFilter:
+                //                   ColorFilter.mode(cBottomNav, BlendMode.srcIn),
+                //               height: 24,
+                //               width: 24,
+                //             ),
+                //           ],
+                //         )
+                //       : SvgPicture.asset(
+                //           "assets/svg/bottom_nav_bar/icon_scan.svg",
+                //           colorFilter:
+                //               ColorFilter.mode(cBottomNav, BlendMode.srcIn),
+                //           height: 24,
+                //           width: 24,
+                //         ),
+                //   label: 'Scan',
+                // ),
                 BottomNavigationBarItem(
                   icon: bottomNavProvider.currentIndex == 2
-                      ? Column(
-                          children: [
-                            SvgPicture.asset(
-                              "assets/svg/bottom_nav_bar/navbar_selected_line.svg",
-                              colorFilter:
-                                  ColorFilter.mode(cBottomNav, BlendMode.srcIn),
-                              height: 4,
-                              width: 31,
-                            ),
-                            sizedBoxHeight08,
-                            SvgPicture.asset(
-                              "assets/svg/bottom_nav_bar/icon_scan.svg",
-                              colorFilter:
-                                  ColorFilter.mode(cBottomNav, BlendMode.srcIn),
-                              height: 24,
-                              width: 24,
-                            ),
-                          ],
-                        )
-                      : SvgPicture.asset(
-                          "assets/svg/bottom_nav_bar/icon_scan.svg",
-                          colorFilter:
-                              ColorFilter.mode(cBottomNav, BlendMode.srcIn),
-                          height: 24,
-                          width: 24,
-                        ),
-                  label: 'Scan',
-                ),
-                BottomNavigationBarItem(
-                  icon: bottomNavProvider.currentIndex == 3
                       ? Column(
                           children: [
                             SvgPicture.asset(
@@ -268,7 +359,7 @@ class BottomNavWidget extends StatelessWidget {
                   label: 'Cart',
                 ),
                 BottomNavigationBarItem(
-                  icon: bottomNavProvider.currentIndex == 4
+                  icon: bottomNavProvider.currentIndex == 3
                       ? Column(
                           children: [
                             SvgPicture.asset(
@@ -305,3 +396,17 @@ class BottomNavWidget extends StatelessWidget {
     );
   }
 }
+
+void showLoginDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const LoginPromptDialog();
+    },
+  );
+}
+
+// import 'package:flutter/material.dart';
+// import 'package:lottie/lottie.dart'; // Add lottie package if you want animation
+
+

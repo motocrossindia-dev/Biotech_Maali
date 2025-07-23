@@ -61,6 +61,11 @@ class _PinputWidgetState extends State<PinputWidget> {
             log("Changed: $value");
             if (value.length == 4) {
               provider.setOtp(value);
+              FocusScope.of(context).unfocus();
+              provider.validateOtp(
+                context.read<MobileNumberProvider>().mobileNumber.text.trim(),
+                context,
+              );
             }
           },
           cursor: Column(

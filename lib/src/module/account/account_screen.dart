@@ -5,6 +5,7 @@ import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_scree
 import 'package:biotech_maali/src/module/account/track_order/track_order_screen.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/account/wallet/wallet_screen.dart';
+import 'package:biotech_maali/src/module/account/widgets/subtitle_widget.dart';
 import 'package:biotech_maali/src/other_modules/carrers/carriers_screen.dart';
 import 'package:biotech_maali/src/other_modules/contact_us/contact_us_screen.dart';
 import 'package:biotech_maali/src/other_modules/franchise_enquiry/franchise_enquiry_screen.dart';
@@ -23,10 +24,22 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
-    context.read<AccountProvider>().getUserName();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<WalletProvider>().fetchWalletDetails();
+      context.read<AccountProvider>().getUserName();
+      context.read<EditProfileProvider>().fetchProfileData();
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -59,6 +72,7 @@ class _AccountScreenState extends State<AccountScreen> {
       body: Stack(
         children: [
           SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               children: [
                 Padding(
@@ -363,7 +377,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     Row(
                                       children: [
                                         const Icon(
-                                          Icons.monetization_on,
+                                          Icons.currency_rupee,
                                           size: 16,
                                         ),
                                         CommonTextWidget(
@@ -379,24 +393,24 @@ class _AccountScreenState extends State<AccountScreen> {
                                   ],
                                 ),
                               ),
-                              sizedBoxHeight35,
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/svg/icons/my_account_icon.svg',
-                                    height: 25,
-                                    width: 25,
-                                  ),
-                                  sizedBoxWidth20,
-                                  CommonTextWidget(
-                                    title: 'MY STUFF',
-                                    color: cAccountText,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ],
-                              ),
-                              sizedBoxHeight20,
+                              // sizedBoxHeight35,
+                              // Row(
+                              //   children: [
+                              //     SvgPicture.asset(
+                              //       'assets/svg/icons/my_account_icon.svg',
+                              //       height: 25,
+                              //       width: 25,
+                              //     ),
+                              //     sizedBoxWidth20,
+                              //     CommonTextWidget(
+                              //       title: 'MY STUFF',
+                              //       color: cAccountText,
+                              //       fontSize: 16,
+                              //       fontWeight: FontWeight.w500,
+                              //     ),
+                              //   ],
+                              // ),
+                              sizedBoxHeight15,
                               InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -430,7 +444,91 @@ class _AccountScreenState extends State<AccountScreen> {
                                   ],
                                 ),
                               ),
-                              sizedBoxHeight10,
+                              sizedBoxHeight20,
+                              InkWell(
+                                onTap: () {
+                                  context.read<AccountProvider>().toggleMore();
+                                  Future.delayed(
+                                      const Duration(milliseconds: 100), () {
+                                    if (context
+                                        .read<AccountProvider>()
+                                        .isMore) {
+                                      _scrollController.animateTo(
+                                        _scrollController
+                                            .position.maxScrollExtent,
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    } else {
+                                      _scrollController.animateTo(
+                                        0,
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/svg/icons/my_account_icon.svg',
+                                          height: 25,
+                                          width: 25,
+                                        ),
+                                        sizedBoxWidth20,
+                                        CommonTextWidget(
+                                          title: 'MORE',
+                                          color: cAccountText,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<AccountProvider>()
+                                            .toggleMore();
+                                        Future.delayed(
+                                            const Duration(milliseconds: 100),
+                                            () {
+                                          if (context
+                                              .read<AccountProvider>()
+                                              .isMore) {
+                                            _scrollController.animateTo(
+                                              _scrollController
+                                                  .position.maxScrollExtent,
+                                              duration: const Duration(
+                                                  milliseconds: 400),
+                                              curve: Curves.easeInOut,
+                                            );
+                                          } else {
+                                            _scrollController.animateTo(
+                                              0,
+                                              duration: const Duration(
+                                                  milliseconds: 400),
+                                              curve: Curves.easeInOut,
+                                            );
+                                          }
+                                        });
+                                      },
+                                      icon: Icon(
+                                        context.watch<AccountProvider>().isMore
+                                            ? Icons.keyboard_arrow_down
+                                            : Icons.keyboard_arrow_up,
+                                        color: cAccountText,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                               // InkWell(
                               //   onTap: () {
                               //     Navigator.push(
@@ -464,137 +562,190 @@ class _AccountScreenState extends State<AccountScreen> {
                               //     ],
                               //   ),
                               // ),
+                              context.watch<AccountProvider>().isMore
+                                  ? Column(
+                                      children: [
+                                        sizedBoxHeight20,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FranchiseScreen(),
+                                              ),
+                                            );
+                                          },
+                                          title: 'Franchise Enquiry',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const OurWorkScreen(),
+                                              ),
+                                            );
+                                          },
+                                          title: 'Our Work',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const ServicesScreen(),
+                                              ),
+                                            );
+                                          },
+                                          title: 'Services',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const CarrersScreen(),
+                                              ),
+                                            );
+                                          },
+                                          title: 'Carriers',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const OurStoresScreen(),
+                                              ),
+                                            );
+                                          },
+                                          title: 'Our Stores',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const ContactScreen(),
+                                              ),
+                                            );
+                                          },
+                                          title: 'Contact Us',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {},
+                                          title: 'Terms Of Services',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {},
+                                          title: 'Privacy Policy',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {},
+                                          title: 'Shipping Policy',
+                                        ),
+                                        sizedBoxHeight15,
+                                        SubtitleWidget(
+                                          onPressedCallBack: () {},
+                                          title: 'Return Policy',
+                                        ),
+                                      ],
+                                    )
+                                  : sizedBoxHeight0,
+
+                              // sizedBoxHeight15,
+                              // SubtitleWidget(
+                              //   onPressedCallBack: () {},
+                              //   title: 'FAQ’s',
+                              // ),
+                              sizedBoxHeight20,
                             ],
                           ),
                         ),
                       ),
-                      sizedBoxHeight20,
+                      // sizedBoxHeight20,
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: MaterialButton(
+                            color: cScaffoldBackground,
+                            onPressed: () async {
+                              // Show the bottom sheet when the button is pressed
+                              bottmomSheetLogout(context);
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  5), // Set the border radius here
+                              side: const BorderSide(
+                                color: Colors.red, // Set the border color here
+                                width: 2, // Set the border width
+                              ),
+                            ),
+                            child: CommonTextWidget(
+                              fontWeight: FontWeight.w500,
+                              title: 'LOGOUT',
+                              color: cButtonRed,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                      sizedBoxHeight05,
                     ],
                   ),
                 ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FranchiseScreen(),
-                      ),
-                    );
-                  },
-                  title: 'Franchise Enquiry',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OurWorkScreen(),
-                      ),
-                    );
-                  },
-                  title: 'Our Work',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ServicesScreen(),
-                      ),
-                    );
-                  },
-                  title: 'Services',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CarrersScreen(),
-                      ),
-                    );
-                  },
-                  title: 'Carriers',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OurStoresScreen(),
-                      ),
-                    );
-                  },
-                  title: 'Our Stores',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ContactScreen(),
-                      ),
-                    );
-                  },
-                  title: 'Contact Us',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {},
-                  title: 'Terms Of Services',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {},
-                  title: 'Privacy Policy',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {},
-                  title: 'Shipping Policy',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {},
-                  title: 'Return Policy',
-                ),
-                CustomButtonWidget(
-                  onPressedCallBack: () {},
-                  title: 'FAQ’s',
-                ),
-                sizedBoxHeight70
               ],
             ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                child: MaterialButton(
-                  color: cScaffoldBackground,
-                  onPressed: () async {
-                    // Show the bottom sheet when the button is pressed
-                    bottmomSheetLogout(context);
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(5), // Set the border radius here
-                    side: const BorderSide(
-                      color: Colors.red, // Set the border color here
-                      width: 2, // Set the border width
-                    ),
-                  ),
-                  child: CommonTextWidget(
-                    fontWeight: FontWeight.w500,
-                    title: 'LOGOUT',
-                    color: cButtonRed,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 0,
+          //   left: 0,
+          //   right: 0,
+          //   child: SizedBox(
+          //     width: double.infinity,
+          //     height: 55,
+          //     child: Padding(
+          //       padding: const EdgeInsets.only(left: 8.0, right: 8),
+          //       child: MaterialButton(
+          //         color: cScaffoldBackground,
+          //         onPressed: () async {
+          //           // Show the bottom sheet when the button is pressed
+          //           bottmomSheetLogout(context);
+          //         },
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius:
+          //               BorderRadius.circular(5), // Set the border radius here
+          //           side: const BorderSide(
+          //             color: Colors.red, // Set the border color here
+          //             width: 2, // Set the border width
+          //           ),
+          //         ),
+          //         child: CommonTextWidget(
+          //           fontWeight: FontWeight.w500,
+          //           title: 'LOGOUT',
+          //           color: cButtonRed,
+          //           fontSize: 18,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -652,6 +803,7 @@ void bottmomSheetLogout(BuildContext context) {
                     await prefs.remove('access_token');
                     await prefs.remove('refresh_token');
                     await prefs.remove('userName');
+                    await prefs.clear();
                     final navProvider = context.read<BottomNavProvider>();
                     navProvider.updateIndex(0);
 

@@ -1,8 +1,9 @@
 import 'dart:developer';
-
 import 'package:biotech_maali/src/authentication/otp/otp_repository.dart';
+import 'package:biotech_maali/src/module/account/account_provider.dart';
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
+import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../../../import.dart';
 
 class OtpProvider extends ChangeNotifier {
@@ -34,18 +35,70 @@ class OtpProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.validateOtp(mobile, _otp!, context);
+      final result = await _repository.validateOtp(mobile, _otp!, context);
       _isLoading = false;
-      prefs.setBool("isLogin", true);
+
+      if (result == true) {
+        prefs.setBool("isLogin", true);
+        await context.read<EditProfileProvider>().fetchProfileData();
+        await context.read<ReferFriendProvider>().getReferralDetails();
+        await context.read<WalletProvider>().fetchWalletDetails();
+        await context.read<AccountProvider>().getUserName();
+        int productId = prefs.getInt("productId") ?? 0;
+        log("Product ID: $productId");
+
+        if (productId != 0) {
+          prefs.remove("productId");
+          context.read<BottomNavProvider>().updateIndex(0);
+          navigatorKey.currentState?.pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => BottomNavWidget(
+                isProductDetailsScreen: true,
+                productId: productId,
+              ),
+            ),
+            (route) => false,
+          );
+
+          return;
+        }
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BottomNavWidget(),
+          ),
+          (route) => false,
+        );
+      } else if (result == false) {
+        Fluttertoast.showToast(
+          msg: "Please register first",
+          backgroundColor: cButtonGreen,
+          textColor: Colors.white,
+        );
+        return;
+      } else {
+        Fluttertoast.showToast(
+          msg: "Invalid OTP. Please try again.",
+          backgroundColor: cDarkerRed,
+          textColor: Colors.white,
+        );
+      }
+
       notifyListeners();
     } catch (e) {
       _isLoading = false;
+      String errorMsg = e.toString();
+      // If the error contains a colon, show only the part after it
+      if (errorMsg.contains(':')) {
+        errorMsg = errorMsg.split(':').last.trim();
+      }
       Fluttertoast.showToast(
-          msg: e.toString(),
-          backgroundColor: cDarkerRed,
-          textColor: Colors.white);
+        msg: errorMsg,
+        backgroundColor: cDarkerRed,
+        textColor: Colors.white,
+      );
       log("message:$e");
-      // _errorMessage = "${e}";
       notifyListeners();
     }
   }

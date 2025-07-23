@@ -53,7 +53,8 @@ class ExploreProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       log("error: ${e.toString()}");
-      _error = e.toString();
+      _error =
+          "Oops! Something went wrong. Please check your connection and try again.";
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -77,7 +78,8 @@ class ExploreProvider extends ChangeNotifier {
 
       log("Main Categories: ${_mainCategories.toString()}");
     } catch (e) {
-      _error = e.toString();
+      _error =
+          "Oops! Something went wrong. Please check your connection and try again.";
       log("Error fetching categories: $e");
     } finally {
       _isLoading = false;

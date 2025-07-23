@@ -762,7 +762,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       .checkAccessTokenValidity(context);
 
                                   if (!isAuth) {
-                                    _showLoginDialog(context);
+                                    _showLoginDialog(
+                                        context, productDetail.product.id);
                                     return;
                                   }
                                   provider.placeOrder(
@@ -787,14 +788,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   productDetailProvider.quantity,
                                   context);
                             } else {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MobileNumberScreen(),
-                                ),
-                                (route) => false,
-                              );
+                              _showLoginDialog(
+                                  context, productDetail.product.id);
+                              return;
                             }
                           },
                         ),
@@ -811,11 +807,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 }
 
-void _showLoginDialog(BuildContext context) {
+void _showLoginDialog(BuildContext context, int productId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return const LoginPromptDialog();
+      return LoginPromptDialog(productId: productId);
     },
   );
 }

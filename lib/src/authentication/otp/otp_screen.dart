@@ -91,16 +91,17 @@ class _OtpScreenContent extends StatelessWidget {
                       );
                     });
                   }
+                  return sizedBoxHeight0;
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: CommonButtonWidget(
-                      title: 'NEXT',
-                      event: () async {
-                        await provider.validateOtp(mobile, context);
-                      },
-                    ),
-                  );
+                  // return Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 30),
+                  //   child: CommonButtonWidget(
+                  //     title: 'NEXT',
+                  //     event: () async {
+                  //       await provider.validateOtp(mobile, context);
+                  //     },
+                  //   ),
+                  // );
                 },
               ),
               sizedBoxHeight05,

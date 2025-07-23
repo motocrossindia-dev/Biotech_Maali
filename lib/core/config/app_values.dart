@@ -1,4 +1,4 @@
-import '../import.dart';
+import '../../import.dart';
 
 const String appName = "Biotech_Maali";
 
@@ -176,5 +176,3 @@ const double iIconSize_12 = 12;
 
 const double customAppBarSize_144 = 144.0;
 const double collapsedAppBarSize_70 = 70.0;
-
-

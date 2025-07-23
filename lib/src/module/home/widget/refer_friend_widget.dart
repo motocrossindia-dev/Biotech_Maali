@@ -35,7 +35,8 @@ class ReferFriendWidget extends StatelessWidget {
             children: [
               const Center(
                 child: CommonTextWidget(
-                  title: 'Join our Plant Parent Rewards Club',
+                  title: 'Refer & Earn with BiotechMaali Rewards',
+                  // 'Join our Plant Parent Rewards Club',
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
@@ -46,8 +47,10 @@ class ReferFriendWidget extends StatelessWidget {
                 child: const Center(
                   child: CommonTextWidget(
                     title:
-                        'Every plant purchase is a gift that keeps on giving. '
-                        'Earn coins and redeem them for exclusive discounts.',
+                        // 'Every plant purchase is a gift that keeps on giving. '
+                        // 'Earn coins and redeem them for exclusive discounts.',
+                        'Share the green with your friends and grow your wallet!. '
+                        'Earn real money or rewards every time someone you refer makes a purchase.',
                     fontSize: 13,
                     fontWeight: FontWeight.w400,
                     textAlign: TextAlign.center,

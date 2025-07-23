@@ -275,7 +275,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   InkWell(
                     onTap: () async {
                       final Uri url =
-                          Uri.parse('https://facebook.com/your-page');
+                          Uri.parse('https://www.facebook.com/biotechmaali/');
                       if (await canLaunchUrl(url)) {
                         await launchUrl(url,
                             mode: LaunchMode.externalApplication);
@@ -289,8 +289,8 @@ class _ContactScreenState extends State<ContactScreen> {
                   ),
                   InkWell(
                     onTap: () async {
-                      final Uri url =
-                          Uri.parse('https://instagram.com/your-profile');
+                      final Uri url = Uri.parse(
+                          'https://www.instagram.com/biotechmaali/?hl=en');
                       if (await canLaunchUrl(url)) {
                         await launchUrl(url,
                             mode: LaunchMode.externalApplication);
@@ -305,7 +305,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   InkWell(
                     onTap: () async {
                       final Uri url =
-                          Uri.parse('https://youtube.com/your-channel');
+                          Uri.parse('https://www.youtube.com/@biotechmaali');
                       if (await canLaunchUrl(url)) {
                         await launchUrl(url,
                             mode: LaunchMode.externalApplication);
@@ -320,7 +320,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   InkWell(
                     onTap: () async {
                       final Uri url = Uri.parse(
-                          'https://linkedin.com/company/your-company');
+                          'https://www.linkedin.com/company/biotechmaali/?originalSubdomain=in');
                       if (await canLaunchUrl(url)) {
                         await launchUrl(url,
                             mode: LaunchMode.externalApplication);

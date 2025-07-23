@@ -1,5 +1,5 @@
 import 'package:biotech_maali/import.dart';
-
+import 'package:biotech_maali/src/module/product_list/product_list/product_list_screen.dart';
 
 class CustomBannerWidget extends StatelessWidget {
   const CustomBannerWidget({super.key});
@@ -9,7 +9,8 @@ class CustomBannerWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(gradient: lgBanner),
       child: Padding(
-        padding: const EdgeInsets.only(left: 25, right: 25,top: 10,bottom: 10),
+        padding:
+            const EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -43,7 +44,25 @@ class CustomBannerWidget extends StatelessWidget {
                     child: CustomizableButton(
                       title: 'Shop Now',
                       fontSize: 8,
-                      event: () {},
+                      event: () {
+                        context
+                            .read<HomeProvider>()
+                            .maincategories
+                            .forEach((element) {
+                          if (element.name.toLowerCase() == 'offers') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductListScreen(
+                                  isCategory: true,
+                                  title: "OFFERS",
+                                  id: element.id.toString(),
+                                ),
+                              ),
+                            );
+                          }
+                        });
+                      },
                     ),
                   )
                 ],

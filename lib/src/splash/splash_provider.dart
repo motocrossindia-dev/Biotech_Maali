@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/location_popup/location_pincode_provider.dart';
+import 'package:biotech_maali/src/permission_handle/premission_handle_provider.dart';
 import 'package:biotech_maali/src/permission_handle/premission_handle_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:biotech_maali/src/splash/token_repository.dart';
@@ -55,13 +56,14 @@ class SplashProvider extends ChangeNotifier {
 
   navigateToHomeScreen(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool permissionGranted = prefs.getBool("permissionGranted") ?? false;
 
     bool isInternetOn = await _checkInternetConnection(context);
     if (!isInternetOn) {
       return;
     }
+    await context.read<PermissionHandleProvider>().checkAllPermissions();
     await loadData(context);
+    bool permissionGranted = prefs.getBool("permissionGranted") ?? false;
     // await Future.delayed(const Duration(seconds: 3));
 
     //for getting user data
@@ -87,7 +89,9 @@ class SplashProvider extends ChangeNotifier {
   }
 
   Future<void> loadData(BuildContext context) async {
-    await context.read<LocationPincodeProvider>().getCurrentLocation(context);
+    // context.read<LocationPincodeProvider>().getCurrentLocation(context);
+    // await context.read<PermissionHandleProvider>().checkAllPermissions();
+    context.read<LocationPincodeProvider>().getCurrentLocation(context);
     await context.read<HomeProvider>().refreshAll();
   }
 

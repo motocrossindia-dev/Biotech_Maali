@@ -127,7 +127,21 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                 if (widget.isSingleProduct == false) ...[
                                   sizedBoxHeight05,
                                   ElevatedButton(
-                                    onPressed: () => Navigator.pop(context),
+                                    onPressed: () {
+                                      if (context.mounted) {
+                                        context
+                                            .read<BottomNavProvider>()
+                                            .updateIndex(1);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                BottomNavWidget(),
+                                          ),
+                                          // (route) => false,
+                                        );
+                                      }
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           borderRadius:

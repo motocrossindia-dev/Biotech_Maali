@@ -12,7 +12,7 @@ class CustomAppBarWithSearch extends StatelessWidget
 
   @override
   // Increase height to accommodate content
-  Size get preferredSize => const Size.fromHeight(140);
+  Size get preferredSize => const Size.fromHeight(120);
 
   @override
   Widget build(BuildContext context) {
@@ -40,57 +40,62 @@ class CustomAppBarWithSearch extends StatelessWidget
                     width: 80,
                   ),
                   Consumer<HomeProvider>(
-                    builder: (context, provider, child) => Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/svg/icons/location_icon.svg',
-                          height: 22,
-                          width: 22,
-                        ),
-                        const SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              provider.pinCode,
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                            Text(
-                              provider.placeName.length > 15
-                                  ? '${provider.placeName.substring(0, provider.placeName.length > 15 ? 15 : provider.placeName.length)}..'
-                                  : provider.placeName,
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                          ],
-                        ),
-                        TextButton(
-                          child: const Text(
-                            'CHANGE',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              color: Colors.black,
-                            ),
+                    builder: (context, provider, child) => InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const LocationPincodePopup()),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/svg/icons/location_icon.svg',
+                            height: 22,
+                            width: 22,
                           ),
-                          onPressed: () async {
-                            // final changeAddressProvider =
-                            //     context.read<ChangeAddressProvider>();
+                          const SizedBox(width: 6),
+                          Text(
+                            provider.placeName,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            provider.pinCode,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                          // TextButton(
+                          //   child: const Text(
+                          //     'CHANGE',
+                          //     style: TextStyle(
+                          //       decoration: TextDecoration.underline,
+                          //       color: Colors.black,
+                          //     ),
+                          //   ),
+                          //   onPressed: () async {
+                          //     // final changeAddressProvider =
+                          //     //     context.read<ChangeAddressProvider>();
 
-                            // await changeAddressProvider.fetchAllAddress();
+                          //     // await changeAddressProvider.fetchAllAddress();
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LocationPincodePopup()),
-                            );
-                          },
-                        ),
-                      ],
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //           builder: (context) =>
+                          //               const LocationPincodePopup()),
+                          //     );
+                          //   },
+                          // ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
+            sizedBoxHeight05,
             Padding(
               // Adjust vertical padding
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),

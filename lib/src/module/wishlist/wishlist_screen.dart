@@ -13,16 +13,16 @@ class WishlistScreen extends StatelessWidget {
     });
     WishlistProvider();
     return PopScope(
-      canPop: false,
+      canPop: true,
       onPopInvoked: (didPop) {
-        context.read<BottomNavProvider>().updateIndex(0);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BottomNavWidget(),
-          ),
-          (route) => false,
-        );
+        // context.read<BottomNavProvider>().updateIndex(0);
+        // Navigator.pushAndRemoveUntil(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => BottomNavWidget(),
+        //   ),
+        //   (route) => false,
+        // );
       },
       child: Scaffold(
         appBar: AppBar(
@@ -119,6 +119,8 @@ class WishlistScreen extends StatelessWidget {
                           child: Stack(
                             children: [
                               WishlistProductTileWidget(
+                                productId: product.productId,
+                                isCart: product.isCart,
                                 productTitle: product.name,
                                 productImage: product.image,
                                 tempImage:

@@ -24,7 +24,7 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
   void initState() {
     super.initState();
     final popupProvider = context.read<LocationPincodeProvider>();
-    // popupProvider.getCurrentLocation(context);
+
     popupProvider.checkUserLoginStatus();
   }
 
@@ -138,7 +138,7 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
                             backgroundColor: Colors.white,
                             foregroundColor: cBottomNav,
                           ),
-                          child: const Text('Submit'),
+                          child: const Text('Change'),
                         ),
                       ),
                     ],
@@ -146,7 +146,7 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
 
                   const SizedBox(height: 20),
 
-                  // Current Location Button
+                  // Get Your Location Button
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 45),
@@ -154,10 +154,18 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () {
-                      provider.getCurrentLocation(context);
-                    },
-                    child: const Text('Use Current Location'),
+                    onPressed: provider.isLoading
+                        ? null
+                        : () {
+                            provider.getCurrentLocation(context);
+                          },
+                    child: provider.isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Get Your Location'),
                   ),
 
                   const SizedBox(height: 20),

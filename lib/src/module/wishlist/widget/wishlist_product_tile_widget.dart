@@ -1,8 +1,14 @@
+import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
+import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
+import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../import.dart';
 
 class WishlistProductTileWidget extends StatelessWidget {
+  final int productId;
+  final bool isCart;
   final String productTitle;
   final String? productImage;
   final String tempImage;
@@ -14,6 +20,8 @@ class WishlistProductTileWidget extends StatelessWidget {
   final VoidCallback? addToCartEvent;
 
   const WishlistProductTileWidget({
+    required this.productId,
+    required this.isCart,
     required this.productTitle,
     this.productImage,
     required this.tempImage,
@@ -101,9 +109,48 @@ class WishlistProductTileWidget extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(left: 1.0, right: 1),
                   child: BorderColoredButton(
-                    title: 'Add To Cart',
+                    title: isCart ? 'Go To Cart' : 'Add To Cart',
                     height: 38,
-                    event: addToCartEvent ?? () {},
+                    event: isCart
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CartScreen(
+                                  id: productId.toString(),
+                                  isCategory: false,
+                                  isSubCategory: false,
+                                  title: productTitle,
+                                  isHomeProductList: false,
+                                  isWishlist: true,
+                                ),
+                              ),
+                            );
+                          }
+                        : () async {
+                            final settingsProvider =
+                                context.read<SettingsProvider>();
+                            bool isAuth = await settingsProvider
+                                .checkAccessTokenValidity(context);
+                            if (!isAuth) {
+                              _showLoginDialog(context);
+                              return;
+                            }
+                            bool result =
+                                await context.read<CartProvider>().addToCart(
+                                      productId,
+                                      1,
+                                      context,
+                                    );
+
+                            if (result) {
+                              context.read<WishlistProvider>().updateCart(
+                                    isCart,
+                                    productId,
+                                    context,
+                                  );
+                            }
+                          },
                   ),
                 )
               : sizedBoxHeight0
@@ -139,6 +186,15 @@ class WishlistProductTileWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const LoginPromptDialog();
+      },
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../config/pallet.dart';
+import '../../../../../core/config/pallet.dart';
 
 class EditProfileTextForm extends StatelessWidget {
   final TextEditingController controller;

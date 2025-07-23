@@ -20,7 +20,7 @@ class HomeProvider extends ChangeNotifier {
 
   bool _isLoading = false;
 
-  String pinCode = "No Pincode";
+  String pinCode = "Searching...";
   String placeName = "No Place";
 
   final bool _isCartLoading = false;
@@ -75,12 +75,20 @@ class HomeProvider extends ChangeNotifier {
 
   Future<void> getLocationPincode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    pinCode = prefs.getString('user_pincode') ?? "No Pincode";
+    pinCode = prefs.getString('user_pincode') ?? "Searching...";
+  }
+
+  setLocationPincode(String pincode) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_pincode', pincode);
+    log("Pincode set: $pincode");
+    pinCode = pincode;
+    notifyListeners();
   }
 
   Future<void> getLocationName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    placeName = prefs.getString('user_locality') ?? "No Pincode";
+    placeName = prefs.getString('user_locality') ?? "Searching...";
   }
 
   void onCaroucelIndexChange(int current) {
@@ -120,7 +128,8 @@ class HomeProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      _error = e.toString();
+      _error =
+          "Failed to add or remove item from wishlist, something went wrong.";
       // _loadingProductIds.remove(productId);
       notifyListeners();
     }
@@ -155,7 +164,7 @@ class HomeProvider extends ChangeNotifier {
       }
       return success;
     } catch (e) {
-      _error = e.toString();
+      _error = "Failed to add item to cart, something went wrong.";
       Fluttertoast.showToast(
         msg: "Error adding item to cart",
         backgroundColor: Colors.red,
@@ -186,7 +195,8 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _isLoading = false;
-      _error = e.toString();
+      _error =
+          "Failed to load data, please check your internet connection or try again later.";
       notifyListeners();
     }
   }
@@ -226,7 +236,8 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _isLoading = false;
-      _error = e.toString();
+      _error =
+          "Failed to load products, please check your internet connection or try again later.";
       notifyListeners();
     }
   }
@@ -245,7 +256,8 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _isLoading = false;
-      _error = e.toString();
+      _error =
+          "Failed to load categories, please check your internet connection or try again later.";
       notifyListeners();
       log("Error fetching categories: $e");
     }

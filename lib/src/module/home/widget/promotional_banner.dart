@@ -1,3 +1,5 @@
+import 'package:biotech_maali/src/module/product_list/product_list/product_list_screen.dart';
+
 import '../../../../import.dart';
 
 class PromotionalBanner extends StatelessWidget {
@@ -32,28 +34,33 @@ class PromotionalBanner extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 30, // This controls the overall height
+            height: 30,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomeProductListScreen(
-                        title: "Plants", products: []),
-                  ),
-                );
+                context.read<HomeProvider>().maincategories.forEach((element) {
+                  if (element.name.toLowerCase() == 'offers') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductListScreen(
+                          isCategory: true,
+                          title: "OFFERS",
+                          id: element.id.toString(),
+                        ),
+                      ),
+                    );
+                  }
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: cButtonGreen,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16, // Reduced from 24
-                  vertical:
-                      0, // Removed vertical padding to let SizedBox control height
+                  horizontal: 16,
+                  vertical: 0,
                 ),
-                minimumSize: Size.zero, // Allows the button to be smaller
-                tapTargetSize: MaterialTapTargetSize
-                    .shrinkWrap, // Removes default minimum size
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),

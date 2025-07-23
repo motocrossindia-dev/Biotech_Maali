@@ -4,7 +4,7 @@ import '../../../../../import.dart';
 
 class ProductDescription extends StatefulWidget {
   final ProductDetailsProvider provider;
-  const ProductDescription({required this.provider,super.key});
+  const ProductDescription({required this.provider, super.key});
 
   @override
   _ProductDescriptionState createState() => _ProductDescriptionState();
@@ -122,7 +122,8 @@ class _ProductDescriptionState extends State<ProductDescription> {
       if (mounted) {
         setState(
           () {
-            _errorMessage = 'Error loading video: ${error.toString()}';
+            _errorMessage =
+                'Sorry, we couldn\'t load the product video at this time.';
             _isInitialized = false;
           },
         );

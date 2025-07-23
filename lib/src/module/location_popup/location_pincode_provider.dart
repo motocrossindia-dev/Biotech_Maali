@@ -15,6 +15,8 @@ class LocationPincodeProvider extends ChangeNotifier {
   bool isLoading = false;
   LatLng? selectedLocation;
   GoogleMapController? _mapController;
+  String localityName = "Searching...";
+  String localityPincode = "Searching...";
   bool isLocationEnabled = false;
   bool showAllAddresses = false;
   bool isLogin = false;
@@ -25,32 +27,28 @@ class LocationPincodeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getCurrentLocation(BuildContext context) async {
+  Future<void> getCurrentLocation(
+    BuildContext context,
+  ) async {
     isLoading = true;
-
+    notifyListeners();
     try {
-      // Request location permission
       LocationPermission permission = await Geolocator.requestPermission();
-
       if (permission == LocationPermission.denied) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Location permissions are denied')),
         );
+        isLoading = false;
+        notifyListeners();
         return;
       }
-
-      // Get current position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-
-      // Set the current location
       LatLng currentLocation = LatLng(position.latitude, position.longitude);
-
       selectedLocation = currentLocation;
       isLoading = false;
-
-      // Move camera to current location
+      notifyListeners();
       _mapController?.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
@@ -59,12 +57,57 @@ class LocationPincodeProvider extends ChangeNotifier {
           ),
         ),
       );
-
-      // Fetch address for current location
       await fetchAddressFromCoordinates(currentLocation, context);
+      // After getting location, pop to home screen
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        context.read<BottomNavProvider>().updateIndex(0);
+      }
     } catch (e) {
       isLoading = false;
+      notifyListeners();
+      debugPrint('Error getting location: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not fetch current location')),
+      );
+    }
+  }
 
+  Future<void> getCurrentLocationFromBottomNav(
+    BuildContext context,
+  ) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are denied')),
+        );
+        isLoading = false;
+        notifyListeners();
+        return;
+      }
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      LatLng currentLocation = LatLng(position.latitude, position.longitude);
+      selectedLocation = currentLocation;
+      isLoading = false;
+      notifyListeners();
+      _mapController?.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: currentLocation,
+            zoom: 15,
+          ),
+        ),
+      );
+      await fetchAddressFromCoordinates(currentLocation, context);
+      // After getting location, pop to home screen
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
       debugPrint('Error getting location: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Could not fetch current location')),
@@ -92,13 +135,24 @@ class LocationPincodeProvider extends ChangeNotifier {
         log("_addressController.text: ${_addressController.text}");
 
         log("user locality: ${place.locality}");
+        localityName = place.locality ?? "Searching...";
+        localityPincode = place.postalCode ?? "Searching...";
+        notifyListeners();
 
         prefs.setString("user_current_address", _addressController.text.trim());
-
-        prefs.setString("user_pincode", place.postalCode ?? '');
+        prefs.setString("user_pincode", place.postalCode ?? 'Searching...');
         prefs.setString("user_locality", place.locality ?? '');
+
+        // Only use context if widget is still mounted
+        if (context.mounted) {
+          context
+              .read<HomeProvider>()
+              .setLocationPincode(place.postalCode ?? '');
+          log("Pincode set: ${place.postalCode ?? 'no data'}");
+        }
       }
     } catch (e) {
+      log("Error fetching address: $e");
       debugPrint('Error fetching address: $e');
     }
   }

@@ -79,7 +79,8 @@ class StoreCard extends StatelessWidget {
   });
 
   Future<void> _launchMap() async {
-    if (!await launchUrl(Uri.parse(store.addressLink))) {
+    if (!await launchUrl(Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=${store.address}'))) {
       throw Exception('Could not launch ${store.addressLink}');
     }
   }

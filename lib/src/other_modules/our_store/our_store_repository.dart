@@ -12,6 +12,7 @@ class OurStoresRepository {
 
       if (response.statusCode == 200) {
         final data = response.data;
+        log("store data : ${data.toString()}");
         if (data['message'] == 'success' && data['data'] != null) {
           final stores = data['data']['stores'] as List;
           log("store data : ${stores.toString()}");

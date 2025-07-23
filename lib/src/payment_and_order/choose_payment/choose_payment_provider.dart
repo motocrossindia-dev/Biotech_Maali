@@ -91,7 +91,16 @@ class ChoosePaymentProvider extends ChangeNotifier {
 
     double amoutToPay = orderSummaryResponse.data.order.grandTotal;
     if (isWallet) {
-      if (actualWalletBalance! >= 0) {
+      if (actualWalletBalance! > 0) {
+        if (actualWalletBalance! < amoutToPay) {
+          isWalletCheckbox = false;
+          notifyListeners();
+          Fluttertoast.showToast(
+            msg: "Insufficient wallet balance",
+            backgroundColor: Colors.red,
+          );
+          return;
+        }
         try {
           await _repository.proceedToPayment(
             orderId: _orderSummaryResponse!.data.order.id,

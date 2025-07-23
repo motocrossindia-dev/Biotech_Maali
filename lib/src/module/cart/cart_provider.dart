@@ -43,7 +43,7 @@ class CartProvider extends ChangeNotifier {
       _error = '';
       notifyListeners();
     } catch (e) {
-      _error = e.toString();
+      _error = "Something went wrong while fetching cart items , Server down";
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -76,7 +76,7 @@ class CartProvider extends ChangeNotifier {
 
       return success;
     } catch (e) {
-      _error = e.toString();
+      _error = "Something went wrong while updating quantity";
       await fetchCartItems();
       return false;
     } finally {
@@ -110,7 +110,7 @@ class CartProvider extends ChangeNotifier {
 
       return success;
     } catch (e) {
-      _error = e.toString();
+      _error = "Something went wrong while removing item";
       Fluttertoast.showToast(
         msg: "Error removing item",
         backgroundColor: Colors.red,
@@ -140,7 +140,7 @@ class CartProvider extends ChangeNotifier {
 
       return success;
     } catch (e) {
-      _error = e.toString();
+      _error = "Something went wrong while adding to cart";
       Fluttertoast.showToast(
         msg: "Error adding item to cart",
         backgroundColor: Colors.red,
@@ -235,7 +235,7 @@ class CartProvider extends ChangeNotifier {
       );
     } catch (e) {
       log("Error placing order: ${e.toString()}");
-      String errorMessage = e.toString();
+      String errorMessage = "Something went wrong while placing the order";
       // Remove "Exception:" prefixes from the error message
       errorMessage = errorMessage.replaceAll('Exception: ', '');
       errorMessage = errorMessage.replaceAll(':', ',');

@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:biotech_maali/core/settings_provider/settings_provider.dart';
 import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_search/widget/search_speek_input.dart';
+import 'package:biotech_maali/src/widgets/error_message_widget.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
 import 'package:biotech_maali/src/widgets/shimmer/product_tile_shimmer.dart';
@@ -16,6 +19,18 @@ class ProductSearchView extends StatefulWidget {
 
 class _ProductSearchViewState extends State<ProductSearchView> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (mounted) {
+    //     context.read<ProductSearchProvider>().searchProducts(
+    //         context.read<ProductSearchProvider>().lastSearchQuery);
+    //     log("Last search query: ${context.read<ProductSearchProvider>().lastSearchQuery}");
+    //   }
+    // });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -46,7 +61,15 @@ class _ProductSearchViewState extends State<ProductSearchView> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (provider.error.isNotEmpty) {
-                  return Center(child: Text(provider.error));
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ErrorMessageWidget(
+                            errorTitle: "No results found",
+                            errorSubTitle: provider.error),
+                      ],
+                    ),
+                  );
                 }
                 return GridView.builder(
                   padding: const EdgeInsets.all(8.0),
@@ -116,15 +139,23 @@ class _ProductSearchViewState extends State<ProductSearchView> {
                         },
                         addToCartEvent: product.isCart
                             ? () {
-                                context
-                                    .read<BottomNavProvider>()
-                                    .updateIndex(3);
-                                Navigator.pushAndRemoveUntil(
+                                // context
+                                //     .read<BottomNavProvider>()
+                                //     .updateIndex(2);
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => BottomNavWidget(),
+                                    builder: (context) => const CartScreen(
+                                      isCategory: false,
+                                      isSearch: true,
+                                      isHomeProductList: false,
+                                      isSubCategory: false,
+                                      isWishlist: false,
+                                      id: "",
+                                      title: "",
+                                    ),
                                   ),
-                                  (route) => false,
+                                  // (route) => false,
                                 );
                               }
                             : () async {

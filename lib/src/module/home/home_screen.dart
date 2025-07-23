@@ -4,6 +4,7 @@ import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
 import 'package:biotech_maali/src/module/home/home_shimmer.dart';
 import 'package:biotech_maali/src/module/home/widget/promotional_banner.dart';
 import 'package:biotech_maali/src/module/home/widget/referral_popup.dart';
+import 'package:biotech_maali/src/widgets/error_message_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../import.dart';
 import 'dart:math' as math;
@@ -36,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context.read<WalletProvider>().fetchWalletDetails();
         context.read<AccountProvider>().getUserName();
         context.read<EditProfileProvider>().fetchProfileData();
+        context.read<HomeProvider>().getLocationPincode();
       }
     });
   }
@@ -108,8 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(provider.error!),
-                  const SizedBox(height: 16),
+                  ErrorMessageWidget(
+                    errorTitle: "Something went wrong",
+                    errorSubTitle: provider.error!,
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       provider.refreshAll();

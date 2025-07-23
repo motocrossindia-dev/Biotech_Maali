@@ -1,3 +1,4 @@
+import 'package:biotech_maali/core/config/config.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,8 +8,10 @@ class CommonTextFormWidget extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType? inputType;
   final int? maxLenght;
+
   final String? Function(String?)? validator; // Optional validator
   final EdgeInsetsGeometry? padding; // Optional padding
+  final Function(String)? onChanged;
 
   const CommonTextFormWidget({
     super.key,
@@ -19,6 +22,7 @@ class CommonTextFormWidget extends StatelessWidget {
     this.maxLenght,
     this.validator, // Optional validator
     this.padding, // Optional padding
+    this.onChanged,
   });
 
   @override
@@ -36,6 +40,7 @@ class CommonTextFormWidget extends StatelessWidget {
           SizedBox(
             height: maxLenght == null ? 50 : 65,
             child: TextFormField(
+              onChanged: onChanged,
               validator: validator,
               maxLength: maxLenght,
               controller: controller,
@@ -48,6 +53,13 @@ class CommonTextFormWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
                     color: Colors.grey,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: cButtonGreen, // Change color as needed
+                    width: 2,
                   ),
                 ),
               ),

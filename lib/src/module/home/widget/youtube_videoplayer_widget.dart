@@ -4,7 +4,8 @@ class YoutubeVideoplayerWidget extends StatefulWidget {
   const YoutubeVideoplayerWidget({super.key});
 
   @override
-  State<YoutubeVideoplayerWidget> createState() => _YoutubeVideoplayerWidgetState();
+  State<YoutubeVideoplayerWidget> createState() =>
+      _YoutubeVideoplayerWidgetState();
 }
 
 class _YoutubeVideoplayerWidgetState extends State<YoutubeVideoplayerWidget> {
@@ -14,12 +15,11 @@ class _YoutubeVideoplayerWidgetState extends State<YoutubeVideoplayerWidget> {
   @override
   void initState() {
     super.initState();
-    
+
     // Extract video ID from YouTube URL
     final videoId = YoutubePlayer.convertUrlToId(
-      'https://www.youtube.com/watch?v=kk4-NzpbXxw'
-    );
-    
+        'https://www.youtube.com/watch?v=5RZG0rWy0R0');
+
     _controller = YoutubePlayerController(
       initialVideoId: videoId ?? '',
       flags: const YoutubePlayerFlags(
@@ -52,10 +52,10 @@ class _YoutubeVideoplayerWidgetState extends State<YoutubeVideoplayerWidget> {
               child: YoutubePlayer(
                 controller: _controller,
                 showVideoProgressIndicator: true,
-                progressIndicatorColor: Colors.red,
-                progressColors: const ProgressBarColors(
-                  playedColor: Colors.red,
-                  handleColor: Colors.redAccent,
+                progressIndicatorColor: cButtonGreen,
+                progressColors: ProgressBarColors(
+                  playedColor: cButtonGreen,
+                  handleColor: cButtonGreen,
                 ),
                 onReady: () {
                   setState(() {

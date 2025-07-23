@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
+import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/widgets/add_to_wishlist.dart';
 import 'package:biotech_maali/src/module/wishlist/model/wishlist_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_repository.dart';
@@ -35,6 +36,27 @@ class WishlistProvider extends ChangeNotifier {
       _error = e.toString();
     } finally {
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateCart(
+      bool isCart, int productId, BuildContext context) async {
+    // final cartProvider = context.read<CartProvider>();
+    // await cartProvider.fetchCartItems();
+
+    final productIndex =
+        _products.indexWhere((product) => product.productId == productId);
+    if (productIndex != -1) {
+      _products[productIndex].isCart = !isCart;
+
+      // Also update in original list
+      final originalIndex =
+          _products.indexWhere((product) => product.id == productId);
+      if (originalIndex != -1) {
+        _products[originalIndex].isCart = !isCart;
+      }
+
       notifyListeners();
     }
   }

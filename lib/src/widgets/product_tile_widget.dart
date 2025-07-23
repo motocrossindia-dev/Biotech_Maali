@@ -92,6 +92,9 @@ class ProductTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final containerSize = screenWidth * 0.07; // ~7% of screen width
+    final iconSize = screenWidth * 0.045;
     return Container(
       width: 175,
       decoration: BoxDecoration(color: cAppBackround),
@@ -107,10 +110,29 @@ class ProductTileWidget extends StatelessWidget {
                         onTap: addToFavouriteEvent,
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: SvgPicture.asset(
-                            'assets/svg/icons/add_to_favourite_icon.svg',
-                            color: isWishlist ? Colors.red : Colors.black,
-                          ),
+                          child: isWishlist
+                              ? Container(
+                                  height: containerSize,
+                                  width: containerSize,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.red,
+                                      width: 0.5,
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                      size: iconSize,
+                                    ),
+                                  ),
+                                )
+                              : SvgPicture.asset(
+                                  'assets/svg/icons/add_to_favourite_icon.svg',
+                                  color: Colors.black,
+                                ),
                         ),
                       ),
                     )

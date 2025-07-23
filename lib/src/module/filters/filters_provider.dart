@@ -148,7 +148,7 @@ class FiltersProvider extends ChangeNotifier {
       if (!loadMore) {
         // Reset products on fresh filter
         context.read<ProductListProdvider>().setFilteredProducts(products);
-        resetAllFilters();
+        // resetAllFilters();
       } else {
         // Append products on pagination
         context.read<ProductListProdvider>().appendProducts(products);

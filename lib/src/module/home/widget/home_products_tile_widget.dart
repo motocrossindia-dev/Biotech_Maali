@@ -28,7 +28,7 @@ class HomeProductsTileWidget extends StatelessWidget {
                 builder: (context, provider, child) {
                   List<HomeProductModel> products = [];
                   if (title == "Featured") {
-                    products = provider.allProducts;
+                    products = provider.featuredProducts;
                   } else if (title == "Latest") {
                     products = provider.trendingProducts;
                   } else if (title == "Bestseller") {
@@ -46,7 +46,6 @@ class HomeProductsTileWidget extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => HomeProductListScreen(
                             title: title,
-                            products: products,
                           ),
                         ),
                       );

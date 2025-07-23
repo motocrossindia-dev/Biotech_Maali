@@ -1,4 +1,4 @@
-import 'package:biotech_maali/config/config.dart';
+import 'package:biotech_maali/core/config/config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timeline_tile/timeline_tile.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../config/pallet.dart';
+import '../../../../core/config/pallet.dart';
 import '../widgets/service_detail_header.dart';
 
 class TerraceGardenScreen extends StatelessWidget {

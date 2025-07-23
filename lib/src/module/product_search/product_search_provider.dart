@@ -10,7 +10,7 @@ class ProductSearchProvider extends ChangeNotifier {
   String error = '';
   String? nextPage;
   bool isLoadingMore = false;
-  String lastSearchQuery = '';
+  String lastSearchQuery = 'plant';
 
   bool isTyping = false;
 
@@ -59,7 +59,8 @@ class ProductSearchProvider extends ChangeNotifier {
         notifyListeners();
       } catch (e) {
         isLoading = false;
-        error = e.toString();
+        error =
+            "Failed to search products, something went wrong please try again later.";
         notifyListeners();
       }
     });

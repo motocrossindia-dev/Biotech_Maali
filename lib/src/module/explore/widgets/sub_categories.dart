@@ -1,5 +1,7 @@
 import 'package:biotech_maali/src/module/product_list/product_list/product_list_screen.dart';
 import 'package:biotech_maali/src/module/explore/model/subcategory_model.dart';
+import 'package:biotech_maali/src/widgets/error_message_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../import.dart';
 
@@ -21,10 +23,24 @@ class SubCategories extends StatelessWidget {
 
         if (provider.error != null) {
           return Expanded(
-            child: Center(
-              child: Text('Error: ${provider.error}'),
+              child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ErrorMessageWidget(
+                  errorTitle: "Something went wrong",
+                  errorSubTitle: provider.error!,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    provider.fetchMainCategories();
+                    provider.fetchSubcategory(provider.selectedCategoryId ?? 0);
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
             ),
-          );
+          ));
         }
 
         List<Subcategory> subcategories = provider.subcategories;
@@ -94,11 +110,21 @@ class SubCategories extends StatelessWidget {
                                   top: Radius.circular(8),
                                   bottom: Radius.circular(8),
                                 ),
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    imageBaseUrl + subcategory.image,
-                                  ),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(8),
+                                  bottom: Radius.circular(8),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl: imageBaseUrl + subcategory.image,
                                   fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
                               ),
                             ),

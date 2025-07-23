@@ -29,7 +29,7 @@ class _ChatInputState extends State<ChatInput>
     super.initState();
     _initializeSpeech();
     _setupAnimations();
-    _listen();
+    // _listen();
   }
 
   void _setupAnimations() {

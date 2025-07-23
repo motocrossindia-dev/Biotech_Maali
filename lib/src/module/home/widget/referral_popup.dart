@@ -154,7 +154,7 @@ class _ReferralPopupState extends State<ReferralPopup>
                       ),
                     ),
                     Icon(
-                      Icons.monetization_on,
+                      Icons.currency_rupee,
                       size: 80,
                       color: Colors.amber[700],
                     ),
@@ -162,7 +162,7 @@ class _ReferralPopupState extends State<ReferralPopup>
                       right: 10,
                       top: 10,
                       child: Icon(
-                        Icons.monetization_on,
+                        Icons.currency_rupee,
                         size: 25,
                         color: Colors.amber[400],
                       ),
@@ -171,7 +171,7 @@ class _ReferralPopupState extends State<ReferralPopup>
                       left: 15,
                       bottom: 15,
                       child: Icon(
-                        Icons.monetization_on,
+                        Icons.currency_rupee,
                         size: 30,
                         color: Colors.amber[500],
                       ),

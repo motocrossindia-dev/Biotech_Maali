@@ -8,40 +8,51 @@ class MobileNumberScreen extends StatelessWidget {
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Consumer<MobileNumberProvider>(
-            builder: (context, loginProvider, child) {
-              return Form(
-                key: formKey,
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: Consumer<MobileNumberProvider>(
+          builder: (context, loginProvider, child) {
+            return Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom +
+                      24, // Padding for keyboard
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Column(
-                        children: [
-                          sizedBoxHeight70,
-                          Image.asset(
-                            'assets/png/biotech_logo.png',
-                            height: 62,
-                            width: 120,
-                          ),
-                          const SizedBox(height: 50),
-                          SvgPicture.asset(
-                            'assets/svg/mobile_screen_pic.svg',
-                            height: 240,
-                            width: 210,
-                          ),
-                        ],
+                    GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context)
+                            .unfocus(); // Dismiss keyboard on tap
+                      },
+                      child: Center(
+                        child: Column(
+                          children: [
+                            sizedBoxHeight70,
+                            Image.asset(
+                              'assets/png/biotech_logo.png',
+                              height: 62,
+                              width: 120,
+                            ),
+                            const SizedBox(height: 50),
+                            SvgPicture.asset(
+                              'assets/svg/mobile_screen_pic.svg',
+                              height: 240,
+                              width: 210,
+                            ),
+                            sizedBoxHeight50,
+                            sizedBoxHeight70,
+                          ],
+                        ),
                       ),
                     ),
-                    sizedBoxHeight50,
-                    sizedBoxHeight70,
                     CommonTextFormWidget(
                       controller: loginProvider.mobileNumber,
                       title: 'Enter Your Mobile Number',
-                      hint: '   +91 8884981840',
+                      hint: ' 8884981840',
                       inputType: TextInputType.number,
                       maxLenght: 10,
                       validator: (value) {
@@ -52,8 +63,12 @@ class MobileNumberScreen extends StatelessWidget {
                         }
                         return null;
                       },
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30.0), // Add padding here
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      onChanged: (value) {
+                        if (value.length == 10) {
+                          FocusScope.of(context).unfocus();
+                        }
+                      },
                     ),
                     sizedBoxHeight25,
                     Padding(
@@ -73,12 +88,12 @@ class MobileNumberScreen extends StatelessWidget {
                                 }
                               },
                             ),
-                    )
+                    ),
                   ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

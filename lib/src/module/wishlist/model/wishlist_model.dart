@@ -5,9 +5,10 @@ class WishlistModel {
   final int productId;
   final String name;
   final String image;
-  final double sellingPrice; // Changed from String price
-  final double mrp; // Added mrp field
+  final double sellingPrice;
+  final double mrp;
   final String stockStatus;
+  bool isCart; // <-- Add this field
 
   WishlistModel({
     required this.id,
@@ -19,6 +20,7 @@ class WishlistModel {
     required this.sellingPrice,
     required this.mrp,
     required this.stockStatus,
+    required this.isCart, // <-- Add this to constructor
   });
 
   factory WishlistModel.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,8 @@ class WishlistModel {
           ? double.parse(json['mrp'])
           : (json['mrp'] ?? 0).toDouble(),
       stockStatus: json['stock_status'] ?? '',
+      isCart:
+          json['is_cart'] == true || json['is_cart'] == 'true', // <-- Add this
     );
   }
 }

@@ -9,8 +9,7 @@ class ProductListProdvider extends ChangeNotifier {
   ProductListRepository productListRepository = ProductListRepository();
 
   List<Product> _allProducts = [];
-  List<Product> _originalProducts =
-      []; // Keep original list for reverting to default
+  List<Product> _originalProducts = [];
   bool _isLoading = false;
   String _currentSortOption = 'Default';
 

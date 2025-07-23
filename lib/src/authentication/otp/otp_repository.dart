@@ -4,7 +4,7 @@ import '../../../import.dart';
 class OtpRepository {
   final Dio _dio = Dio();
 
-  Future<void> validateOtp(
+  Future<bool?> validateOtp(
       String mobile, String otp, BuildContext context) async {
     try {
       final response = await _dio.post(
@@ -30,6 +30,7 @@ class OtpRepository {
               ),
             ),
           );
+          return false;
         } else if (isRegistered == true) {
           final responseData = response.data['data'];
           final token = responseData['token'];
@@ -47,18 +48,14 @@ class OtpRepository {
           }
 
           log("Data saved successfully to SharedPreferences");
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BottomNavWidget(),
-            ),
-            (route) => false,
-          );
+          return true;
         }
+        return false;
       }
     } on DioException catch (e) {
       log('OTP Validation Error: ${e.response?.data['message'] ?? "Something went wrong"}');
       throw Exception(e.response?.data['message'] ?? "Something went wrong");
     }
+    return null;
   }
 }

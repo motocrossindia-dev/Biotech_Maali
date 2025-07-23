@@ -147,9 +147,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
             return CustomScrollView(
               controller: _scrollController,
               slivers: [
-                const SliverToBoxAdapter(
-                  child: CustomBannerWidget(),
-                ),
+                widget.title == "OFFERS"
+                    ? const SliverToBoxAdapter(
+                        child: SizedBox(height: 10),
+                      )
+                    : const SliverToBoxAdapter(
+                        child: CustomBannerWidget(),
+                      ),
                 SliverPadding(
                   padding: const EdgeInsets.all(8.0),
                   sliver: SliverGrid(
@@ -213,15 +217,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             },
                             addToCartEvent: product.isCart
                                 ? () {
-                                    context
-                                        .read<BottomNavProvider>()
-                                        .updateIndex(3);
-                                    Navigator.pushAndRemoveUntil(
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => BottomNavWidget(),
+                                        builder: (context) => CartScreen(
+                                          isCategory: widget.isCategory,
+                                          isSubCategory:
+                                              widget.isCategory == false
+                                                  ? true
+                                                  : false,
+                                          isWishlist: false,
+                                          title: widget.title,
+                                          id: widget.id,
+                                          isHomeProductList: false,
+                                        ),
                                       ),
-                                      (route) => false,
                                     );
                                   }
                                 : () async {
