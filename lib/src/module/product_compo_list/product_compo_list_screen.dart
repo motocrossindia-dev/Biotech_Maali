@@ -108,12 +108,33 @@ class _ProductCompoListScreenState extends State<ProductCompoListScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemBuilder: (context, index) {
             final offer = offers[index];
+
+            // Helper function to safely convert double to avoid NaN/Infinity
+
+            double safeDouble(dynamic value) {
+              if (value == null) return 0.0;
+              if (value is String) {
+                final parsed = double.tryParse(value);
+                if (parsed == null || parsed.isNaN || parsed.isInfinite) {
+                  return 0.0;
+                }
+                return parsed;
+              }
+              if (value is num) {
+                if (value.isNaN || value.isInfinite) {
+                  return 0.0;
+                }
+                return value.toDouble();
+              }
+              return 0.0;
+            }
+
             return ProductCompoWidget(
               title: offer.title,
               description: offer.description ?? '',
-              totalPrice: offer.totalPrice,
-              discount: offer.discount,
-              finalPrice: offer.finalPrice,
+              totalPrice: safeDouble(offer.totalPrice),
+              discount: safeDouble(offer.discount),
+              finalPrice: safeDouble(offer.finalPrice),
               products: offer.products,
               image: offer.image,
               onTap: () {

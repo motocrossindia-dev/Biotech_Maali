@@ -29,7 +29,7 @@ class ProductCompoListProvider extends ChangeNotifier {
       final response = await _repository.getComboOffers();
       _comboData = response.data;
     } catch (e) {
-      _error = e.toString();
+      _error = "Failed to fetch combo offers, something went wrong";
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -80,7 +80,7 @@ class ProductCompoListProvider extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      _error = e.toString();
+      _error = "Failed to place order, something went wrong";
     } finally {
       _isLoading = false;
       notifyListeners();

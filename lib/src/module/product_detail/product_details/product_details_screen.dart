@@ -243,6 +243,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
+  String _calculateDiscountPercentage(double sellingPrice, double mrp) {
+    if (mrp <= 0 || sellingPrice <= 0 || sellingPrice >= mrp) {
+      return '0% OFF';
+    }
+
+    final percentage = (100 - (sellingPrice / mrp * 100));
+
+    if (percentage.isNaN || percentage.isInfinite || percentage <= 0) {
+      return '0% OFF';
+    }
+
+    return '${percentage.toInt()}% OFF';
+  }
+
   @override
   Widget build(BuildContext context) {
     final productDetailsProvider = context.watch<ProductDetailsProvider>();
@@ -385,9 +399,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       ),
                                       child: Center(
                                         child: CommonTextWidget(
-                                          title:
-                                              '${(100 - (productDetail.product.sellingPrice / productDetail.product.mrp * 100)).toInt()}% OFF',
-                                          // ${(100 - (productDetail.product.price / productDetail.product.mrp * 100)).toInt()}
+                                          title: _calculateDiscountPercentage(
+                                              productDetail
+                                                  .product.sellingPrice,
+                                              productDetail.product.mrp),
                                           fontSize: 12,
                                           fontWeight: FontWeight.w400,
                                         ),

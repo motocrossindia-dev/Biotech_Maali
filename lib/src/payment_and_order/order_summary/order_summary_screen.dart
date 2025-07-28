@@ -136,7 +136,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                BottomNavWidget(),
+                                                const BottomNavWidget(),
                                           ),
                                           // (route) => false,
                                         );
@@ -294,7 +294,24 @@ class OrderItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log("image :${item.image}");
+    log("productId :${item.productId}");
     return ListTile(
+      onTap: () {
+        // log("Navigating to product details for productId: ${item.productId}");
+        // context.read<ProductDetailsProvider>().fetchProductDetails(
+        //       item.productId,
+        //     );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => ProductDetailsScreen(
+        //       productId: item.productId,
+
+        //       // isFromCart: true,
+        //     ),
+        //   ),
+        // );
+      },
       leading: Image.network(
         "${BaseUrl.baseUrlForImages}${item.image}",
         width: 50,
