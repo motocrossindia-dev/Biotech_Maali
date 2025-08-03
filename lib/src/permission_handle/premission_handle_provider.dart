@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:biotech_maali/import.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'dart:io';
 
 class PermissionHandleProvider with ChangeNotifier {
   bool _locationPermission = false;

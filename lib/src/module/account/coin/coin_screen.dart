@@ -1,5 +1,6 @@
 import 'package:biotech_maali/src/module/account/coin/coin_history/coin_history_screen.dart';
 import 'package:biotech_maali/src/module/account/coin/coin_provider.dart';
+import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_provider.dart';
 
 import '../../../../import.dart';
 
@@ -11,21 +12,83 @@ class CoinScreen extends StatefulWidget {
 }
 
 class _CoinScreenState extends State<CoinScreen> {
+  CoinProvider? _coinProvider;
+  ReferFriendProvider? _referFriendProvider;
+  bool _isProcessingRedeem = false;
+
   @override
   void initState() {
-    context.read<CoinProvider>().fetchTransactions();
     super.initState();
+    // Use addPostFrameCallback to ensure the widget is fully built before accessing context
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _coinProvider != null && _referFriendProvider != null) {
+        _coinProvider!.fetchTransactions();
+        _referFriendProvider!.getReferralDetails();
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Save references to providers to avoid unsafe context access
+    _coinProvider = Provider.of<CoinProvider>(context, listen: false);
+    _referFriendProvider =
+        Provider.of<ReferFriendProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    // Clean up any resources if needed
+    super.dispose();
+  }
+
+  // Safe method to dismiss loading dialogs
+  void _dismissLoadingDialog() {
+    if (mounted) {
+      try {
+        // Try to pop the loading dialog
+        if (Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        // Ignore navigation errors - dialog might already be dismissed
+      }
+    }
+  }
+
+  // Utility method to safely navigate
+  void _safeNavigate(VoidCallback navigationAction) {
+    if (mounted) {
+      navigationAction();
+    }
+  }
+
+  // Utility method to safely show snackbar
+  void _safeShowSnackBar(String message, {Color? backgroundColor}) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: backgroundColor ?? Colors.red,
+          duration: const Duration(
+              seconds: 4), // Longer duration for success messages
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CoinProvider>(
-      builder: (context, coinProvider, _) {
+    return Consumer2<CoinProvider, ReferFriendProvider>(
+      builder: (context, coinProvider, referFriendProvider, _) {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => _safeNavigate(() => Navigator.pop(context)),
             ),
             title: const CommonTextWidget(
               title: 'Coins',
@@ -34,7 +97,16 @@ class _CoinScreenState extends State<CoinScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.refresh),
-                onPressed: () => coinProvider.refreshTransactions(),
+                onPressed: () async {
+                  if (mounted &&
+                      _coinProvider != null &&
+                      _referFriendProvider != null) {
+                    await Future.wait([
+                      _coinProvider!.refreshTransactions(),
+                      _referFriendProvider!.getReferralDetails(),
+                    ]);
+                  }
+                },
               ),
             ],
           ),
@@ -68,7 +140,8 @@ class _CoinScreenState extends State<CoinScreen> {
                                       ),
                                       const SizedBox(width: 8),
                                       Text(
-                                        '${coinProvider.coinBalance}',
+                                        referFriendProvider.totalcoins
+                                            .toString(),
                                         style: TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
@@ -130,8 +203,9 @@ class _CoinScreenState extends State<CoinScreen> {
 
                           // Redeem Button
                           ElevatedButton(
-                            onPressed: coinProvider.coinBalance > 0
-                                ? () => _showRedeemDialog(context, coinProvider)
+                            onPressed: (referFriendProvider.totalcoins ?? 0) > 0
+                                ? () => _showRedeemDialog(
+                                    context, coinProvider, referFriendProvider)
                                 : null,
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -149,7 +223,7 @@ class _CoinScreenState extends State<CoinScreen> {
 
                           // Coin History Button
                           OutlinedButton(
-                            onPressed: () {
+                            onPressed: () => _safeNavigate(() {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -157,7 +231,7 @@ class _CoinScreenState extends State<CoinScreen> {
                                       const CoinHistoryScreen(),
                                 ),
                               );
-                            },
+                            }),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -192,7 +266,7 @@ class _CoinScreenState extends State<CoinScreen> {
                           ),
                           _buildCoinInfoCard(
                             title: "Coin Redemption Value",
-                            subTitle: "100 Coins = ₹5 discount",
+                            subTitle: "100 Coins = ₹10 discount",
                             totalAmount:
                                 "₹${coinProvider.redemptionRate}/100 Coins",
                           ),
@@ -233,7 +307,14 @@ class _CoinScreenState extends State<CoinScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () => provider.refreshTransactions(),
+            onPressed: () async {
+              if (mounted && _referFriendProvider != null) {
+                await Future.wait([
+                  provider.refreshTransactions(),
+                  _referFriendProvider!.getReferralDetails(),
+                ]);
+              }
+            },
             child: const Text('Retry'),
           ),
         ],
@@ -295,7 +376,8 @@ class _CoinScreenState extends State<CoinScreen> {
     );
   }
 
-  void _showRedeemDialog(BuildContext context, CoinProvider provider) {
+  void _showRedeemDialog(BuildContext context, CoinProvider provider,
+      ReferFriendProvider referFriendProvider) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -324,128 +406,92 @@ class _CoinScreenState extends State<CoinScreen> {
           TextButton(
             onPressed: () {
               provider.redeemController.clear();
-              Navigator.pop(context);
+              _safeNavigate(() => Navigator.pop(context));
             },
             child: const Text('CANCEL'),
           ),
           TextButton(
             onPressed: () async {
+              if (_isProcessingRedeem) return; // Prevent multiple submissions
+
               int redeemAmount =
                   int.tryParse(provider.redeemController.text) ?? 0;
+              int totalCoins = referFriendProvider.totalcoins ?? 0;
 
-              if (redeemAmount <= 0 || redeemAmount > provider.coinBalance) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please enter a valid amount'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+              if (redeemAmount <= 0 || redeemAmount > totalCoins) {
+                _safeShowSnackBar('Please enter a valid amount');
                 return;
               }
 
-              Navigator.pop(context);
+              setState(() {
+                _isProcessingRedeem = true;
+              });
+
+              // Close the dialog first
+              _safeNavigate(() => Navigator.pop(context));
 
               // Show loading indicator
               showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => const Center(
-                  child: CircularProgressIndicator(),
+                builder: (dialogContext) => const AlertDialog(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Text('Processing...'),
+                    ],
+                  ),
                 ),
               );
 
-              // final success =
-              // await provider.redeemCoins(redeemAmount);
+              try {
+                final success = await provider.redeemCoins(redeemAmount);
 
-              // // Hide loading indicator
-              // Navigator.pop(context);
+                // Always hide loading indicator first
+                _dismissLoadingDialog();
 
-              // if (success) {
-              //   _showRedemptionSuccess(context, provider, redeemAmount);
-              // } else {
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     SnackBar(
-              //       content: Text(provider.error ?? 'Failed to redeem coins'),
-              //       backgroundColor: Colors.red,
-              //     ),
-              //   );
-              // }
+                if (success) {
+                  // Refresh both providers using saved references
+                  if (mounted &&
+                      _coinProvider != null &&
+                      _referFriendProvider != null) {
+                    await Future.wait([
+                      _coinProvider!.fetchTransactions(),
+                      _referFriendProvider!.getReferralDetails(),
+                    ]);
+
+                    // Calculate discount value
+                    double discountValue =
+                        (redeemAmount / 100) * provider.redemptionRate;
+
+                    // Show success snackbar
+                    _safeShowSnackBar(
+                      '$redeemAmount coins redeemed successfully! ₹${discountValue.toStringAsFixed(2)} added to your wallet.',
+                      backgroundColor: Colors.green,
+                    );
+                  }
+                } else {
+                  _safeShowSnackBar(provider.error ?? 'Failed to redeem coins');
+                }
+              } catch (e) {
+                // Hide loading indicator if still showing
+                _dismissLoadingDialog();
+                _safeShowSnackBar('An error occurred: ${e.toString()}');
+              } finally {
+                // Reset processing state
+                if (mounted) {
+                  setState(() {
+                    _isProcessingRedeem = false;
+                  });
+                }
+              }
 
               provider.redeemController.clear();
             },
-            child: const Text('REDEEM'),
+            child: Text(_isProcessingRedeem ? 'PROCESSING...' : 'REDEEM'),
           ),
         ],
-      ),
-    );
-  }
-
-  void showRedemptionSuccess(
-      BuildContext context, CoinProvider provider, int redeemAmount) {
-    double discountValue = (redeemAmount / 100) * provider.redemptionRate;
-
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.check_circle,
-                color: Colors.blue[900],
-                size: 48,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Redemption Successful',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Text('Your coins have been redeemed for a discount'),
-              const SizedBox(height: 8),
-              const Text(
-                'Redeemed Coins',
-                style: TextStyle(color: Colors.grey),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.currency_rupee, color: cBottomNav),
-                  const SizedBox(width: 4),
-                  Text(
-                    '$redeemAmount',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Discount Value',
-                style: TextStyle(color: Colors.grey),
-              ),
-              Text(
-                '₹${discountValue.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

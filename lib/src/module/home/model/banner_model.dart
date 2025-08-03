@@ -4,6 +4,7 @@ class BannerModel {
   final String webBanner;
   final String type;
   final bool isVisible;
+  final int? productId;
 
   BannerModel({
     required this.id,
@@ -11,6 +12,7 @@ class BannerModel {
     required this.webBanner,
     required this.type,
     required this.isVisible,
+    this.productId,
   });
 
   factory BannerModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class BannerModel {
       webBanner: json['web_banner'] ?? '',
       type: json['type'] ?? '',
       isVisible: json['is_visible'] ?? false,
+      productId: json['product_id'], // could be null or int
     );
   }
 }

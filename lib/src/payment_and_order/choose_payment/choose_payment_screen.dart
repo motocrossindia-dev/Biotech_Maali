@@ -1,5 +1,8 @@
 import 'package:biotech_maali/src/module/account/wallet/wallet_provider.dart';
+import 'package:biotech_maali/src/module/account/edit_profile/edit_profile_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/choose_payment/choose_payment_provider.dart';
+import 'package:biotech_maali/src/payment_and_order/choose_payment/widgets/gst_update_popup.dart';
+import 'package:biotech_maali/src/payment_and_order/choose_payment/widgets/insufficient_wallet_popup.dart';
 import 'package:biotech_maali/src/payment_and_order/order_summary/model/order_summary_response.dart';
 
 import '../../../import.dart';
@@ -14,6 +17,16 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   bool _showCODMessage = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize EditProfileProvider to fetch GST data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EditProfileProvider>().fetchProfileData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final orderDetails = widget.orderSummaryResponse;
@@ -97,12 +110,108 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                       // Payment Options
                       const SizedBox(height: 20),
+
+                      // GST Checkbox
+                      Consumer2<ChoosePaymentProvider, EditProfileProvider>(
+                        builder: (context, choosePaymentProvider,
+                            editProfileProvider, child) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildPaymentOption(
+                                'Add GST Number',
+                                '',
+                                isCheckbox: true,
+                                isGstCheckbox: true,
+                                onGstChanged: (value) {
+                                  if (value == true) {
+                                    // Check if GST number exists
+                                    if (editProfileProvider.hasGstNumber()) {
+                                      choosePaymentProvider
+                                          .handleGstCheckbox(value!);
+                                    } else {
+                                      // Show popup to update GST
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const GstUpdatePopup();
+                                        },
+                                      );
+                                    }
+                                  } else {
+                                    choosePaymentProvider
+                                        .handleGstCheckbox(value!);
+                                  }
+                                },
+                                gstCheckboxValue:
+                                    choosePaymentProvider.isGstCheckbox,
+                              ),
+                              // Show GST number when checkbox is checked
+                              if (choosePaymentProvider.isGstCheckbox &&
+                                  editProfileProvider.hasGstNumber())
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 40, top: 4),
+                                  child: Text(
+                                    'GST: ${editProfileProvider.gstNumberCheckout.text}',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+
                       Consumer<WalletProvider>(
                         builder: (context, walletProvider, child) {
                           return _buildPaymentOption(
-                            'Redeem Cashback',
+                            'Use Wallet',
                             walletProvider.balance.toStringAsFixed(1),
                             isCheckbox: true,
+                            onWalletChanged: (value) {
+                              if (value == true) {
+                                // Check if wallet balance is sufficient
+                                double orderTotal = widget
+                                    .orderSummaryResponse.data.order.grandTotal;
+                                if (walletProvider.balance < orderTotal) {
+                                  // Show insufficient balance popup
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return InsufficientWalletPopup(
+                                        requiredAmount: orderTotal,
+                                        currentBalance: walletProvider.balance,
+                                      );
+                                    },
+                                  );
+                                  return; // Don't check the checkbox
+                                }
+
+                                // If balance is sufficient, proceed with normal logic
+                                double actualWalletBalance =
+                                    walletProvider.balance - orderTotal;
+                                context
+                                    .read<ChoosePaymentProvider>()
+                                    .handleWalletBalance(actualWalletBalance);
+                                context
+                                    .read<ChoosePaymentProvider>()
+                                    .handleWalletCheckbox(
+                                        value!, walletProvider.balance);
+                              } else {
+                                double actualWalletBalance =
+                                    walletProvider.balance;
+                                context
+                                    .read<ChoosePaymentProvider>()
+                                    .handleWalletBalance(actualWalletBalance);
+                                context
+                                    .read<ChoosePaymentProvider>()
+                                    .handleWalletCheckbox(
+                                        value!, walletProvider.balance);
+                              }
+                            },
                           );
                         },
                       ),
@@ -161,7 +270,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
 
             // Bottom Buttons
-
             Container(
               width: double.infinity,
               height: 60,
@@ -244,10 +352,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
     String label,
     String amount, {
     bool isCheckbox = false,
+    bool isGstCheckbox = false,
     bool showPaymentIcons = false,
     Function(bool?)? onChanged,
+    Function(bool?)? onGstChanged,
+    Function(bool?)? onWalletChanged,
     bool radioValue = false,
     bool radioGroupValue = false,
+    bool? gstCheckboxValue,
     String? message,
   }) {
     return Container(
@@ -256,41 +368,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
         children: [
           if (isCheckbox)
             Checkbox(
-              value: context.watch<ChoosePaymentProvider>().isWalletCheckbox,
-              onChanged: (value) {
-                if (value == true) {
-                  // if (double.parse(amount) >=
-                  //     widget.orderSummaryResponse.data.order.grandTotal) {
-                  double actualWalletBalance = double.parse(amount) -
-                      widget.orderSummaryResponse.data.order.grandTotal;
+              value: isGstCheckbox
+                  ? (gstCheckboxValue ?? false)
+                  : context.watch<ChoosePaymentProvider>().isWalletCheckbox,
+              onChanged: isGstCheckbox
+                  ? onGstChanged
+                  : (onWalletChanged != null)
+                      ? onWalletChanged
+                      : (value) {
+                          if (value == true) {
+                            double actualWalletBalance = double.parse(amount) -
+                                widget
+                                    .orderSummaryResponse.data.order.grandTotal;
 
-                  context
-                      .read<ChoosePaymentProvider>()
-                      .handleWalletBalance(actualWalletBalance);
-                  // } else {
-                  //   context
-                  //       .read<ChoosePaymentProvider>()
-                  //       .handleWalletBalance(0.0);
-                  // }
-                  // widget.orderSummaryResponse.data.order.grandTotal =
+                            context
+                                .read<ChoosePaymentProvider>()
+                                .handleWalletBalance(actualWalletBalance);
+                          } else if (value == false) {
+                            double actualWalletBalance = double.parse(amount);
 
-                  //     widget.orderSummaryResponse.data.order.grandTotal -
-                  //         double.parse(amount);
-                } else if (value == false) {
-                  // widget.orderSummaryResponse.data.order.grandTotal =
-                  //     widget.orderSummaryResponse.data.order.grandTotal +
-                  //         double.parse(amount);
-                  double actualWalletBalance =
-                      // widget.orderSummaryResponse.data.order.grandTotal +
-                      double.parse(amount);
-
-                  context
-                      .read<ChoosePaymentProvider>()
-                      .handleWalletBalance(actualWalletBalance);
-                }
-                context.read<ChoosePaymentProvider>().handleWalletCheckbox(
-                    value!, context.read<WalletProvider>().balance);
-              },
+                            context
+                                .read<ChoosePaymentProvider>()
+                                .handleWalletBalance(actualWalletBalance);
+                          }
+                          context
+                              .read<ChoosePaymentProvider>()
+                              .handleWalletCheckbox(value!,
+                                  context.read<WalletProvider>().balance);
+                        },
             )
           else
             Radio(
@@ -364,7 +469,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ],
             ),
           ),
-          if (amount.isNotEmpty)
+          if (amount.isNotEmpty && !isGstCheckbox)
             Text(
               context.watch<ChoosePaymentProvider>().actualWalletBalance !=
                           null &&

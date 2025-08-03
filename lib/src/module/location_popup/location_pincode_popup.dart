@@ -1,5 +1,6 @@
 import 'package:biotech_maali/src/module/location_popup/location_pincode_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/change_address/model/address_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:shimmer/shimmer.dart';
 
@@ -128,6 +129,9 @@ class _LocationPincodePopupState extends State<LocationPincodePopup> {
                             await context
                                 .read<HomeProvider>()
                                 .getLocationPincode();
+                            Fluttertoast.showToast(
+                                msg: "Location updated successfully",
+                                backgroundColor: cButtonGreen);
                             Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(

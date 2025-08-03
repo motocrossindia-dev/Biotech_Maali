@@ -16,6 +16,11 @@ class EditProfileProvider extends ChangeNotifier {
   final TextEditingController emailAddress = TextEditingController();
   final TextEditingController mobileNumber = TextEditingController();
   final TextEditingController dateOfBirth = TextEditingController();
+  final TextEditingController gstNumber = TextEditingController();
+  final TextEditingController gstNumberCheckout = TextEditingController();
+
+  // bool _isGst = false;
+  // bool get isGst => _isGst;
 
   String _selectedGender = 'Male';
   bool _isEditing = false;
@@ -35,6 +40,10 @@ class EditProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool hasGstNumber() {
+    return gstNumberCheckout.text.trim().isNotEmpty;
+  }
+
   Future<void> fetchProfileData() async {
     _isLoading = true;
     notifyListeners();
@@ -51,6 +60,7 @@ class EditProfileProvider extends ChangeNotifier {
       lastName.text = profileData['last_name'] ?? '';
       emailAddress.text = profileData['email'] ?? '';
       mobileNumber.text = profileData['mobile'] ?? '';
+      gstNumberCheckout.text = profileData['gst'] ?? '';
       dateOfBirth.text = profileData['date_of_birth'] != null
           ? DateFormat('yyyy-MM-dd')
               .format(DateTime.parse(profileData['date_of_birth']))
@@ -75,11 +85,13 @@ class EditProfileProvider extends ChangeNotifier {
         email: emailAddress.text,
         mobile: mobileNumber.text,
         gender: _selectedGender,
+        gst: gstNumber.text,
         dateOfBirth: dateOfBirth.text.isNotEmpty ? dateOfBirth.text : null,
       );
 
       if (success) {
         _isEditing = false;
+
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("userName", firstName.text);
         await context.read<AccountProvider>().getUserName();

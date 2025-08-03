@@ -1,5 +1,6 @@
 import 'package:biotech_maali/core/network/app_base_url.dart';
 import 'package:biotech_maali/core/network/app_end_url.dart';
+import 'package:biotech_maali/import.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/widgets/invoice_download_popup.dart';
@@ -300,64 +301,78 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
   }
 
   Widget _buildOrderItemCard(OrderItem item) {
-    return Card(
-      elevation: 1,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: themeColor.withOpacity(0.12), width: 1),
-      ),
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                '${BaseUrl.baseUrlForImages}${item.image}',
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
+    return InkWell(
+      onTap: () {
+        // context
+        //     .read<ProductDetailsProvider>()
+        //     .fetchProductDetails(item.productId);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) =>
+        //         ProductDetailsScreen(productId: item.productId),
+        //   ),
+        // );
+      },
+      child: Card(
+        elevation: 1,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: themeColor.withOpacity(0.12), width: 1),
+        ),
+        margin: const EdgeInsets.only(bottom: 10),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  '${BaseUrl.baseUrlForImages}${item.image}',
                   width: 70,
                   height: 70,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image_not_supported),
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 70,
+                    height: 70,
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.image_not_supported),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 30),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('SKU: ${item.sku}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: themeColor,
-                        fontSize: 15,
-                      )),
-                  const SizedBox(height: 2),
-                  Text('Quantity: ${item.quantity}',
-                      style: const TextStyle(fontSize: 13)),
-                  Text('Price: ₹${item.mrp}',
-                      style: const TextStyle(fontSize: 13)),
-                  if (item.discount > 0)
-                    Text('Discount: ₹${item.discount}',
-                        style:
-                            const TextStyle(color: Colors.green, fontSize: 13)),
-                  const SizedBox(height: 4),
-                  Text('Total: ₹${item.total}',
-                      style: const TextStyle(
+              const SizedBox(width: 30),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.productName,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
+                          color: themeColor,
                           fontSize: 15,
-                          color: themeColor)),
-                ],
+                        )),
+                    const SizedBox(height: 2),
+                    Text('Quantity: ${item.quantity}',
+                        style: const TextStyle(fontSize: 13)),
+                    Text('Price: ₹${item.mrp}',
+                        style: const TextStyle(fontSize: 13)),
+                    if (item.discount > 0)
+                      Text('Discount: ₹${item.discount}',
+                          style: const TextStyle(
+                              color: Colors.green, fontSize: 13)),
+                    const SizedBox(height: 4),
+                    Text('Total: ₹${item.total}',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: themeColor)),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -371,7 +371,7 @@ class _PermissionHandleScreenState extends State<PermissionHandleScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BottomNavWidget(),
+                    builder: (context) => const BottomNavWidget(),
                   ),
                 );
               }

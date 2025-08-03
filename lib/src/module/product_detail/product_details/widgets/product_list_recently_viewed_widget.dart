@@ -3,6 +3,7 @@ import 'package:biotech_maali/src/module/cart/cart_provider.dart';
 import 'package:biotech_maali/src/module/product_detail/product_details/model/recently_viewed_model.dart';
 import 'package:biotech_maali/src/module/wishlist/whishlist_provider.dart';
 import 'package:biotech_maali/src/widgets/login_prompt_dialog.dart';
+import 'dart:math' as math;
 
 import '../../../../../import.dart';
 
@@ -17,6 +18,12 @@ class ProductListRecentlyViewedWidget extends StatelessWidget {
       builder: (context, provider, child) {
         List<RecentlyViewedProduct> recentlyViewedProducts =
             provider.recentlyViewedProductList;
+
+        // Return empty container if no products to show
+        if (recentlyViewedProducts.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
         return Padding(
           padding: const EdgeInsets.only(
               left: 12, right: 12), // Add padding for better layout
@@ -39,7 +46,10 @@ class ProductListRecentlyViewedWidget extends StatelessWidget {
                 height: 360,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 4,
+                  itemCount: math.min(
+                      4,
+                      recentlyViewedProducts
+                          .length), // Use math.min for cleaner code
                   itemBuilder: (context, index) {
                     RecentlyViewedProduct productData =
                         recentlyViewedProducts[index];
@@ -93,15 +103,16 @@ class ProductListRecentlyViewedWidget extends StatelessWidget {
                             },
                             addToCartEvent: productData.isCart
                                 ? () {
-                                    context
-                                        .read<BottomNavProvider>()
-                                        .updateIndex(3);
-                                    Navigator.pushAndRemoveUntil(
+                                    // context
+                                    //     .read<BottomNavProvider>()
+                                    //     .updateIndex(2);
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => BottomNavWidget(),
+                                        builder: (context) =>
+                                            const CartScreen(),
                                       ),
-                                      (route) => false,
+                                      // (route) => false,
                                     );
                                   }
                                 : () async {

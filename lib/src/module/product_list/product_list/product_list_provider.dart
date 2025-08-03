@@ -179,7 +179,7 @@ class ProductListProdvider extends ChangeNotifier {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => BottomNavWidget(),
+          builder: (context) => const BottomNavWidget(),
         ),
         (route) => false,
       );

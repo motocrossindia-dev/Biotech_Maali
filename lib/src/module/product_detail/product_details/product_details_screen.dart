@@ -25,10 +25,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   void initState() {
-    final provider = context.read<ProductDetailsProvider>();
-    // provider.fetchProductDetails(widget.productId);
-    provider.updateQuantity();
-    provider.fetchRecentlyViewed();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = context.read<ProductDetailsProvider>();
+      // provider.fetchProductDetails(widget.productId);
+      provider.updateQuantity();
+      provider.fetchRecentlyViewed();
+    });
     super.initState();
   }
 
@@ -308,10 +310,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               CommonTextWidget(
                                 title: product.data.product.mainProductName
                                             .length >
-                                        28
-                                    ? '${product.data.product.mainProductName.substring(0, 28)}...'
+                                        22
+                                    ? '${product.data.product.mainProductName.substring(0, 22)}...'
                                     : product.data.product.mainProductName,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w500,
                               ),
                               Padding(
@@ -619,8 +621,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                                 right: 10),
                                             child: SeedWeightWidget(
                                               id: productWeight.id,
-                                              name: productWeight.sizeGrams
-                                                  .toString(),
+                                              name:
+                                                  "${productWeight.sizeGrams.toString()} gm",
                                               event: () {
                                                 provider.updateWeight(
                                                     productWeight.id,

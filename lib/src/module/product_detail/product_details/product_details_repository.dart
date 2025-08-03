@@ -247,7 +247,7 @@ class ProductDetailsRepository {
   Future<Map<String, dynamic>> checkDeliveryPincode(String pincode) async {
     try {
       final response = await _dio.post(
-        '${EndUrl.baseUrl}/tracking/check-pincode/',
+        '${EndUrl.baseUrl}tracking/check-pincode/',
         data: {'pincode': pincode},
       );
 

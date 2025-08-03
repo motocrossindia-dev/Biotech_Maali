@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../import.dart';
 
@@ -52,36 +55,54 @@ class CarouselWidget extends StatelessWidget {
                 },
               ),
               items: banners.map((imageUrl) {
-                return CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  imageBuilder: (context, imageProvider) => Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
+                return InkWell(
+                  onTap: () {
+                    if (imageUrl['productId'] == '0') {
+                      Fluttertoast.showToast(msg: "No product available");
+                      return;
+                    }
+                    log("Banner tapped: ${imageUrl['productId']}");
+                    context.read<ProductDetailsProvider>().fetchProductDetails(
+                        int.parse(imageUrl['productId'] ?? '0'));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetailsScreen(
+                            productId: int.parse(imageUrl['productId'] ?? '0')),
+                      ),
+                    );
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl['image'] ?? '',
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  placeholder: (context, url) => const ShimmerWidget(),
-                  errorWidget: (context, url, error) => Container(
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.grey[300],
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline,
-                          color: Colors.red,
-                          size: 40,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Failed to load image\n$url',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ],
+                    placeholder: (context, url) => const ShimmerWidget(),
+                    errorWidget: (context, url, error) => Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey[300],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                            size: 40,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Failed to load image\n$url',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

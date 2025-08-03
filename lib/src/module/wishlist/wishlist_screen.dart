@@ -42,7 +42,7 @@ class WishlistScreen extends StatelessWidget {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BottomNavWidget(),
+                  builder: (context) => const BottomNavWidget(),
                 ),
                 (route) => false,
               );

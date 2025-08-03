@@ -23,10 +23,29 @@ class ChoosePaymentProvider extends ChangeNotifier {
   String get error => _error;
   BuildContext context;
   int? orderId;
+  bool isGstCheckbox = false;
+
+  bool _isGst = false;
+  bool get isGst => _isGst;
 
   void handleOnlinePaymentOption(bool value) {
     isOnlineRadioButton = !value;
     log("value : $value");
+    notifyListeners();
+  }
+
+  void handleGstCheckbox(bool value) {
+    isGstCheckbox = value;
+    if (value) {
+      _isGst = true;
+    } else {
+      _isGst = false;
+    }
+    notifyListeners();
+  }
+
+  setIsGst() {
+    _isGst = !isGst;
     notifyListeners();
   }
 
@@ -103,9 +122,9 @@ class ChoosePaymentProvider extends ChangeNotifier {
         }
         try {
           await _repository.proceedToPayment(
-            orderId: _orderSummaryResponse!.data.order.id,
-            paymentMethod: 'Wallet',
-          );
+              orderId: _orderSummaryResponse!.data.order.id,
+              paymentMethod: 'Wallet',
+              isGst: _isGst);
           showDialog(
             context: navigatorKey.currentContext!,
             barrierDismissible: false,
@@ -135,9 +154,9 @@ class ChoosePaymentProvider extends ChangeNotifier {
       }
 
       final response = await _repository.proceedToPayment(
-        orderId: _orderSummaryResponse!.data.order.id,
-        paymentMethod: isWallet ? 'Wallet' : 'UPI',
-      );
+          orderId: _orderSummaryResponse!.data.order.id,
+          paymentMethod: isWallet ? 'Wallet' : 'UPI',
+          isGst: _isGst);
 
       log(response["order_id"].toString());
       log(response["razorpay_order"]['id'].toString());
@@ -162,7 +181,7 @@ class ChoosePaymentProvider extends ChangeNotifier {
 
       _razorpay.open(options);
     } catch (e) {
-      _error = e.toString();
+      _error = "Something went wrong....., please try again later";
       Fluttertoast.showToast(
         msg: _error,
         backgroundColor: Colors.red,

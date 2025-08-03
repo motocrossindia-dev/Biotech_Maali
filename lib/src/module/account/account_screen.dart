@@ -340,11 +340,19 @@ class _AccountScreenState extends State<AccountScreen> {
                                         ),
                                       ],
                                     ),
-                                    CommonTextWidget(
-                                      title:
-                                          '₹${context.read<WalletProvider>().balance}',
-                                      color: Colors.green,
-                                      fontSize: 16,
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.currency_rupee,
+                                          size: 16,
+                                        ),
+                                        CommonTextWidget(
+                                          title:
+                                              '${context.read<WalletProvider>().balance}',
+                                          color: Colors.green,
+                                          fontSize: 16,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:biotech_maali/import.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -61,6 +62,10 @@ class LocationPincodeProvider extends ChangeNotifier {
       // After getting location, pop to home screen
       if (context.mounted) {
         Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "Location updated successfully",
+            backgroundColor: cButtonGreen);
+
         context.read<BottomNavProvider>().updateIndex(0);
       }
     } catch (e) {

@@ -108,7 +108,7 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup>
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BottomNavWidget(),
+                              builder: (context) => const BottomNavWidget(),
                             ),
                             (route) => false,
                           );

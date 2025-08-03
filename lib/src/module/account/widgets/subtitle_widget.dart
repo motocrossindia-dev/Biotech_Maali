@@ -1,6 +1,3 @@
-import 'package:biotech_maali/src/module/account/refer_friend/refer_friend_screen.dart';
-import 'package:flutter/material.dart';
-
 import '../../../../import.dart';
 
 class SubtitleWidget extends StatelessWidget {

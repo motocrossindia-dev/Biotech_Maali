@@ -65,11 +65,16 @@ class HomeProvider extends ChangeNotifier {
   int _caroucelIndex = 0;
   int get caroucelIndex => _caroucelIndex;
 
-  List<String> get visibleHomeBanners {
+  List<Map<String, String>> get visibleHomeBanners {
     const baseUrl = BaseUrl.baseUrlForImages; // Add your base URL here
     return _banners
-        .where((banner) => banner.isVisible && (banner.type == 'Home'))
-        .map((banner) => '$baseUrl${banner.mobileBanner}')
+        .where((banner) =>
+            banner.isVisible &&
+            (banner.type == 'Home' || banner.type == 'Hero'))
+        .map((banner) => {
+              'image': '$baseUrl${banner.mobileBanner}',
+              'productId': banner.productId?.toString() ?? '0',
+            })
         .toList();
   }
 

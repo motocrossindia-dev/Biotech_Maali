@@ -1,4 +1,5 @@
 import 'package:biotech_maali/src/payment_and_order/order_history/model.dart/order_history_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_provider.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history/order_history_shimmer.dart';
 import 'package:biotech_maali/src/payment_and_order/order_history_detail/order_history_detail_provider.dart';
@@ -29,7 +30,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => BottomNavWidget(),
+            builder: (context) => const BottomNavWidget(),
           ),
           (route) => false,
         );
@@ -107,7 +108,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BottomNavWidget(),
+                            builder: (context) => const BottomNavWidget(),
                           ),
                         );
                       },
@@ -179,20 +180,82 @@ class OrderHistoryCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      '${BaseUrl.baseUrlForImages}${order.productDetails?.productImage ?? ""}', // Example image URL
-                      height: 100,
-                      width: 160,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey.shade200,
-                        height: 60,
-                        width: 60,
-                        child: const Icon(Icons.image_not_supported,
-                            color: Colors.grey),
-                      ),
+                  SizedBox(
+                    height: 120,
+                    width: 120,
+                    child: Builder(
+                      builder: (context) {
+                        final images =
+                            order.productDetails?.productImages ?? [];
+                        final showImages = images.take(4).toList();
+                        final extraCount =
+                            images.length > 4 ? images.length - 4 : 0;
+                        return GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 3,
+                            crossAxisSpacing: 3,
+                          ),
+                          itemCount: showImages.length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, idx) {
+                            final imgUrl = showImages[idx];
+                            final isLast = idx == 3 && extraCount > 0;
+                            return Stack(
+                              children: [
+                                Center(
+                                  child: SizedBox(
+                                    height: 45,
+                                    width: 45,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(6),
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            '${BaseUrl.baseUrlForImages}$imgUrl',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            Container(
+                                          color: Colors.grey.shade100,
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                          color: Colors.grey.shade200,
+                                          child: const Icon(
+                                            Icons.image_not_supported,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (isLast)
+                                  Center(
+                                    child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '+$extraCount',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
                   Column(
@@ -204,13 +267,13 @@ class OrderHistoryCard extends StatelessWidget {
                           Column(
                             children: [
                               _buildStatusChip(order.status),
-                              // Text(
-                              //   _formatDate(order.date),
-                              //   style: TextStyle(
-                              //     color: Colors.grey.shade500,
-                              //     fontSize: 10,
-                              //   ),
-                              // ),
+                              Text(
+                                _formatDate(order.date),
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 10,
+                                ),
+                              ),
                             ],
                           ),
                         ],

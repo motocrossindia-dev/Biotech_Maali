@@ -186,6 +186,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   : null,
                               readOnly: !editProfileProvider.isEditing,
                             ),
+                            sizedBoxHeight20,
+                            EditProfileTextForm(
+                              controller: editProfileProvider.gstNumber,
+                              hintText:
+                                  editProfileProvider.gstNumber.text.isEmpty
+                                      ? 'GST Number'
+                                      : editProfileProvider.gstNumber.text,
+                              labelText: 'GST Number',
+                              keyboardType: TextInputType.text,
+                              readOnly: !editProfileProvider.isEditing,
+                              maxLength: 15,
+                            ),
                             if (editProfileProvider.isEditing) ...[
                               sizedBoxHeight20,
                               CommonButtonWidget(

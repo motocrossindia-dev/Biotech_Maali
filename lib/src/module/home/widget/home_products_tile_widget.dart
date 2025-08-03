@@ -72,65 +72,126 @@ class HomeProductsTileWidget extends StatelessWidget {
                 } else if (title == "Seasonal Collection") {
                   products = provider.seasonalProducts;
                 }
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    HomeProductModel productDetails = products[index];
-
-                    // bool isWishlistId = provider.mainWishlistProductId
-                    //     .contains(productDetails.id);
-
-                    return Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            context
-                                .read<ProductDetailsProvider>()
-                                .fetchProductDetails(productDetails.id);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductDetailsScreen(
-                                  productId: productDetails.id,
+                return products.isEmpty
+                    ? Center(
+                        child: AnimatedOpacity(
+                          opacity: 1.0,
+                          duration: const Duration(milliseconds: 800),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TweenAnimationBuilder<double>(
+                                tween: Tween<double>(begin: 0.0, end: 1.0),
+                                duration: const Duration(milliseconds: 3200),
+                                builder: (context, value, child) {
+                                  return Transform.scale(
+                                    scale: value,
+                                    child: Container(
+                                      width: 80,
+                                      height: 80,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.inventory_2,
+                                        size: 40,
+                                        color: cButtonGreen,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              AnimatedOpacity(
+                                opacity: 1.0,
+                                duration: const Duration(milliseconds: 1000),
+                                child: Text(
+                                  "No $title Products",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey.shade700,
+                                  ),
                                 ),
                               ),
-                            );
-                          },
-                          child: ProductTileWidget(
-                            productTitle: productDetails.name,
-                            productImage: productDetails.image,
-                            tempImage: 'assets/png/products/sample_product.png',
-                            discountAmount:
-                                productDetails.sellingPrice.toString(),
-                            actualAmount: productDetails.mrp.toString(),
-                            rating: productDetails.productRating.avgRating,
-                            home: false,
-                            isWishlist: productDetails.isWishlist,
-                            isCart: productDetails.isCart,
-                            addToFavouriteEvent: () async {
-                              final settingsProvider =
-                                  context.read<SettingsProvider>();
-                              bool isAuth = await settingsProvider
-                                  .checkAccessTokenValidity(context);
-
-                              if (!isAuth) {
-                                _showLoginDialog(context);
-                                return;
-                              }
-                              final wishlistProvider =
-                                  context.read<WishlistProvider>();
-                              wishlistProvider.addOrRemoveWhishlistMainProduct(
-                                  productDetails.id, context);
-                            },
-                            mainProdId: productDetails.id,
+                              const SizedBox(height: 8),
+                              AnimatedOpacity(
+                                opacity: 1.0,
+                                duration: const Duration(milliseconds: 1200),
+                                child: Text(
+                                  "Check back later for new arrivals",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        sizedBoxWidth15
-                      ],
-                    );
-                  },
-                );
+                      )
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          HomeProductModel productDetails = products[index];
+
+                          return Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<ProductDetailsProvider>()
+                                      .fetchProductDetails(productDetails.id);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ProductDetailsScreen(
+                                        productId: productDetails.id,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: ProductTileWidget(
+                                  productTitle: productDetails.name,
+                                  productImage: productDetails.image,
+                                  tempImage:
+                                      'assets/png/products/sample_product.png',
+                                  discountAmount:
+                                      productDetails.sellingPrice.toString(),
+                                  actualAmount: productDetails.mrp.toString(),
+                                  rating:
+                                      productDetails.productRating.avgRating,
+                                  home: false,
+                                  isWishlist: productDetails.isWishlist,
+                                  isCart: productDetails.isCart,
+                                  addToFavouriteEvent: () async {
+                                    final settingsProvider =
+                                        context.read<SettingsProvider>();
+                                    bool isAuth = await settingsProvider
+                                        .checkAccessTokenValidity(context);
+
+                                    if (!isAuth) {
+                                      _showLoginDialog(context);
+                                      return;
+                                    }
+                                    final wishlistProvider =
+                                        context.read<WishlistProvider>();
+                                    wishlistProvider
+                                        .addOrRemoveWhishlistMainProduct(
+                                            productDetails.id, context);
+                                  },
+                                  mainProdId: productDetails.id,
+                                ),
+                              ),
+                              sizedBoxWidth15
+                            ],
+                          );
+                        },
+                      );
               },
             ),
           )

@@ -525,7 +525,7 @@ class ProductDetailsProvider extends ChangeNotifier {
       _deliveryState = result['state'];
       _isDeliveryAvailable = result['delivery_available'];
     } catch (e) {
-      _pincodeError = "Invalid Pincode";
+      _pincodeError = "we are not delivering to this area, we will come soon";
       _isDeliveryAvailable = null;
       _deliveryState = null;
     } finally {

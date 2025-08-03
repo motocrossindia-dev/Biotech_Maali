@@ -51,9 +51,7 @@ class ProductTileAddonWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0, top: 8),
-                      child:
-                     
-                          InkWell(
+                      child: InkWell(
                         onTap: addToFavouriteEvent,
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
@@ -128,7 +126,7 @@ class ProductTileAddonWidget extends StatelessWidget {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BottomNavWidget(),
+                                builder: (context) => const BottomNavWidget(),
                               ),
                               (route) => false,
                             );

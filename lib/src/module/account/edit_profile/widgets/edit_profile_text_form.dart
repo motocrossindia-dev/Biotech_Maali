@@ -8,11 +8,13 @@ class EditProfileTextForm extends StatelessWidget {
   final TextInputType? keyboardType;
   final VoidCallback? onTap;
   final bool readOnly;
+  final int? maxLength;
 
   const EditProfileTextForm({
     required this.controller,
     required this.hintText,
     required this.labelText,
+    this.maxLength,
     this.keyboardType,
     this.onTap,
     this.readOnly = false,
@@ -26,6 +28,7 @@ class EditProfileTextForm extends StatelessWidget {
       controller: controller,
       readOnly: readOnly,
       onTap: onTap,
+      maxLength: maxLength,
       decoration: InputDecoration(
         labelStyle: TextStyle(color: cBorderGrey),
         labelText: labelText,

@@ -39,7 +39,7 @@ class CoinRepository {
   }
 
   // This method would be expanded to include redeeming coins
-  Future<bool> redeemCoins(int amount) async {
+  Future<bool> redeemCoins(int coins) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("access_token");
 
@@ -49,7 +49,7 @@ class CoinRepository {
       }
 
       final response = await _dio.post(
-        '${EndUrl.baseUrl}/btcoins/redeemCoins/', // Update with your actual endpoint
+        '${EndUrl.baseUrl}wallet/redeem-btcoins/', // Update with your actual endpoint
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -57,17 +57,17 @@ class CoinRepository {
           },
         ),
         data: {
-          'coins': amount,
+          'coins': coins,
         },
       );
 
       if (response.statusCode == 200) {
-        final jsonData = response.data;
-        return jsonData['success'] == true;
+        return true;
       } else {
         throw Exception('Failed to redeem coins: ${response.statusCode}');
       }
     } catch (e) {
+      log("error :$e");
       throw Exception('Error redeeming coins: $e');
     }
   }

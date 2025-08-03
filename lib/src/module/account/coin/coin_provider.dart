@@ -18,7 +18,7 @@ class CoinProvider extends ChangeNotifier {
   int get coinBalance => _coinBalance;
 
   // Redemption rates - these could come from API in the future
-  final double _redemptionRate = 5.0; // ₹5 per 100 coins
+  final double _redemptionRate = 10.0; // ₹5 per 100 coins
   double get redemptionRate => _redemptionRate;
 
   // Earn rate
@@ -43,6 +43,12 @@ class CoinProvider extends ChangeNotifier {
 
   // Controller for redeeming coins
   final TextEditingController redeemController = TextEditingController();
+
+  @override
+  void dispose() {
+    redeemController.dispose();
+    super.dispose();
+  }
 
   // Getter for filtered transactions
   List<CoinTransaction> get filteredTransactions {
@@ -124,18 +130,22 @@ class CoinProvider extends ChangeNotifier {
 
   // Redeem coins
   Future<bool> redeemCoins(int amount) async {
-    if (amount <= 0 || amount > _coinBalance) {
+    if (amount <= 0) {
+      _error = 'Invalid amount';
       return false;
     }
 
     try {
+      _error = null; // Clear any previous error
+
       final success = await _repository.redeemCoins(amount);
 
       if (success) {
-        // Refresh transactions to get updated balance
+        // Refresh transactions after successful redemption
         await refreshTransactions();
         return true;
       } else {
+        _error = 'Redemption failed';
         return false;
       }
     } catch (e) {

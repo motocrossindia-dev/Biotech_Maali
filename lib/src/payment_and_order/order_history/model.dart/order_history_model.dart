@@ -44,6 +44,7 @@ class OrderHistory {
   final String? razorpayOrderId;
   final DeliveryAddress? deliveryAddress;
   final ProductDetails? productDetails;
+  final bool isReturnable;
 
   OrderHistory({
     required this.id,
@@ -60,6 +61,7 @@ class OrderHistory {
     this.razorpayOrderId,
     this.deliveryAddress,
     this.productDetails,
+    required this.isReturnable,
   });
 
   factory OrderHistory.fromJson(Map<String, dynamic> json) {
@@ -82,6 +84,7 @@ class OrderHistory {
       productDetails: json['product_details'] != null
           ? ProductDetails.fromJson(json['product_details'])
           : null,
+      isReturnable: json['is_returnable'] ?? false,
     );
   }
 }
@@ -121,16 +124,22 @@ class DeliveryAddress {
 class ProductDetails {
   final String productName;
   final String productImage;
+  final List<String> productImages;
 
   ProductDetails({
     required this.productName,
     required this.productImage,
+    required this.productImages,
   });
 
   factory ProductDetails.fromJson(Map<String, dynamic> json) {
     return ProductDetails(
       productName: json['product_name'] ?? '',
       productImage: json['product_image'] ?? '',
+      productImages: (json['product_images'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
     );
   }
 }

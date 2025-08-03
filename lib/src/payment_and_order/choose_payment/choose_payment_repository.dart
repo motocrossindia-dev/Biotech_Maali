@@ -5,20 +5,22 @@ import '../../../import.dart';
 class ChoosePaymentRepository {
   final Dio dio = Dio();
 
-  Future<Map<String, dynamic>> proceedToPayment({
-    required int orderId,
-    required String paymentMethod,
-  }) async {
+  Future<Map<String, dynamic>> proceedToPayment(
+      {required int orderId,
+      required String paymentMethod,
+      required bool isGst}) async {
     log("Order id in repository: $orderId");
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('access_token');
+      log("isgst : $isGst");
 
       final response = await dio.patch(
         '${EndUrl.baseUrl}order/proceedToPayment/',
         data: {
           'order_id': orderId,
           'payment_method': paymentMethod,
+          'is_gst': isGst
         },
         options: Options(
           headers: {
